@@ -18,7 +18,7 @@ object Logger {
         consoleHandler.formatter = formatter
         logger.addHandler(consoleHandler)
 
-        val fileHandler = FileHandler(filePath)
+        val fileHandler = FileHandler(filePath, true)
         fileHandler.formatter = formatter
         logger.addHandler(fileHandler)
 
