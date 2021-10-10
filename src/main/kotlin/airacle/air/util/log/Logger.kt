@@ -18,14 +18,11 @@ object Logger {
         consoleHandler.formatter = formatter
         logger.addHandler(consoleHandler)
 
+        val file = File(filePath)
+        file.parentFile?.mkdirs()
         val fileHandler = FileHandler(filePath, true)
         fileHandler.formatter = formatter
         logger.addHandler(fileHandler)
-
-        val file = File(filePath)
-        if (file.parentFile != null) {
-            file.parentFile.mkdirs()
-        }
     }
 
     fun setLevel(level: Level) {
