@@ -4,9 +4,7 @@ import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
     val cmdLine = CommandLine(MainCmd)
-    cmdLine.executionStrategy = CommandLine.IExecutionStrategy { parseResult ->
-        MainCmd.execute(parseResult)
-    }
+    cmdLine.executionStrategy = MainCmd
     val ret = cmdLine.execute(*args)
     exitProcess(ret)
 }
