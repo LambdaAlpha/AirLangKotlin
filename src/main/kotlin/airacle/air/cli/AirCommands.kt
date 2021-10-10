@@ -1,5 +1,6 @@
 package airacle.air.cli
 
+import airacle.air.api.Air
 import picocli.CommandLine
 import java.util.concurrent.Callable
 
@@ -13,12 +14,14 @@ import java.util.concurrent.Callable
     versionProvider = AirCmd::class
 )
 class AirCmd : Callable<Int>, CommandLine.IVersionProvider {
+    val air: Air = Air()
+
     override fun call(): Int {
         return 0
     }
 
     override fun getVersion(): Array<String> {
-        return MainCmd.version
+        return arrayOf("air ${air.metaInfo().versionName()}(${air.metaInfo().versionCode()})")
     }
 }
 
@@ -29,6 +32,10 @@ class AirCmd : Callable<Int>, CommandLine.IVersionProvider {
 )
 class AirSubCmdQuit : Callable<Int> {
     override fun call(): Int {
-        return MaidSubCmdAirRepl.CODE_QUIT
+        return CODE_QUIT
+    }
+
+    companion object {
+        const val CODE_QUIT: Int = 11
     }
 }

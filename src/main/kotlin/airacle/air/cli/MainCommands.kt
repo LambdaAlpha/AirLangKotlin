@@ -1,7 +1,5 @@
 package airacle.air.cli
 
-import airacle.air.api.Air
-import airacle.air.api.IAir
 import airacle.air.util.log.Logger
 import edu.rice.cs.util.ArgumentTokenizer
 import picocli.CommandLine
@@ -24,7 +22,6 @@ object MainCmd : Callable<Int>, CommandLine.IVersionProvider, CommandLine.IExecu
     @CommandLine.Spec
     lateinit var commandSpec: CommandLine.Model.CommandSpec
 
-    val air: IAir = Air()
     val airCmd: AirCmd = AirCmd()
 
     override fun call(): Int {
@@ -33,7 +30,7 @@ object MainCmd : Callable<Int>, CommandLine.IVersionProvider, CommandLine.IExecu
     }
 
     override fun getVersion(): Array<String> {
-        return arrayOf("air ${air.metaInfo().versionName()}(${air.metaInfo().versionCode()})")
+        return airCmd.version
     }
 
     private fun init() {
@@ -69,7 +66,7 @@ class MaidSubCmdAirRepl : Callable<Int> {
                 val s = readLine() ?: break
                 val args = ArgumentTokenizer.tokenize(s)
                 val ret = cmdLine.execute(*args.toTypedArray())
-                if (ret == CODE_QUIT) {
+                if (ret == AirSubCmdQuit.CODE_QUIT) {
                     break
                 }
             } catch (t: Throwable) {
@@ -78,9 +75,5 @@ class MaidSubCmdAirRepl : Callable<Int> {
             }
         }
         return 0
-    }
-
-    companion object {
-        const val CODE_QUIT: Int = 11
     }
 }
