@@ -21,7 +21,10 @@ class AirCmd : Callable<Int>, CommandLine.IVersionProvider {
     }
 
     override fun getVersion(): Array<String> {
-        return arrayOf("air ${air.metaInfo().versionName()}(${air.metaInfo().versionCode()})")
+        val metaInfo = air.metaInfo()
+        return arrayOf(
+            "air ${metaInfo.versionName}(${metaInfo.versionCode})"
+        )
     }
 }
 

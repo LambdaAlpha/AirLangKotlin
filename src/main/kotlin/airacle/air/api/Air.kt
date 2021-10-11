@@ -1,21 +1,20 @@
 package airacle.air.api
 
-class Air : IAir, IAirMetaInfo {
+class Air {
 
     companion object {
-        const val VERSION_CODE = 1
-        const val VERSION_NAME = "0.0.1"
+        val META_INFO: AirMetaInfo = AirMetaInfo(
+            1,
+            "0.0.1"
+        )
     }
 
-    override fun metaInfo(): IAirMetaInfo {
-        return this
-    }
-
-    override fun versionCode(): Int {
-        return VERSION_CODE
-    }
-
-    override fun versionName(): String {
-        return VERSION_NAME
+    fun metaInfo(): AirMetaInfo {
+        return META_INFO
     }
 }
+
+data class AirMetaInfo(
+    val versionCode: Int,
+    val versionName: String,
+)
