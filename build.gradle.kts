@@ -25,6 +25,9 @@ tasks.test {
 }
 
 dependencies {
+    // https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-reflect
+    runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:1.5.31")
+
     implementation("org.junit.jupiter:junit-jupiter:5.8.1")
 
     // basic utils
