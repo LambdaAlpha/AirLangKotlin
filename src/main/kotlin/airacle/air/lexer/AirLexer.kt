@@ -1,254 +1,190 @@
 package airacle.air.lexer
 
-import java.io.InputStreamReader
+interface IAirLexerConfig {
+    // return a regex lexer, or null if char is illegal
+    fun dispatch(char: Char): IAirRegexLexer?
 
-class AirLexer {
-    // never fail
-    fun lex(source: String, ignoreDelimiter: Boolean = true): List<AirToken> {
-        return lexMultiple(source, ignoreDelimiter)
-    }
-
-    // never fail
-    fun lex(sourceReader: InputStreamReader, ignoreDelimiter: Boolean = true): List<AirToken> {
-        return lexMultiple(sourceReader, ignoreDelimiter)
-    }
+    // return true if the token should be kept
+    fun filter(airToken: AirToken): Boolean
 }
 
-private fun lexMultiple(source: String, ignoreDelimiter: Boolean): List<AirToken> {
-    val tokens = mutableListOf<AirToken>()
-    if (source.isEmpty()) {
+interface IAirRegexLexer {
+    fun pattern(): Regex
+    fun parse(match: MatchResult): AirToken
+}
+
+class AirLexerError(
+    pattern: String,
+    source: String,
+    index: Int
+) : Error(
+    "pattern $pattern matching failed at $index: " +
+            source.substring(index, (index + 100).coerceAtMost(source.length))
+)
+
+class AirLexer(
+    val config: IAirLexerConfig
+) {
+    fun lex(source: String): List<AirToken> {
+        val tokens = mutableListOf<AirToken>()
+        lex(source, tokens)
         return tokens
     }
 
-    var start = 0
-    while (start < source.length) {
-        val pair = lexSingle(source, start)
-        if (pair.first !is DelimiterToken || !ignoreDelimiter) {
-            tokens.add(pair.first)
+    private fun lex(source: String, tokens: MutableList<AirToken>) {
+        if (source.isEmpty()) {
+            return
         }
-        start = pair.second
-    }
-    return tokens
-}
 
-private fun lexSingle(source: String, start: Int): Pair<AirToken, Int> {
-    val lexer = getSingleLexer(source[start])
-    lexer.first(source[start])
-    var local = 1
-    var global = start + local
-    while (global < source.length) {
-        if (lexer.follow(source[global], local)) {
-            local += 1
-            global += 1
-        } else {
-            break
-        }
-    }
-    return Pair(lexer.lex(source.substring(start, global)), global)
-}
-
-private fun lexMultiple(sourceReader: InputStreamReader, ignoreDelimiter: Boolean): List<AirToken> {
-    val tokens = mutableListOf<AirToken>()
-
-    val ret = sourceReader.read()
-    if (ret == -1) {
-        return tokens
-    }
-
-    var key: Char? = ret.toChar()
-    while (key != null) {
-        val pair = lexSingle(key, sourceReader)
-        if (pair.first !is DelimiterToken || !ignoreDelimiter) {
-            tokens.add(pair.first)
-        }
-        key = pair.second
-    }
-    return tokens
-}
-
-private fun lexSingle(key: Char, sourceReader: InputStreamReader): Pair<AirToken, Char?> {
-    val lexer = getSingleLexer(key)
-    lexer.first(key)
-    val builder = StringBuilder().append(key)
-
-    var ret = sourceReader.read()
-    var index = 1
-    var next: Char? = null
-    while (ret != -1) {
-        val char = ret.toChar()
-        if (lexer.follow(char, index)) {
-            ret = sourceReader.read()
-            index += 1
-        } else {
-            next = char
-            break
-        }
-    }
-    val token = lexer.lex(builder.toString())
-    return Pair(token, next)
-}
-
-private fun isAsciiLetter(char: Char): Boolean {
-    return when (char) {
-        'a', 'b', 'c', 'd', 'e', 'f', 'g',
-        'h', 'i', 'j', 'k', 'l', 'm', 'n',
-        'o', 'p', 'q', 'r', 's', 't',
-        'u', 'v', 'w', 'x', 'y', 'z',
-        'A', 'B', 'C', 'D', 'E', 'F', 'G',
-        'H', 'I', 'J', 'K', 'L', 'M', 'N',
-        'O', 'P', 'Q', 'R', 'S', 'T',
-        'U', 'V', 'W', 'X', 'Y', 'Z' -> true
-        else -> false
-    }
-}
-
-private fun isAsciiDigit(char: Char): Boolean {
-    return when (char) {
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> true
-        else -> false
-    }
-}
-
-private fun isAsciiSymbol(char: Char): Boolean {
-    return when (char) {
-        '`', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+',
-        '[', '{', ']', '}', '\\', '|', ';', ':', '\'', '"', ',', '<', '.', '>', '/', '?' -> true
-        else -> false
-    }
-}
-
-private fun isAsciiWhiteSpace(char: Char): Boolean {
-    return when (char) {
-        ' ', '\t', '\n', '\r' -> true
-        else -> false
-    }
-}
-
-private fun isAscii(char: Char): Boolean {
-    return isAsciiLetter(char) || isAsciiDigit(char) || isAsciiSymbol(char) || isAsciiWhiteSpace(char)
-}
-
-private fun getSingleLexer(char: Char): IPrimitiveLexer {
-    if (isAsciiLetter(char)) {
-        return SimpleNameLexer
-    }
-    if (isAsciiDigit(char)) {
-        return NumberLexer()
-    }
-    if (isAsciiWhiteSpace(char)) {
-        return DelimiterLexer
-    }
-    return when (char) {
-        MetaLexer.KEY -> MetaLexer
-        StringLexer.KEY -> StringLexer()
-        CommentLexer.KEY -> CommentLexer()
-        ComplexNameLexer.KEY -> ComplexNameLexer
-        else -> if (isAsciiSymbol(char)) {
-            SymbolLexer
-        } else {
-            UnknownLexer
+        var start = 0
+        while (start < source.length) {
+            val lexer = config.dispatch(source[start]) ?: throw AirLexerError("", source, start)
+            val pattern = lexer.pattern()
+            val matchResult = pattern.find(source, start)
+            if (matchResult == null) {
+                throw AirLexerError(pattern.pattern, source, start)
+            } else {
+                val token = lexer.parse(matchResult)
+                if (config.filter(token)) {
+                    tokens.add(token)
+                }
+                start = matchResult.range.last + 1
+            }
         }
     }
 }
 
-interface IPrimitiveLexer {
-    fun first(char: Char)
+class AirLexerConfig : IAirLexerConfig {
+    override fun dispatch(char: Char): IAirRegexLexer? {
+        if (isAsciiWhiteSpace(char)) {
+            return DelimiterLexer
+        }
+        if (isAsciiAlpha(char) || char == NameLexer.KEY) {
+            return NameLexer
+        }
+        if (isAsciiDigit(char)) {
+            return NumberLexer()
+        }
 
-    fun follow(char: Char, index: Int): Boolean
+        return when (char) {
+            UnitLexer.KEY -> UnitLexer
+            BoolLexer.KEY_TRUE, BoolLexer.KEY_FALSE -> BoolLexer
+            StringLexer.KEY -> StringLexer()
+            CommentLexer.KEY -> CommentLexer()
+            else -> if (isAsciiSymbol(char)) {
+                SymbolLexer
+            } else {
+                null
+            }
+        }
+    }
 
-    fun lex(primitive: String): AirToken
+    override fun filter(airToken: AirToken): Boolean {
+        return airToken !is DelimiterToken &&
+                airToken !is CommentToken
+    }
+
+    private fun isAsciiAlpha(char: Char): Boolean {
+        return when (char) {
+            'a', 'b', 'c', 'd', 'e', 'f', 'g',
+            'h', 'i', 'j', 'k', 'l', 'm', 'n',
+            'o', 'p', 'q', 'r', 's', 't',
+            'u', 'v', 'w', 'x', 'y', 'z',
+            'A', 'B', 'C', 'D', 'E', 'F', 'G',
+            'H', 'I', 'J', 'K', 'L', 'M', 'N',
+            'O', 'P', 'Q', 'R', 'S', 'T',
+            'U', 'V', 'W', 'X', 'Y', 'Z' -> true
+            else -> false
+        }
+    }
+
+    private fun isAsciiDigit(char: Char): Boolean {
+        return when (char) {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> true
+            else -> false
+        }
+    }
+
+    private fun isAsciiSymbol(char: Char): Boolean {
+        return when (char) {
+            '`', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+',
+            '[', '{', ']', '}', '\\', '|', ';', ':', '\'', '"', ',', '<', '.', '>', '/', '?' -> true
+            else -> false
+        }
+    }
+
+    private fun isAsciiWhiteSpace(char: Char): Boolean {
+        return when (char) {
+            ' ', '\t', '\n', '\r' -> true
+            else -> false
+        }
+    }
+
+    private fun isAscii(char: Char): Boolean {
+        return isAsciiAlpha(char) || isAsciiDigit(char) || isAsciiSymbol(char) || isAsciiWhiteSpace(char)
+    }
 }
 
-object UnknownLexer : IPrimitiveLexer {
-    override fun first(char: Char) {
+object DelimiterLexer : IAirRegexLexer {
+    private val pattern = Regex("[ \r\n\t]+")
 
+    override fun pattern(): Regex {
+        return pattern
     }
 
-    override fun follow(char: Char, index: Int): Boolean {
-        return !isAscii(char)
-    }
-
-    override fun lex(primitive: String): AirToken {
-        return UnknownToken(primitive)
-    }
-}
-
-object DelimiterLexer : IPrimitiveLexer {
-    override fun first(char: Char) {
-
-    }
-
-    override fun follow(char: Char, index: Int): Boolean {
-        return isAsciiWhiteSpace(char)
-    }
-
-    override fun lex(primitive: String): AirToken {
+    override fun parse(match: MatchResult): AirToken {
         return DelimiterToken
     }
 }
 
-object SimpleNameLexer : IPrimitiveLexer {
-    override fun first(char: Char) {
-
-    }
-
-    override fun follow(char: Char, index: Int): Boolean {
-        return isAsciiLetter(char) || isAsciiDigit(char) || char == '_'
-    }
-
-    override fun lex(primitive: String): AirToken {
-        return NameToken(primitive)
-    }
-}
-
-object ComplexNameLexer : IPrimitiveLexer {
+object NameLexer : IAirRegexLexer {
     const val KEY = '`'
+    private val pattern = Regex("`\\p{Graph}*|\\p{Alpha}\\w*")
 
-    override fun first(char: Char) {
-
+    override fun pattern(): Regex {
+        return pattern
     }
 
-    override fun follow(char: Char, index: Int): Boolean {
-        return isAsciiLetter(char) || isAsciiDigit(char) || isAsciiSymbol(char)
-    }
-
-    override fun lex(primitive: String): AirToken {
-        return NameToken(primitive)
+    override fun parse(match: MatchResult): AirToken {
+        return NameToken(match.value)
     }
 }
 
-object MetaLexer : IPrimitiveLexer {
-    const val KEY = '\''
-
-    override fun first(char: Char) {
-
+object UnitLexer : IAirRegexLexer {
+    const val KEY = '|'
+    private val pattern = Regex("\\|")
+    override fun pattern(): Regex {
+        return pattern
     }
 
-    override fun follow(char: Char, index: Int): Boolean {
-        return isAsciiLetter(char) || isAsciiDigit(char) || isAsciiSymbol(char)
-    }
-
-    override fun lex(primitive: String): AirToken {
-        return when (val id = primitive.substring(1)) {
-            "t", "true" -> TrueToken
-            "f", "false" -> FalseToken
-            // TODO: 10/13/21 recognize more keyword
-            else -> InvalidToken(MetaToken::class, id)
-        }
+    override fun parse(match: MatchResult): AirToken {
+        return UnitToken
     }
 }
 
-object SymbolLexer : IPrimitiveLexer {
-    override fun first(char: Char) {
+object BoolLexer : IAirRegexLexer {
+    const val KEY_TRUE = '/'
+    const val KEY_FALSE = '\\'
+    private val pattern = Regex("[\\\\/]")
 
+    override fun pattern(): Regex {
+        return pattern
     }
 
-    override fun follow(char: Char, index: Int): Boolean {
-        return false
+    override fun parse(match: MatchResult): AirToken {
+        return if (match.value == "/") TrueToken else FalseToken
+    }
+}
+
+object SymbolLexer : IAirRegexLexer {
+    private val pattern = Regex("\\p{Punct}")
+
+    override fun pattern(): Regex {
+        return pattern
     }
 
-    override fun lex(primitive: String): AirToken {
-        return when (primitive[0]) {
+    override fun parse(match: MatchResult): AirToken {
+        return when (match.value[0]) {
             '`' -> BackQuoteToken
             '~' -> TildeToken
             '!' -> ExclamationToken
@@ -286,111 +222,90 @@ object SymbolLexer : IPrimitiveLexer {
     }
 }
 
-class CommentLexer : IPrimitiveLexer {
+class CommentLexer : IAirRegexLexer {
     companion object {
         const val KEY = '^'
+
+        // begin and end with ^, \ to escape any character
+        private val pattern = Regex("\\^((?:[^^\\\\]|\\\\.)*+)\\^")
     }
 
-    private var end = false
-    override fun first(char: Char) {
-
+    override fun pattern(): Regex {
+        return pattern
     }
 
-    override fun follow(char: Char, index: Int): Boolean {
-        if (end) {
-            return false
-        }
-        if (char == '^') {
-            end = true
-        }
-        return true
-    }
-
-    override fun lex(primitive: String): AirToken {
-        if (!end) {
-            return InvalidToken(CommentToken::class, primitive)
-        }
-        return CommentToken(primitive.substring(1, primitive.length - 1))
+    override fun parse(match: MatchResult): AirToken {
+        return CommentToken(match.groups[1]!!.value)
     }
 }
 
-class NumberLexer : IPrimitiveLexer {
-    private var meetDot = false
-
-    override fun first(char: Char) {
-
-    }
-
-    // TODO: 10/14/21 may support 0b111, 0xfff, 1.111e-3, 0xff.11p-2
-    override fun follow(char: Char, index: Int): Boolean {
-        if (char == '.') {
-            return if (meetDot) {
-                false
-            } else {
-                meetDot = true
-                true
-            }
-        }
-        return isAsciiDigit(char)
-    }
-
-    override fun lex(primitive: String): AirToken {
-        return if (meetDot) {
-            FloatToken(primitive.toDouble())
-        } else {
-            IntegerToken(primitive.toLong())
-        }
-    }
-}
-
-class StringLexer : IPrimitiveLexer {
+class StringLexer : IAirRegexLexer {
     companion object {
         const val KEY = '"'
+        private val pattern = Regex("\"((?:[^\"\\\\]|\\\\[rnt\\\\'\"]|\\\\u[a-fA-F0-9]{4})*+)\"")
+        private val delimiterPattern = Regex("[\n\r\t]+")
+        private val escapePattern = Regex("\\\\([rnt\\\\'\"])")
+        private val unicodePattern = Regex("\\\\u([a-fA-F0-9]{4})")
     }
 
-    private var end = false
-    private var lastEscape = false
-    private val stringBuilder = StringBuilder()
-
-    override fun first(char: Char) {
-
+    override fun pattern(): Regex {
+        return pattern
     }
 
-    // TODO: 10/14/21 may support \uxxxx format
-    override fun follow(char: Char, index: Int): Boolean {
-        if (end) {
-            return false
-        }
-
-        if (lastEscape) {
-            when (char) {
-                't' -> stringBuilder.append('\t')
-                'n' -> stringBuilder.append('\n')
-                'r' -> stringBuilder.append('\r')
-                'b' -> stringBuilder.append('\b')
-                else -> stringBuilder.append(char)
+    override fun parse(match: MatchResult): AirToken {
+        var s = match.groups[1]!!.value
+        s = s.replace(delimiterPattern, "")
+        s = s.replace(escapePattern) {
+            when (val c = it.groups[1]!!.value) {
+                "t" -> "\t"
+                "n" -> "\n"
+                "r" -> "\r"
+                else -> c
             }
-            lastEscape = false
-            return true
         }
+        s = s.replace(unicodePattern) {
+            it.groups[1]!!.value.toInt(16).toChar().toString()
+        }
+        return StringToken(s)
+    }
+}
 
-        if (char == '"') {
-            end = true
-            return true
-        }
-
-        if (char == '\\') {
-            lastEscape = true
-        } else if (char == ' ' || !isAsciiWhiteSpace(char)) {
-            stringBuilder.append(char)
-        }
-        return true
+class NumberLexer : IAirRegexLexer {
+    companion object {
+        // binary, decimal, hexadecimal integers and decimal float numbers
+        // prefix with 0 if not start with digit
+        // match binary or hexadecimal first because otherwise the prefix 0 will always match decimal integer pattern
+        private val pattern = Regex(
+            "0[-+]?(?:[xX][a-fA-F0-9]+[a-fA-F0-9_]*|[bB][01]+[01_]*)" +
+                    "|(?:0[-+])?\\d+[_\\d]*(?:\\.\\d+[_\\d]*(?:[eE][-+]?\\d+)?)?"
+        )
     }
 
-    override fun lex(primitive: String): AirToken {
-        if (!end) {
-            return InvalidToken(StringToken::class, primitive)
+    override fun pattern(): Regex {
+        return pattern
+    }
+
+    override fun parse(match: MatchResult): AirToken {
+        var s = match.value
+        // remove delimiters
+        s = s.replace("_", "")
+        val negative = s.length > 2 && s[1] == '-'
+        // remove sign
+        if (s.length > 2 && (s[1] == '-' || s[1] == '+')) {
+            s = s.substring(2)
         }
-        return StringToken(stringBuilder.toString())
+        return if (s.contains('x', true)) {
+            val value = s.substring(1).toLong(16)
+            IntegerToken(if (negative) -value else value)
+        } else if (s.contains('b', true)) {
+            val value = s.substring(1).toLong(2)
+            IntegerToken(if (negative) -value else value)
+        } else if (s.contains('.')) {
+            val value = s.toDouble()
+            FloatToken(if (negative) -value else value)
+        } else {
+            val value = s.toLong()
+            IntegerToken(if (negative) -value else value)
+        }
     }
 }

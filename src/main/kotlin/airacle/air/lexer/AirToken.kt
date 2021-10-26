@@ -1,19 +1,15 @@
 package airacle.air.lexer
 
-import kotlin.reflect.KClass
-
 // TODO: 10/13/21 impl to string
 sealed interface AirToken
-
-data class InvalidToken<T : Any>(val clazz: KClass<T>, val literal: String) : AirToken
-
-data class UnknownToken(val literal: String) : AirToken
 
 object DelimiterToken : AirToken
 
 data class CommentToken(val comment: String) : AirToken
 
 data class NameToken(val name: String) : AirToken
+
+object UnitToken : AirToken
 
 sealed class BoolToken(val bool: Boolean) : AirToken
 
