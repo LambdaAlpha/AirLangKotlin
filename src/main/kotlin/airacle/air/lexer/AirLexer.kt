@@ -23,7 +23,7 @@ class AirLexerError(
 )
 
 class AirLexer(
-    val config: IAirLexerConfig
+    private val config: IAirLexerConfig
 ) {
     fun lex(source: String): List<AirToken> {
         val tokens = mutableListOf<AirToken>()
@@ -54,8 +54,12 @@ class AirLexer(
     }
 }
 
-class AirLexerConfig : IAirLexerConfig {
-    override fun dispatch(char: Char): IAirRegexLexer? {
+object AirLexerConfig : IAirLexerConfig {
+    private val lexers: Array<IAirRegexLexer?> = Array(128) {
+        init(it.toChar())
+    }
+
+    private fun init(char: Char): IAirRegexLexer? {
         if (isAsciiWhiteSpace(char)) {
             return DelimiterLexer
         }
@@ -63,14 +67,14 @@ class AirLexerConfig : IAirLexerConfig {
             return NameLexer
         }
         if (isAsciiDigit(char)) {
-            return NumberLexer()
+            return NumberLexer
         }
 
         return when (char) {
             UnitLexer.KEY -> UnitLexer
             BoolLexer.KEY_TRUE, BoolLexer.KEY_FALSE -> BoolLexer
-            StringLexer.KEY -> StringLexer()
-            CommentLexer.KEY -> CommentLexer()
+            StringLexer.KEY -> StringLexer
+            CommentLexer.KEY -> CommentLexer
             else -> if (isAsciiSymbol(char)) {
                 SymbolLexer
             } else {
@@ -79,30 +83,25 @@ class AirLexerConfig : IAirLexerConfig {
         }
     }
 
+    override fun dispatch(char: Char): IAirRegexLexer? {
+        if (char.code >= 128) {
+            return null
+        }
+        return lexers[char.code]
+    }
+
     override fun filter(airToken: AirToken): Boolean {
         return airToken !is DelimiterToken &&
                 airToken !is CommentToken
     }
 
     private fun isAsciiAlpha(char: Char): Boolean {
-        return when (char) {
-            'a', 'b', 'c', 'd', 'e', 'f', 'g',
-            'h', 'i', 'j', 'k', 'l', 'm', 'n',
-            'o', 'p', 'q', 'r', 's', 't',
-            'u', 'v', 'w', 'x', 'y', 'z',
-            'A', 'B', 'C', 'D', 'E', 'F', 'G',
-            'H', 'I', 'J', 'K', 'L', 'M', 'N',
-            'O', 'P', 'Q', 'R', 'S', 'T',
-            'U', 'V', 'W', 'X', 'Y', 'Z' -> true
-            else -> false
-        }
+        return (char.code >= 'A'.code && char.code <= 'Z'.code)
+                || (char.code >= 'a'.code && char.code <= 'z'.code)
     }
 
     private fun isAsciiDigit(char: Char): Boolean {
-        return when (char) {
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> true
-            else -> false
-        }
+        return char.code >= '0'.code && char.code <= '9'.code
     }
 
     private fun isAsciiSymbol(char: Char): Boolean {
@@ -118,10 +117,6 @@ class AirLexerConfig : IAirLexerConfig {
             ' ', '\t', '\n', '\r' -> true
             else -> false
         }
-    }
-
-    private fun isAscii(char: Char): Boolean {
-        return isAsciiAlpha(char) || isAsciiDigit(char) || isAsciiSymbol(char) || isAsciiWhiteSpace(char)
     }
 }
 
@@ -153,6 +148,7 @@ object NameLexer : IAirRegexLexer {
 object UnitLexer : IAirRegexLexer {
     const val KEY = '|'
     private val pattern = Regex("\\|")
+
     override fun pattern(): Regex {
         return pattern
     }
@@ -222,13 +218,11 @@ object SymbolLexer : IAirRegexLexer {
     }
 }
 
-class CommentLexer : IAirRegexLexer {
-    companion object {
-        const val KEY = '^'
+object CommentLexer : IAirRegexLexer {
+    const val KEY = '^'
 
-        // begin and end with ^, \ to escape any character
-        private val pattern = Regex("\\^((?:[^^\\\\]|\\\\.)*+)\\^")
-    }
+    // begin and end with ^, \ to escape any character
+    private val pattern = Regex("\\^((?:[^^\\\\]|\\\\.)*+)\\^")
 
     override fun pattern(): Regex {
         return pattern
@@ -239,14 +233,12 @@ class CommentLexer : IAirRegexLexer {
     }
 }
 
-class StringLexer : IAirRegexLexer {
-    companion object {
-        const val KEY = '"'
-        private val pattern = Regex("\"((?:[^\"\\\\]|\\\\[rnt\\\\'\"]|\\\\u[a-fA-F0-9]{4})*+)\"")
-        private val delimiterPattern = Regex("[\n\r\t]+")
-        private val escapePattern = Regex("\\\\([rnt\\\\'\"])")
-        private val unicodePattern = Regex("\\\\u([a-fA-F0-9]{4})")
-    }
+object StringLexer : IAirRegexLexer {
+    const val KEY = '"'
+    private val pattern = Regex("\"((?:[^\"\\\\]|\\\\[rnt\\\\'\"]|\\\\u[a-fA-F0-9]{4})*+)\"")
+    private val delimiterPattern = Regex("[\n\r\t]+")
+    private val escapePattern = Regex("\\\\([rnt\\\\'\"])")
+    private val unicodePattern = Regex("\\\\u([a-fA-F0-9]{4})")
 
     override fun pattern(): Regex {
         return pattern
@@ -270,16 +262,15 @@ class StringLexer : IAirRegexLexer {
     }
 }
 
-class NumberLexer : IAirRegexLexer {
-    companion object {
-        // binary, decimal, hexadecimal integers and decimal float numbers
-        // prefix with 0 if not start with digit
-        // match binary or hexadecimal first because otherwise the prefix 0 will always match decimal integer pattern
-        private val pattern = Regex(
-            "0[-+]?(?:[xX][a-fA-F0-9]+[a-fA-F0-9_]*|[bB][01]+[01_]*)" +
-                    "|(?:0[-+])?\\d+[_\\d]*(?:\\.\\d+[_\\d]*(?:[eE][-+]?\\d+)?)?"
-        )
-    }
+object NumberLexer : IAirRegexLexer {
+    // binary, decimal, hexadecimal integers and decimal float numbers
+    // prefix with 0 if not start with digit
+    // match binary or hexadecimal first because otherwise the prefix 0 will always match decimal integer pattern
+    private val pattern = Regex(
+        "0[-+]?(?:[xX][a-fA-F0-9]+[a-fA-F0-9_]*|[bB][01]+[01_]*)" +
+                "|(?:0[-+])?\\d+[_\\d]*(?:\\.\\d+[_\\d]*(?:[eE][-+]?\\d+)?)?"
+    )
+
 
     override fun pattern(): Regex {
         return pattern

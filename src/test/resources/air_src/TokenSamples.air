@@ -1,12 +1,14 @@
-^this is a air code sample^
+^this is an air code example^
 
 ^
-comment can cross lines
-like this
+comments can
+cross multiple lines
 ^
+
+^comments can contain unicode, like 🜁^
 
 ^this is a simple name^
-simpleName0
+simpleName_0
 
 ^this is a complex name^
 `complex+name!
@@ -14,7 +16,7 @@ simpleName0
 ^this is unit^
 |
 
-^this is false and true^
+^these are false and true^
 \ /
 
 ^these are integers^
@@ -34,8 +36,8 @@ simpleName0
 " \n\r\t"
 "\uD83D"
 "
-string can cross multiple lines,
-like this
+string can
+ cross multiple lines
 "
 
 ^these are symbols^

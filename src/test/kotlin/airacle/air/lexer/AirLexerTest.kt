@@ -6,7 +6,7 @@ import org.junit.jupiter.api.assertDoesNotThrow
 import java.io.FileReader
 
 internal class AirLexerTest {
-    private val lexer = AirLexer(AirLexerConfig())
+    private val lexer = AirLexer(AirLexerConfig)
 
     @Test
     fun lexString() {
@@ -17,7 +17,7 @@ internal class AirLexerTest {
 
         assertDoesNotThrow {
             val tokens = lexer.lex(content)
-            assertEquals(NameToken("simpleName0"), tokens[0])
+            assertEquals(NameToken("simpleName_0"), tokens[0])
             assertEquals(NameToken("`complex+name!"), tokens[1])
             assertEquals(UnitToken, tokens[2])
             assertEquals(FalseToken, tokens[3])
@@ -33,7 +33,7 @@ internal class AirLexerTest {
             assertEquals(StringToken("Hello world!"), tokens[13])
             assertEquals(StringToken(" \n\r\t"), tokens[14])
             assertEquals(StringToken("\uD83D"), tokens[15])
-            assertEquals(StringToken("string can cross multiple lines,like this"), tokens[16])
+            assertEquals(StringToken("string can cross multiple lines"), tokens[16])
             val symbols = "~!@#$%&*()-_=+[]{};:',.<>?"
             for (i in symbols.indices) {
                 assertEquals(symbols[i], (tokens[17 + i] as SymbolToken).key)
