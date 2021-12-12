@@ -5,10 +5,6 @@ sealed interface AirToken
 
 object DelimiterToken : AirToken
 
-data class CommentToken(val comment: String) : AirToken
-
-data class NameToken(val name: String) : AirToken
-
 object UnitToken : AirToken
 
 sealed class BoolToken(val bool: Boolean) : AirToken

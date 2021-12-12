@@ -1,44 +1,25 @@
-^this is an air code example^
 
-^
-comments can
-cross multiple lines
-^
-
-^comments can contain unicode, like 🜁^
-
-^this is a simple name^
-simpleName_0
-
-^this is a complex name^
-`complex+name!
-
-^this is unit^
 |
 
-^these are false and true^
 \ /
 
-^these are integers^
 1
 0-1
 0-xff
 0+b1101
 1__2__3_4
 
-^these are float numbers^
 0.0
 1.222_333e-10
 0-11.1
 
-^these are strings^
-"Hello world!"
-" \n\r\t"
-"\uD83D"
+AlphaString_0
+
+'Graph+String!
+
 "
-string can
- cross multiple lines
+Hello world! \n\r\t
+\uD83D\uDF01 🜁
 "
 
-^these are symbols^
-~!@#$%&*()-_=+[]{};:',.<>?
+`~!@#$%&*()-_=+[]{};:,.<>?

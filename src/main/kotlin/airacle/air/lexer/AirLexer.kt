@@ -63,8 +63,11 @@ object AirLexerConfig : IAirLexerConfig {
         if (isAsciiWhiteSpace(char)) {
             return DelimiterLexer
         }
-        if (isAsciiAlpha(char) || char == NameLexer.KEY) {
-            return NameLexer
+        if (isAsciiAlpha(char)) {
+            return AlphaStringLexer
+        }
+        if (char == GraphStringLexer.KEY) {
+            return GraphStringLexer
         }
         if (isAsciiDigit(char)) {
             return NumberLexer
@@ -73,8 +76,7 @@ object AirLexerConfig : IAirLexerConfig {
         return when (char) {
             UnitLexer.KEY -> UnitLexer
             BoolLexer.KEY_TRUE, BoolLexer.KEY_FALSE -> BoolLexer
-            StringLexer.KEY -> StringLexer
-            CommentLexer.KEY -> CommentLexer
+            FullStringLexer.KEY -> FullStringLexer
             else -> if (isAsciiSymbol(char)) {
                 SymbolLexer
             } else {
@@ -91,8 +93,7 @@ object AirLexerConfig : IAirLexerConfig {
     }
 
     override fun filter(airToken: AirToken): Boolean {
-        return airToken !is DelimiterToken &&
-                airToken !is CommentToken
+        return airToken !is DelimiterToken
     }
 
     private fun isAsciiAlpha(char: Char): Boolean {
@@ -129,19 +130,6 @@ object DelimiterLexer : IAirRegexLexer {
 
     override fun parse(match: MatchResult): AirToken {
         return DelimiterToken
-    }
-}
-
-object NameLexer : IAirRegexLexer {
-    const val KEY = '`'
-    private val pattern = Regex("`\\p{Graph}*|\\p{Alpha}\\w*")
-
-    override fun pattern(): Regex {
-        return pattern
-    }
-
-    override fun parse(match: MatchResult): AirToken {
-        return NameToken(match.value)
     }
 }
 
@@ -218,22 +206,32 @@ object SymbolLexer : IAirRegexLexer {
     }
 }
 
-object CommentLexer : IAirRegexLexer {
-    const val KEY = '^'
-
-    // begin and end with ^, \ to escape any character
-    private val pattern = Regex("\\^((?:[^^\\\\]|\\\\.)*+)\\^")
+object AlphaStringLexer : IAirRegexLexer {
+    private val pattern = Regex("\\p{Alpha}\\w*")
 
     override fun pattern(): Regex {
         return pattern
     }
 
     override fun parse(match: MatchResult): AirToken {
-        return CommentToken(match.groups[1]!!.value)
+        return StringToken(match.value)
     }
 }
 
-object StringLexer : IAirRegexLexer {
+object GraphStringLexer : IAirRegexLexer {
+    const val KEY = '\''
+    private val pattern = Regex("'\\p{Graph}*")
+
+    override fun pattern(): Regex {
+        return pattern
+    }
+
+    override fun parse(match: MatchResult): AirToken {
+        return StringToken(match.value.substring(1))
+    }
+}
+
+object FullStringLexer : IAirRegexLexer {
     const val KEY = '"'
     private val pattern = Regex("\"((?:[^\"\\\\]|\\\\[rnt\\\\'\"]|\\\\u[a-fA-F0-9]{4})*+)\"")
     private val delimiterPattern = Regex("[\n\r\t]+")
