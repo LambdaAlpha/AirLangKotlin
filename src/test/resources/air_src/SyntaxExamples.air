@@ -1,0 +1,21 @@
+
+` comment "this is a syntax example"
+
+`'= max `function [a b] [
+    `if `'<= a b [
+        `return b,
+    ][
+        `return a
+    ]
+]
+
+{
+    a b
+    c d,
+    e:f,
+    g:h,
+}
+
+(`while true [])
+
+<for i min, max []>

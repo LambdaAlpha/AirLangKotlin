@@ -1,9 +1,7 @@
 package airacle.air.interpreter
 
-import airacle.air.parser.AirSyntax
-
 class AirInterpreter {
-    fun interpret(syntax: AirSyntax): AirExpression? {
+    fun interpret(value: AirValue): AirValue? {
         // TODO: 10/11/21 interpret
         return null
     }

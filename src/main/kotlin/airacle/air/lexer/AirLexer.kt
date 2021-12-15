@@ -179,16 +179,16 @@ object SymbolLexer : IAirRegexLexer {
             '^' -> HatToken
             '&' -> AmpersandToken
             '*' -> AsteriskToken
-            '(' -> LPToken
-            ')' -> RPToken
+            '(' -> LCircleToken
+            ')' -> RCircleToken
             '-' -> MinusToken
             '_' -> UnderscoreToken
             '=' -> EqualToken
             '+' -> PlusToken
-            '[' -> LSToken
-            '{' -> LCToken
-            ']' -> RSToken
-            '}' -> RCToken
+            '[' -> LSquareToken
+            '{' -> LCurlyToken
+            ']' -> RSquareToken
+            '}' -> RCurlyToken
             '\\' -> LSlashToken
             '|' -> MSlashToken
             ';' -> SemicolonToken
@@ -196,9 +196,9 @@ object SymbolLexer : IAirRegexLexer {
             '\'' -> SingleQuoteToken
             '"' -> DoubleQuoteToken
             ',' -> CommaToken
-            '<' -> LTToken
+            '<' -> LAngleToken
             '.' -> PeriodToken
-            '>' -> GTToken
+            '>' -> RAngleToken
             '/' -> RSlashToken
             '?' -> QuestionMarkToken
             else -> QuestionMarkToken

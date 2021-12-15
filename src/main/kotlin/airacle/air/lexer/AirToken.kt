@@ -7,33 +7,31 @@ object DelimiterToken : AirToken
 
 object UnitToken : AirToken
 
-sealed class BoolToken(val bool: Boolean) : AirToken
+sealed class BoolToken(val value: Boolean) : AirToken
 
 object TrueToken : BoolToken(true)
 
 object FalseToken : BoolToken(false)
 
-data class IntegerToken(val number: Long) : AirToken
+data class IntegerToken(val value: Long) : AirToken
 
-data class FloatToken(val number: Double) : AirToken
+data class FloatToken(val value: Double) : AirToken
 
-data class StringToken(val string: String) : AirToken
+data class StringToken(val value: String) : AirToken
 
-sealed interface MetaToken : AirToken
+sealed class SymbolToken(val value: Char) : AirToken
 
-sealed class SymbolToken(val key: Char) : MetaToken
+object LCircleToken : SymbolToken('(')
 
-object LPToken : SymbolToken('(')
+object RCircleToken : SymbolToken(')')
 
-object RPToken : SymbolToken(')')
+object LSquareToken : SymbolToken('[')
 
-object LSToken : SymbolToken('[')
+object RSquareToken : SymbolToken(']')
 
-object RSToken : SymbolToken(']')
+object LCurlyToken : SymbolToken('{')
 
-object LCToken : SymbolToken('{')
-
-object RCToken : SymbolToken('}')
+object RCurlyToken : SymbolToken('}')
 
 object LSlashToken : SymbolToken('\\')
 
@@ -41,11 +39,11 @@ object MSlashToken : SymbolToken('|')
 
 object RSlashToken : SymbolToken('/')
 
-object LTToken : SymbolToken('<')
+object LAngleToken : SymbolToken('<')
 
 object EqualToken : SymbolToken('=')
 
-object GTToken : SymbolToken('>')
+object RAngleToken : SymbolToken('>')
 
 object SemicolonToken : SymbolToken(';')
 
