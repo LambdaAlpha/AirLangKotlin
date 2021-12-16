@@ -4,19 +4,43 @@ sealed interface AirValue
 
 sealed interface PrimitiveValue : AirValue
 
-object UnitValue : PrimitiveValue
+object UnitValue : PrimitiveValue {
+    override fun toString(): String {
+        return "|"
+    }
+}
 
 sealed class BoolValue(val value: Boolean) : PrimitiveValue
 
-object TrueValue : BoolValue(true)
+object TrueValue : BoolValue(true) {
+    override fun toString(): String {
+        return "/"
+    }
+}
 
-object FalseValue : BoolValue(false)
+object FalseValue : BoolValue(false) {
+    override fun toString(): String {
+        return "\\"
+    }
+}
 
-data class IntegerValue(val value: Long) : PrimitiveValue
+data class IntegerValue(val value: Long) : PrimitiveValue {
+    override fun toString(): String {
+        return value.toString()
+    }
+}
 
-data class FloatValue(val value: Double) : PrimitiveValue
+data class FloatValue(val value: Double) : PrimitiveValue {
+    override fun toString(): String {
+        return value.toString()
+    }
+}
 
-data class StringValue(val value: String) : PrimitiveValue
+data class StringValue(val value: String) : PrimitiveValue {
+    override fun toString(): String {
+        return "\"$value\""
+    }
+}
 
 data class TupleValue(val value: Array<AirValue>) : AirValue {
     override fun equals(other: Any?): Boolean {
@@ -33,8 +57,21 @@ data class TupleValue(val value: Array<AirValue>) : AirValue {
     override fun hashCode(): Int {
         return value.contentHashCode()
     }
+
+    override fun toString(): String {
+        val content = value.contentToString()
+        return "<${content.substring(1, content.length - 1)}>"
+    }
 }
 
-data class ListValue(val value: MutableList<AirValue>) : AirValue
+data class ListValue(val value: MutableList<AirValue>) : AirValue {
+    override fun toString(): String {
+        return value.toString()
+    }
+}
 
-data class MapValue(val value: MutableMap<AirValue, AirValue>) : AirValue
+data class MapValue(val value: MutableMap<AirValue, AirValue>) : AirValue {
+    override fun toString(): String {
+        return value.toString()
+    }
+}

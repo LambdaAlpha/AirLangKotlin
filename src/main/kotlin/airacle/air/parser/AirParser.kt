@@ -11,7 +11,7 @@ interface IAirParserConfig {
      * return the length of tuple determined by key value
      * return negative int if key value is not valid
      */
-    fun tupleLength(valueNode: ValueNode<*>): Int
+    fun tupleLength(value: AirValue): Int
 }
 
 class AirParser(private val config: IAirParserConfig) {
@@ -55,39 +55,15 @@ class AirParser(private val config: IAirParserConfig) {
             is RCircleToken,
             is RSquareToken,
             is RCurlyToken,
-            is RAngleToken -> Pair(key, next)
+            is RAngleToken,
+            is CommaToken -> Pair(key, next)
 
             // keyword tuples
             is BackQuoteToken -> parseKeyword(nodes, next)
 
             // symbols
-            is ExclamationToken,
-            is AtToken,
-            is NumToken,
-            is DollarToken,
-            is PercentToken,
-            is HatToken,
-            is AmpersandToken,
-            is AsteriskToken,
-            is EqualToken,
-            is SemicolonToken,
-            is ColonToken,
-            is CommaToken,
-            is MinusToken,
-            is PeriodToken,
-            is PlusToken,
-            is QuestionMarkToken,
-            is TildeToken,
-            is UnderscoreToken -> Pair(key, next)
+            is SymbolToken -> parseSymbol(key.token, nodes, next)
 
-            // never
-            is DelimiterToken,
-            is SingleQuoteToken,
-            is DoubleQuoteToken,
-            is LSlashToken,
-            is MSlashToken,
-            is RSlashToken,
-            is SymbolToken -> Pair(key, next)
             else -> throw AirParserError("unknown token: $key")
         }
     }
@@ -132,11 +108,11 @@ class AirParser(private val config: IAirParserConfig) {
         return Pair(ValueNode(ListValue(list)), pair.second)
     }
 
-    // map, optional colon and comma
+    // map, optional comma
     private fun parseCurly(nodes: List<AirSyntaxNode>, start: Int): Pair<AirSyntaxNode, Int> {
         val map = mutableMapOf<AirValue, AirValue>()
         var pair = parseOne(nodes, start)
-        // 1 key 2 colon 3 value 4 comma
+        // 1 key 2 value 3 comma
         var status = 1
         var key: AirValue? = null
         while (!(pair.first is TokenNode<*> && (pair.first as TokenNode<*>).token is RCurlyToken)) {
@@ -150,27 +126,14 @@ class AirParser(private val config: IAirParserConfig) {
                     status = 2
                 }
                 2 -> {
-                    if (pair.first is ValueNode<*>) {
-                        val value = (pair.first as ValueNode<*>).value
-                        map[key!!] = value
-                        status = 4
-                    } else if (pair.first is TokenNode<*>) {
-                        if ((pair.first as TokenNode<*>).token !is ColonToken) {
-                            throw AirParserError("unexpected token when parsing map: ${pair.first}")
-                        }
-                        status = 3
-                    }
-                }
-                3 -> {
-                    if (pair.first is ValueNode<*>) {
-                        val value = (pair.first as ValueNode<*>).value
-                        map[key!!] = value
-                        status = 4
-                    } else {
+                    if (pair.first !is ValueNode<*>) {
                         throw AirParserError("non-value for value when parsing map: ${pair.first}")
                     }
+                    val value = (pair.first as ValueNode<*>).value
+                    map[key!!] = value
+                    status = 3
                 }
-                4 -> {
+                3 -> {
                     if (pair.first is ValueNode<*>) {
                         key = (pair.first as ValueNode<*>).value
                         status = 2
@@ -183,13 +146,12 @@ class AirParser(private val config: IAirParserConfig) {
                 }
             }
 
-
             if (pair.second >= nodes.size) {
                 throw AirParserError("unexpected ending when parsing map")
             }
             pair = parseOne(nodes, pair.second)
         }
-        if (status != 1 && status != 4) {
+        if (status != 1 && status != 3) {
             throw AirParserError("unexpected ending when parsing map, status = $status")
         }
         return Pair(ValueNode(MapValue(map)), pair.second)
@@ -252,28 +214,37 @@ class AirParser(private val config: IAirParserConfig) {
         if (pair.first !is ValueNode<*>) {
             throw AirParserError("non-value when parsing keyword")
         }
-        val length = config.tupleLength(pair.first as ValueNode<*>)
+        val length = config.tupleLength((pair.first as ValueNode<*>).value)
         if (length < 0) {
             throw AirParserError("tuple length < 0 when parsing keyword")
         }
         return parseFixedLengthTuple(pair.first as ValueNode<*>, length, nodes, pair.second)
     }
+
+    private fun parseSymbol(token: SymbolToken, nodes: List<AirSyntaxNode>, start: Int): Pair<AirSyntaxNode, Int> {
+        val value = StringValue("${token.value}")
+        val length = config.tupleLength(value)
+        if (length < 0) {
+            throw AirParserError("tuple length < 0 when parsing alias")
+        }
+        return parseFixedLengthTuple(ValueNode(value), length, nodes, start)
+    }
 }
 
 object AirParserConfig : IAirParserConfig {
-    override fun tupleLength(valueNode: ValueNode<*>): Int {
-        val value = valueNode.value
+    override fun tupleLength(value: AirValue): Int {
         if (value is StringValue) {
             return when (value.value) {
-                "if" -> 3
-                "for" -> 4
-                "while" -> 2
-                "comment" -> 1
-                "function" -> 2
-                "return" -> 1
+                "if", "?" -> 3
+                "for", "%" -> 4
+                "while", "@" -> 2
+                "comment", "#" -> 1
+                "function", "^" -> 2
+                "return", "~" -> 1
+                "apply", "$" -> 2
+                "assign", "=" -> 2
                 "le", "lt", "ge", "gt", "eq", "ne",
                 "<=", "<", ">=", ">", "==", "!=" -> 2
-                "=" -> 2
                 else -> -1
             }
         }

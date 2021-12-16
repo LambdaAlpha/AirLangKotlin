@@ -19,8 +19,8 @@ internal class AirParserTest {
 
     @BeforeEach
     fun prepare() {
-        val sampleFile = javaClass.getResource("/air_src/SyntaxExamples.air")!!.file
-        val reader = FileReader(sampleFile)
+        val exampleFile = javaClass.getResource("/air_src/SyntaxExamples.air")!!.file
+        val reader = FileReader(exampleFile)
         val content = reader.readText()
         reader.close()
         val lexer = AirLexer(AirLexerConfig)
@@ -29,22 +29,26 @@ internal class AirParserTest {
 
     @Test
     fun parseTest() {
-        val syntaxList = assertDoesNotThrow {
+        val nodes = assertDoesNotThrow {
             parser.parse(tokens)
         }
-        assertEquals(5, syntaxList.size)
+        println(nodes)
+
+        assertEquals(6, nodes.size)
+        var i = 0
         assertEquals(
             TupleValue(
                 arrayOf(
                     StringValue("comment"),
                     StringValue("this is a syntax example")
                 )
-            ), syntaxList[0]
+            ), nodes[i]
         )
+        i += 1
         assertEquals(
             TupleValue(
                 arrayOf(
-                    StringValue("="),
+                    StringValue("assign"),
                     StringValue("max"),
                     TupleValue(
                         arrayOf(
@@ -62,7 +66,7 @@ internal class AirParserTest {
                                             StringValue("if"),
                                             TupleValue(
                                                 arrayOf(
-                                                    StringValue("<="),
+                                                    StringValue("le"),
                                                     StringValue("a"),
                                                     StringValue("b")
                                                 )
@@ -95,8 +99,66 @@ internal class AirParserTest {
                     )
                 )
             ),
-            syntaxList[1]
+            nodes[i]
         )
+        i += 1
+        assertEquals(
+            TupleValue(
+                arrayOf(
+                    StringValue("="),
+                    StringValue("max"),
+                    TupleValue(
+                        arrayOf(
+                            StringValue("^"),
+                            ListValue(
+                                mutableListOf(
+                                    StringValue("a"),
+                                    StringValue(("b"))
+                                )
+                            ),
+                            ListValue(
+                                mutableListOf(
+                                    TupleValue(
+                                        arrayOf(
+                                            StringValue("?"),
+                                            TupleValue(
+                                                arrayOf(
+                                                    StringValue("<="),
+                                                    StringValue("a"),
+                                                    StringValue("b")
+                                                )
+                                            ),
+                                            ListValue(
+                                                mutableListOf(
+                                                    TupleValue(
+                                                        arrayOf(
+                                                            StringValue("~"),
+                                                            StringValue("b")
+                                                        )
+                                                    )
+                                                )
+                                            ),
+                                            ListValue(
+                                                mutableListOf(
+                                                    TupleValue(
+                                                        arrayOf(
+                                                            StringValue("~"),
+                                                            StringValue("a")
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            ),
+            nodes[i]
+        )
+        i += 1
         assertEquals(
             MapValue(
                 mutableMapOf(
@@ -106,8 +168,9 @@ internal class AirParserTest {
                     Pair(StringValue("g"), StringValue("h"))
                 )
             ),
-            syntaxList[2]
+            nodes[i]
         )
+        i += 1
         assertEquals(
             TupleValue(
                 arrayOf(
@@ -116,8 +179,9 @@ internal class AirParserTest {
                     ListValue(mutableListOf())
                 )
             ),
-            syntaxList[3]
+            nodes[i]
         )
+        i += 1
         assertEquals(
             TupleValue(
                 arrayOf(
@@ -128,7 +192,7 @@ internal class AirParserTest {
                     ListValue(mutableListOf())
                 )
             ),
-            syntaxList[4]
+            nodes[i]
         )
     }
 }

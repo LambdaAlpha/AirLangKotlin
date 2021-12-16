@@ -12,8 +12,8 @@ internal class AirLexerTest {
 
     @BeforeEach
     fun prepare() {
-        val sampleFile = javaClass.getResource("/air_src/TokenExamples.air")!!.file
-        val reader = FileReader(sampleFile)
+        val exampleFile = javaClass.getResource("/air_src/TokenExamples.air")!!.file
+        val reader = FileReader(exampleFile)
         content = reader.readText()
         reader.close()
     }

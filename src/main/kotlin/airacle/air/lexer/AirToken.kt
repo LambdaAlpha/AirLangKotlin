@@ -1,6 +1,5 @@
 package airacle.air.lexer
 
-// TODO: 10/13/21 impl to string
 sealed interface AirToken
 
 object DelimiterToken : AirToken

@@ -1,19 +1,27 @@
 
 ` comment "this is a syntax example"
 
-`'= max `function [a b] [
-    `if `'<= a b [
+`assign max `function [a b] [
+    `if `le a b [
         `return b,
     ][
         `return a
     ]
 ]
 
+= max ^[a b] [
+    ? `'<= a b [
+        ~ b
+    ][
+        ~ a
+    ]
+]
+
 {
     a b
     c d,
-    e:f,
-    g:h,
+    e f,
+    g h,
 }
 
 (`while true [])
