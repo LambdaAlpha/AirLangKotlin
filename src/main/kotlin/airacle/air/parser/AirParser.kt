@@ -230,24 +230,3 @@ class AirParser(private val config: IAirParserConfig) {
         return parseFixedLengthTuple(ValueNode(value), length, nodes, start)
     }
 }
-
-object AirParserConfig : IAirParserConfig {
-    override fun tupleLength(value: AirValue): Int {
-        if (value is StringValue) {
-            return when (value.value) {
-                "if", "?" -> 3
-                "for", "%" -> 4
-                "while", "@" -> 2
-                "comment", "#" -> 1
-                "function", "^" -> 2
-                "return", "~" -> 1
-                "apply", "$" -> 2
-                "assign", "=" -> 2
-                "le", "lt", "ge", "gt", "eq", "ne",
-                "<=", "<", ">=", ">", "==", "!=" -> 2
-                else -> -1
-            }
-        }
-        return -1
-    }
-}
