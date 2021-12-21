@@ -181,14 +181,34 @@ internal class AirParserTest {
                             TupleValue(
                                 arrayOf(
                                     StringValue("+"),
-                                    StringValue("a"),
-                                    StringValue("b"),
+                                    TupleValue(
+                                        arrayOf(
+                                            StringValue("."),
+                                            StringValue("a")
+                                        )
+                                    ),
+                                    TupleValue(
+                                        arrayOf(
+                                            StringValue("."),
+                                            StringValue("b")
+                                        )
+                                    ),
                                 )
                             ),
-                            StringValue("c")
+                            TupleValue(
+                                arrayOf(
+                                    StringValue("."),
+                                    StringValue("c")
+                                )
+                            )
                         )
                     ),
-                    StringValue("d")
+                    TupleValue(
+                        arrayOf(
+                            StringValue("."),
+                            StringValue("d")
+                        )
+                    )
                 )
             ),
             nodes[i]

@@ -78,8 +78,6 @@ class AirParser(private val config: IAirParserConfig) {
         while (!(node is TokenNode<*> && node.token is RCircleToken)) {
             val value: AirValue = if (node is ValueNode<*>) {
                 node.value
-            } else if (node is TokenNode<*> && node.token is SymbolToken) {
-                StringValue((node.token as SymbolToken).value.toString())
             } else {
                 throw AirParserError("unexpected node when parsing circle: $node")
             }
@@ -252,12 +250,12 @@ class AirParser(private val config: IAirParserConfig) {
         infixMode: Boolean = false
     ): Pair<AirSyntaxNode, Int> {
         val value = StringValue("${token.value}")
-        if (infixMode) {
-            return Pair(ValueNode(value), start)
-        }
         val length = config.tupleLength(value)
         if (length < 0) {
             throw AirParserError("tuple length < 0 when parsing alias")
+        }
+        if (infixMode && length == 2) {
+            return Pair(ValueNode(value), start)
         }
         return parseFixedLengthTuple(ValueNode(value), length, nodes, start)
     }

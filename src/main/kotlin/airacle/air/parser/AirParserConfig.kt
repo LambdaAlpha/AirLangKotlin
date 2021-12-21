@@ -14,9 +14,11 @@ object AirParserConfig : IAirParserConfig {
                 "function", "^" -> 2
                 "return", "~" -> 1
                 "apply", "$" -> 2
+                "read", "." -> 1
                 "assign", "=" -> 2
                 "le", "lt", "ge", "gt", "eq", "ne",
                 "<=", "<", ">=", ">", "==", "!=" -> 2
+                "add", "plus", "subtract", "minus", "+", "-" -> 2
                 else -> -1
             }
         }
