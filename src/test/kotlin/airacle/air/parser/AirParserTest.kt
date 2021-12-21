@@ -174,9 +174,21 @@ internal class AirParserTest {
         assertEquals(
             TupleValue(
                 arrayOf(
-                    StringValue("while"),
-                    StringValue("true"),
-                    ListValue(mutableListOf())
+                    StringValue("-"),
+                    TupleValue(
+                        arrayOf(
+                            StringValue("+"),
+                            TupleValue(
+                                arrayOf(
+                                    StringValue("+"),
+                                    StringValue("a"),
+                                    StringValue("b"),
+                                )
+                            ),
+                            StringValue("c")
+                        )
+                    ),
+                    StringValue("d")
                 )
             ),
             nodes[i]

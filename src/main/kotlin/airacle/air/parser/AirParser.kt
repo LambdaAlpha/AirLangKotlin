@@ -32,7 +32,7 @@ class AirParser(private val config: IAirParserConfig) {
         return result
     }
 
-    private fun parseOne(nodes: List<AirSyntaxNode>, start: Int): Pair<AirSyntaxNode, Int> {
+    private fun parseOne(nodes: List<AirSyntaxNode>, start: Int, infixMode: Boolean = false): Pair<AirSyntaxNode, Int> {
         val key = nodes[start]
         val next = start + 1
         if (key !is TokenNode<*>) {
@@ -62,26 +62,41 @@ class AirParser(private val config: IAirParserConfig) {
             is BackQuoteToken -> parseKeyword(nodes, next)
 
             // symbols
-            is SymbolToken -> parseSymbol(key.token, nodes, next)
+            is SymbolToken -> parseSymbol(key.token, nodes, next, infixMode = infixMode)
 
             else -> throw AirParserError("unknown token: $key")
         }
     }
 
-    // grouping
+    // infix expression with left association
     private fun parseCircle(nodes: List<AirSyntaxNode>, start: Int): Pair<AirSyntaxNode, Int> {
-        val pair = parseOne(nodes, start)
-        if (pair.second >= nodes.size) {
-            throw AirParserError("unexpected ending when parsing circle")
-        }
-        val nextPair = parseOne(nodes, pair.second)
-        if (nextPair.first is TokenNode<*>) {
-            val node = nextPair.first as TokenNode<*>
-            if (node.token is RCircleToken) {
-                return Pair(pair.first, nextPair.second)
+        var pair = parseOne(nodes, start, infixMode = true)
+        var node = pair.first
+        var firstValue: AirValue? = null
+        var secondValue: AirValue? = null
+        while (!(node is TokenNode<*> && node.token is RCircleToken)) {
+            val value: AirValue = if (node is ValueNode<*>) {
+                node.value
+            } else if (node is TokenNode<*> && node.token is SymbolToken) {
+                StringValue((node.token as SymbolToken).value.toString())
+            } else {
+                throw AirParserError("unexpected node when parsing circle: $node")
             }
+            if (firstValue == null) {
+                firstValue = value
+            } else if (secondValue == null) {
+                secondValue = value
+            } else {
+                firstValue = TupleValue(arrayOf(secondValue, firstValue, value))
+                secondValue = null
+            }
+            pair = parseOne(nodes, pair.second, infixMode = true)
+            node = pair.first
         }
-        throw AirParserError("unexpected node when parsing circle: ${nextPair.first}")
+        if (firstValue == null || secondValue != null) {
+            throw AirParserError("unexpected end when parsing circle")
+        }
+        return Pair(ValueNode(firstValue), pair.second)
     }
 
     // list, optional comma
@@ -221,8 +236,16 @@ class AirParser(private val config: IAirParserConfig) {
         return parseFixedLengthTuple(pair.first as ValueNode<*>, length, nodes, pair.second)
     }
 
-    private fun parseSymbol(token: SymbolToken, nodes: List<AirSyntaxNode>, start: Int): Pair<AirSyntaxNode, Int> {
+    private fun parseSymbol(
+        token: SymbolToken,
+        nodes: List<AirSyntaxNode>,
+        start: Int,
+        infixMode: Boolean = false
+    ): Pair<AirSyntaxNode, Int> {
         val value = StringValue("${token.value}")
+        if (infixMode) {
+            return Pair(ValueNode(value), start)
+        }
         val length = config.tupleLength(value)
         if (length < 0) {
             throw AirParserError("tuple length < 0 when parsing alias")
