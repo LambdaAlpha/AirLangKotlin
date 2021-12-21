@@ -22,10 +22,11 @@ class AirParser(private val config: IAirParserConfig) {
         var start = 0
         while (start < nodes.size) {
             val pair = parseOne(nodes, start)
-            if (pair.first is ValueNode<*>) {
-                result.add((pair.first as ValueNode<*>).value)
+            val node = pair.first
+            if (node is ValueNode<*>) {
+                result.add(node.value)
             } else {
-                throw AirParserError("non-value: ${pair.first}")
+                throw AirParserError("non-value: $node")
             }
             start = pair.second
         }
@@ -103,22 +104,24 @@ class AirParser(private val config: IAirParserConfig) {
     private fun parseSquare(nodes: List<AirSyntaxNode>, start: Int): Pair<AirSyntaxNode, Int> {
         val list = mutableListOf<AirValue>()
         var pair = parseOne(nodes, start)
+        var node = pair.first
         var allowComma = false
-        while (!(pair.first is TokenNode<*> && (pair.first as TokenNode<*>).token is RSquareToken)) {
-            if (pair.first is ValueNode<*>) {
+        while (!(node is TokenNode<*> && node.token is RSquareToken)) {
+            if (node is ValueNode<*>) {
                 allowComma = true
-                list.add((pair.first as ValueNode<*>).value)
+                list.add(node.value)
             } else {
-                if (allowComma && pair.first is TokenNode<*> && (pair.first as TokenNode<*>).token is CommaToken) {
+                if (allowComma && node is TokenNode<*> && node.token is CommaToken) {
                     allowComma = false
                 } else {
-                    throw AirParserError("non-value when parsing list: ${pair.first}")
+                    throw AirParserError("non-value when parsing list: $node")
                 }
             }
             if (pair.second >= nodes.size) {
                 throw AirParserError("unexpected ending when parsing list")
             }
             pair = parseOne(nodes, pair.second)
+            node = pair.first
         }
         return Pair(ValueNode(ListValue(list)), pair.second)
     }
@@ -127,34 +130,35 @@ class AirParser(private val config: IAirParserConfig) {
     private fun parseCurly(nodes: List<AirSyntaxNode>, start: Int): Pair<AirSyntaxNode, Int> {
         val map = mutableMapOf<AirValue, AirValue>()
         var pair = parseOne(nodes, start)
+        var node = pair.first
         // 1 key 2 value 3 comma
         var status = 1
         var key: AirValue? = null
-        while (!(pair.first is TokenNode<*> && (pair.first as TokenNode<*>).token is RCurlyToken)) {
+        while (!(node is TokenNode<*> && node.token is RCurlyToken)) {
 
             when (status) {
                 1 -> {
-                    if (pair.first !is ValueNode<*>) {
-                        throw AirParserError("non-value for key when parsing map: ${pair.first}")
+                    if (node !is ValueNode<*>) {
+                        throw AirParserError("non-value for key when parsing map: $node")
                     }
-                    key = (pair.first as ValueNode<*>).value
+                    key = node.value
                     status = 2
                 }
                 2 -> {
-                    if (pair.first !is ValueNode<*>) {
-                        throw AirParserError("non-value for value when parsing map: ${pair.first}")
+                    if (node !is ValueNode<*>) {
+                        throw AirParserError("non-value for value when parsing map: $node")
                     }
-                    val value = (pair.first as ValueNode<*>).value
+                    val value = node.value
                     map[key!!] = value
                     status = 3
                 }
                 3 -> {
-                    if (pair.first is ValueNode<*>) {
-                        key = (pair.first as ValueNode<*>).value
+                    if (node is ValueNode<*>) {
+                        key = node.value
                         status = 2
-                    } else if (pair.first is TokenNode<*>) {
-                        if ((pair.first as TokenNode<*>).token !is CommaToken) {
-                            throw AirParserError("unexpected token when parsing map: ${pair.first}")
+                    } else if (node is TokenNode<*>) {
+                        if (node.token !is CommaToken) {
+                            throw AirParserError("unexpected token when parsing map: $node")
                         }
                         status = 1
                     }
@@ -165,6 +169,7 @@ class AirParser(private val config: IAirParserConfig) {
                 throw AirParserError("unexpected ending when parsing map")
             }
             pair = parseOne(nodes, pair.second)
+            node = pair.first
         }
         if (status != 1 && status != 3) {
             throw AirParserError("unexpected ending when parsing map, status = $status")
@@ -176,22 +181,24 @@ class AirParser(private val config: IAirParserConfig) {
     private fun parseAngle(nodes: List<AirSyntaxNode>, start: Int): Pair<AirSyntaxNode, Int> {
         val list = mutableListOf<AirValue>()
         var pair = parseOne(nodes, start)
+        var node = pair.first
         var allowComma = false
-        while (!(pair.first is TokenNode<*> && (pair.first as TokenNode<*>).token is RAngleToken)) {
-            if (pair.first is ValueNode<*>) {
+        while (!(node is TokenNode<*> && node.token is RAngleToken)) {
+            if (node is ValueNode<*>) {
                 allowComma = true
-                list.add((pair.first as ValueNode<*>).value)
+                list.add(node.value)
             } else {
-                if (allowComma && pair.first is TokenNode<*> && (pair.first as TokenNode<*>).token is CommaToken) {
+                if (allowComma && node is TokenNode<*> && node.token is CommaToken) {
                     allowComma = false
                 } else {
-                    throw AirParserError("non-value when parsing tuple: ${pair.first}")
+                    throw AirParserError("non-value when parsing tuple: $node")
                 }
             }
             if (pair.second >= nodes.size) {
                 throw AirParserError("unexpected ending when parsing surrounded tuple")
             }
             pair = parseOne(nodes, pair.second)
+            node = pair.first
         }
         val tupleValue = TupleValue(list.toTypedArray())
         val resultNode = ValueNode(tupleValue)
@@ -212,8 +219,9 @@ class AirParser(private val config: IAirParserConfig) {
                 throw AirParserError("unexpected ending when parsing fixed-length tuple")
             }
             val pair = parseOne(nodes, startVar)
-            if (pair.first is ValueNode<*>) {
-                list.add((pair.first as ValueNode<*>).value)
+            val node = pair.first
+            if (node is ValueNode<*>) {
+                list.add(node.value)
                 startVar = pair.second
             } else {
                 throw AirParserError("non-value when parsing fixed-length tuple")
@@ -226,14 +234,15 @@ class AirParser(private val config: IAirParserConfig) {
 
     private fun parseKeyword(nodes: List<AirSyntaxNode>, start: Int): Pair<AirSyntaxNode, Int> {
         val pair = parseOne(nodes, start)
-        if (pair.first !is ValueNode<*>) {
+        val node = pair.first
+        if (node !is ValueNode<*>) {
             throw AirParserError("non-value when parsing keyword")
         }
-        val length = config.tupleLength((pair.first as ValueNode<*>).value)
+        val length = config.tupleLength(node.value)
         if (length < 0) {
             throw AirParserError("tuple length < 0 when parsing keyword")
         }
-        return parseFixedLengthTuple(pair.first as ValueNode<*>, length, nodes, pair.second)
+        return parseFixedLengthTuple(node, length, nodes, pair.second)
     }
 
     private fun parseSymbol(
