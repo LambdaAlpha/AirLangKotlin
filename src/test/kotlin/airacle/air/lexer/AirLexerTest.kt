@@ -26,13 +26,13 @@ internal class AirLexerTest {
 
         var i = 0
         assertEquals(UnitToken, tokens[i])
-
         i += 1
+
         assertEquals(FalseToken, tokens[i])
         i += 1
         assertEquals(TrueToken, tokens[i])
-
         i += 1
+
         assertEquals(IntegerToken(1), tokens[i])
         i += 1
         assertEquals(IntegerToken(-1), tokens[i])
@@ -42,25 +42,31 @@ internal class AirLexerTest {
         assertEquals(IntegerToken(13), tokens[i])
         i += 1
         assertEquals(IntegerToken(1234), tokens[i])
-
         i += 1
+
         assertEquals(FloatToken(0.0), tokens[i])
         i += 1
         assertEquals(FloatToken(1.222333e-10), tokens[i])
         i += 1
         assertEquals(FloatToken(-11.1), tokens[i])
+        i += 1
 
+        assertEquals(AlphaStringToken("AlphaString_0"), tokens[i])
         i += 1
-        assertEquals(StringToken("AlphaString_0"), tokens[i])
-        i += 1
-        assertEquals(StringToken("Graph+String!"), tokens[i])
-        i += 1
-        assertEquals(StringToken("Hello world! \n\r\t\uD83D\uDF01 \uD83D\uDF01"), tokens[i])
 
-        i += 1
-        val symbols = "`~!@#$%&*()-_=+[]{};:,.<>?"
-        for (j in symbols.indices) {
-            assertEquals(symbols[j], (tokens[i + j] as SymbolToken).value)
+        val symbolStrings = arrayOf("<=", ">=", "==", "!=", "++", "--", "&&")
+        for (j in symbolStrings.indices) {
+            assertEquals(symbolStrings[j], (tokens[i + j] as SymbolStringToken).value)
         }
+        i += symbolStrings.size
+
+        val symbols = "`~!@#$%&*()-_=+[]{};:',.<>?"
+        for (j in symbols.indices) {
+            assertEquals(symbols[j].toString(), (tokens[i + j] as SymbolStringToken).value)
+        }
+        i += symbols.length
+
+        assertEquals(FullStringToken("Hello world! \n\r\t\uD83D\uDF01 \uD83D\uDF01"), tokens[i])
+        i += 1
     }
 }

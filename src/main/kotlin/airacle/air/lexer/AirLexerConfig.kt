@@ -12,9 +12,6 @@ object AirLexerConfig : IAirLexerConfig {
         if (isAsciiAlpha(char)) {
             return AlphaStringLexer
         }
-        if (char == GraphStringLexer.KEY) {
-            return GraphStringLexer
-        }
         if (isAsciiDigit(char)) {
             return NumberLexer
         }
@@ -24,7 +21,7 @@ object AirLexerConfig : IAirLexerConfig {
             BoolLexer.KEY_TRUE, BoolLexer.KEY_FALSE -> BoolLexer
             FullStringLexer.KEY -> FullStringLexer
             else -> if (isAsciiSymbol(char)) {
-                SymbolLexer
+                SymbolStringLexer
             } else {
                 null
             }
@@ -106,48 +103,48 @@ object BoolLexer : IAirRegexLexer {
     }
 }
 
-object SymbolLexer : IAirRegexLexer {
-    private val pattern = Regex("\\p{Punct}")
+object SymbolStringLexer : IAirRegexLexer {
+    private val pattern = Regex("\\p{Punct}+")
 
     override fun pattern(): Regex {
         return pattern
     }
 
     override fun parse(match: MatchResult): AirToken {
-        return when (match.value[0]) {
-            '`' -> BackQuoteToken
-            '~' -> TildeToken
-            '!' -> ExclamationToken
-            '@' -> AtToken
-            '#' -> NumToken
-            '$' -> DollarToken
-            '%' -> PercentToken
-            '^' -> HatToken
-            '&' -> AmpersandToken
-            '*' -> AsteriskToken
-            '(' -> LCircleToken
-            ')' -> RCircleToken
-            '-' -> MinusToken
-            '_' -> UnderscoreToken
-            '=' -> EqualToken
-            '+' -> PlusToken
-            '[' -> LSquareToken
-            '{' -> LCurlyToken
-            ']' -> RSquareToken
-            '}' -> RCurlyToken
-            '\\' -> LSlashToken
-            '|' -> MSlashToken
-            ';' -> SemicolonToken
-            ':' -> ColonToken
-            '\'' -> SingleQuoteToken
-            '"' -> DoubleQuoteToken
-            ',' -> CommaToken
-            '<' -> LAngleToken
-            '.' -> PeriodToken
-            '>' -> RAngleToken
-            '/' -> RSlashToken
-            '?' -> QuestionMarkToken
-            else -> QuestionMarkToken
+        return when (match.value) {
+            "`" -> BackQuoteToken
+            "~" -> TildeToken
+            "!" -> ExclamationToken
+            "@" -> AtToken
+            "#" -> NumToken
+            "$" -> DollarToken
+            "%" -> PercentToken
+            "^" -> HatToken
+            "&" -> AmpersandToken
+            "*" -> AsteriskToken
+            "(" -> LCircleToken
+            ")" -> RCircleToken
+            "-" -> MinusToken
+            "_" -> UnderscoreToken
+            "=" -> EqualToken
+            "+" -> PlusToken
+            "[" -> LSquareToken
+            "{" -> LCurlyToken
+            "]" -> RSquareToken
+            "}" -> RCurlyToken
+            "\\" -> LSlashToken
+            "|" -> MSlashToken
+            ";" -> SemicolonToken
+            ":" -> ColonToken
+            "\'" -> SingleQuoteToken
+            "\"" -> DoubleQuoteToken
+            "," -> CommaToken
+            "<" -> LAngleToken
+            "." -> PeriodToken
+            ">" -> RAngleToken
+            "/" -> RSlashToken
+            "?" -> QuestionMarkToken
+            else -> FullSymbolStringToken(match.value)
         }
     }
 }
@@ -160,20 +157,7 @@ object AlphaStringLexer : IAirRegexLexer {
     }
 
     override fun parse(match: MatchResult): AirToken {
-        return StringToken(match.value)
-    }
-}
-
-object GraphStringLexer : IAirRegexLexer {
-    const val KEY = '\''
-    private val pattern = Regex("'\\p{Graph}*")
-
-    override fun pattern(): Regex {
-        return pattern
-    }
-
-    override fun parse(match: MatchResult): AirToken {
-        return StringToken(match.value.substring(1))
+        return AlphaStringToken(match.value)
     }
 }
 
@@ -202,7 +186,7 @@ object FullStringLexer : IAirRegexLexer {
         s = s.replace(unicodePattern) {
             it.groups[1]!!.value.toInt(16).toChar().toString()
         }
-        return StringToken(s)
+        return FullStringToken(s)
     }
 }
 

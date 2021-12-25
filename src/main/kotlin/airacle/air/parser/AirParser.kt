@@ -46,7 +46,8 @@ class AirParser(private val config: IAirParserConfig) {
             is FalseToken -> Pair(ValueNode(FalseValue), next)
             is IntegerToken -> Pair(ValueNode(IntegerValue(key.token.value)), next)
             is FloatToken -> Pair(ValueNode(FloatValue(key.token.value)), next)
-            is StringToken -> Pair(ValueNode(StringValue(key.token.value)), next)
+            is AlphaStringToken -> Pair(ValueNode(StringValue(key.token.value)), next)
+            is FullStringToken -> Pair(ValueNode(StringValue(key.token.value)), next)
 
             // compound values
             is LCircleToken -> parseCircle(nodes, next)
@@ -63,7 +64,7 @@ class AirParser(private val config: IAirParserConfig) {
             is BackQuoteToken -> parseKeyword(nodes, next)
 
             // symbols
-            is SymbolToken -> parseSymbol(key.token, nodes, next, infixMode = infixMode)
+            is SymbolStringToken -> parseSymbol(key.token, nodes, next, infixMode = infixMode)
 
             else -> throw AirParserError("unknown token: $key")
         }
@@ -156,7 +157,7 @@ class AirParser(private val config: IAirParserConfig) {
                         status = 2
                     } else if (node is TokenNode<*>) {
                         if (node.token !is CommaToken) {
-                            throw AirParserError("unexpected token when parsing map: $node")
+                            throw AirParserError("unexpected token when parsing map: ${node.token}")
                         }
                         status = 1
                     }
@@ -222,7 +223,7 @@ class AirParser(private val config: IAirParserConfig) {
                 list.add(node.value)
                 startVar = pair.second
             } else {
-                throw AirParserError("non-value when parsing fixed-length tuple")
+                throw AirParserError("non-value when parsing fixed-length tuple: $node")
             }
         }
         val tupleValue = TupleValue(list.toTypedArray())
@@ -234,25 +235,25 @@ class AirParser(private val config: IAirParserConfig) {
         val pair = parseOne(nodes, start)
         val node = pair.first
         if (node !is ValueNode<*>) {
-            throw AirParserError("non-value when parsing keyword")
+            throw AirParserError("non-value when parsing keyword: $node")
         }
         val length = config.tupleLength(node.value)
         if (length < 0) {
-            throw AirParserError("tuple length < 0 when parsing keyword")
+            throw AirParserError("tuple length < 0 when parsing keyword: ${node.value}")
         }
         return parseFixedLengthTuple(node, length, nodes, pair.second)
     }
 
     private fun parseSymbol(
-        token: SymbolToken,
+        token: SymbolStringToken,
         nodes: List<AirSyntaxNode>,
         start: Int,
         infixMode: Boolean = false
     ): Pair<AirSyntaxNode, Int> {
-        val value = StringValue("${token.value}")
+        val value = StringValue(token.value)
         val length = config.tupleLength(value)
         if (length < 0) {
-            throw AirParserError("tuple length < 0 when parsing alias")
+            throw AirParserError("tuple length < 0 when parsing alias: ${token.value}")
         }
         if (infixMode && length == 2) {
             return Pair(ValueNode(value), start)

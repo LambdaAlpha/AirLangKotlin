@@ -4,15 +4,15 @@
 `assign max `function [a b] [
     `if `le a b [
         `return b,
-    ][
+    ] [
         `return a
     ]
 ]
 
-= max ^[a b] [
-    ? `'<= a b [
+= max ^ [a b] [
+    ? (a <= b) [
         ~ b
-    ][
+    ] [
         ~ a
     ]
 ]
@@ -24,6 +24,6 @@
     g h,
 }
 
-(.a + .b + .c - .d)
+( .a + .b + .c - .d )
 
-<for i min, max []>
+< for i min, max [ ] >

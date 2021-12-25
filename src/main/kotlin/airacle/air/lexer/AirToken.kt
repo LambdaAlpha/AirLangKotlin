@@ -16,71 +16,86 @@ data class IntegerToken(val value: Long) : AirToken
 
 data class FloatToken(val value: Double) : AirToken
 
-data class StringToken(val value: String) : AirToken
+sealed class StringToken(val value: String) : AirToken {
+    override fun equals(other: Any?): Boolean {
+        return other is StringToken && other.value == value
+    }
 
-sealed class SymbolToken(val value: Char) : AirToken
+    override fun hashCode(): Int {
+        return value.hashCode()
+    }
+}
 
-object LCircleToken : SymbolToken('(')
+class FullStringToken(value: String) : StringToken(value)
 
-object RCircleToken : SymbolToken(')')
+class AlphaStringToken(value: String) : StringToken(value)
 
-object LSquareToken : SymbolToken('[')
+sealed class SymbolStringToken(value: String) : StringToken(value)
 
-object RSquareToken : SymbolToken(']')
+class FullSymbolStringToken(value: String) : SymbolStringToken(value)
 
-object LCurlyToken : SymbolToken('{')
+sealed class SingleSymbolStringToken(value: String) : SymbolStringToken(value)
 
-object RCurlyToken : SymbolToken('}')
+object LCircleToken : SingleSymbolStringToken("(")
 
-object LSlashToken : SymbolToken('\\')
+object RCircleToken : SymbolStringToken(")")
 
-object MSlashToken : SymbolToken('|')
+object LSquareToken : SymbolStringToken("[")
 
-object RSlashToken : SymbolToken('/')
+object RSquareToken : SymbolStringToken("]")
 
-object LAngleToken : SymbolToken('<')
+object LCurlyToken : SymbolStringToken("{")
 
-object EqualToken : SymbolToken('=')
+object RCurlyToken : SymbolStringToken("}")
 
-object RAngleToken : SymbolToken('>')
+object LSlashToken : SymbolStringToken("\\")
 
-object SemicolonToken : SymbolToken(';')
+object MSlashToken : SymbolStringToken("|")
 
-object ColonToken : SymbolToken(':')
+object RSlashToken : SymbolStringToken("/")
 
-object CommaToken : SymbolToken(',')
+object LAngleToken : SymbolStringToken("<")
 
-object PeriodToken : SymbolToken('.')
+object EqualToken : SymbolStringToken("=")
 
-object SingleQuoteToken : SymbolToken('\'')
+object RAngleToken : SymbolStringToken(">")
 
-object DoubleQuoteToken : SymbolToken('"')
+object SemicolonToken : SymbolStringToken(";")
 
-object BackQuoteToken : SymbolToken('`')
+object ColonToken : SymbolStringToken(":")
 
-object HatToken : SymbolToken('^')
+object CommaToken : SymbolStringToken(",")
 
-object MinusToken : SymbolToken('-')
+object PeriodToken : SymbolStringToken(".")
 
-object PlusToken : SymbolToken('+')
+object SingleQuoteToken : SymbolStringToken("\'")
 
-object ExclamationToken : SymbolToken('!')
+object DoubleQuoteToken : SymbolStringToken("\"")
 
-object QuestionMarkToken : SymbolToken('?')
+object BackQuoteToken : SymbolStringToken("`")
 
-object TildeToken : SymbolToken('~')
+object HatToken : SymbolStringToken("^")
 
-object AtToken : SymbolToken('@')
+object MinusToken : SymbolStringToken("-")
 
-object NumToken : SymbolToken('#')
+object PlusToken : SymbolStringToken("+")
 
-object DollarToken : SymbolToken('$')
+object ExclamationToken : SymbolStringToken("!")
 
-object PercentToken : SymbolToken('%')
+object QuestionMarkToken : SymbolStringToken("?")
 
-object AmpersandToken : SymbolToken('&')
+object TildeToken : SymbolStringToken("~")
 
-object AsteriskToken : SymbolToken('*')
+object AtToken : SymbolStringToken("@")
 
-object UnderscoreToken : SymbolToken('_')
+object NumToken : SymbolStringToken("#")
 
+object DollarToken : SymbolStringToken("$")
+
+object PercentToken : SymbolStringToken("%")
+
+object AmpersandToken : SymbolStringToken("&")
+
+object AsteriskToken : SymbolStringToken("*")
+
+object UnderscoreToken : SymbolStringToken("_")
