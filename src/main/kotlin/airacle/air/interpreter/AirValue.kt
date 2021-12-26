@@ -59,19 +59,37 @@ data class TupleValue(val value: Array<AirValue>) : AirValue {
     }
 
     override fun toString(): String {
-        val content = value.contentToString()
-        return "<${content.substring(1, content.length - 1)}>"
+        val builder = StringBuilder()
+        builder.append("< ")
+        for (v in value) {
+            builder.append(v).append(" ")
+        }
+        builder.append(">")
+        return builder.toString()
     }
 }
 
 data class ListValue(val value: MutableList<AirValue>) : AirValue {
     override fun toString(): String {
-        return value.toString()
+        val builder = StringBuilder()
+        builder.append("[ ")
+        for (v in value) {
+            builder.append(v).append(" ")
+        }
+        builder.append("]")
+        return builder.toString()
     }
 }
 
 data class MapValue(val value: MutableMap<AirValue, AirValue>) : AirValue {
     override fun toString(): String {
-        return value.toString()
+        val builder = StringBuilder()
+        builder.append("{ ")
+        for (v in value.entries) {
+            builder.append(v.key).append(" ")
+            builder.append(v.value).append(" ")
+        }
+        builder.append("}")
+        return builder.toString()
     }
 }

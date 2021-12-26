@@ -29,12 +29,12 @@ internal class AirParserTest {
 
     @Test
     fun parseTest() {
-        val nodes = assertDoesNotThrow {
+        val values = assertDoesNotThrow {
             parser.parse(tokens)
         }
-        println(nodes)
+        println(values)
 
-        assertEquals(6, nodes.size)
+        assertEquals(6, values.size)
         var i = 0
         assertEquals(
             TupleValue(
@@ -42,7 +42,7 @@ internal class AirParserTest {
                     StringValue("comment"),
                     StringValue("this is a syntax example")
                 )
-            ), nodes[i]
+            ), values[i]
         )
         i += 1
         assertEquals(
@@ -99,7 +99,7 @@ internal class AirParserTest {
                     )
                 )
             ),
-            nodes[i]
+            values[i]
         )
         i += 1
         assertEquals(
@@ -156,7 +156,7 @@ internal class AirParserTest {
                     )
                 )
             ),
-            nodes[i]
+            values[i]
         )
         i += 1
         assertEquals(
@@ -168,7 +168,7 @@ internal class AirParserTest {
                     Pair(StringValue("g"), StringValue("h"))
                 )
             ),
-            nodes[i]
+            values[i]
         )
         i += 1
         assertEquals(
@@ -211,7 +211,7 @@ internal class AirParserTest {
                     )
                 )
             ),
-            nodes[i]
+            values[i]
         )
         i += 1
         assertEquals(
@@ -224,7 +224,28 @@ internal class AirParserTest {
                     ListValue(mutableListOf())
                 )
             ),
-            nodes[i]
+            values[i]
         )
+    }
+
+    @Test
+    fun toStringTest() {
+        val values = assertDoesNotThrow {
+            parser.parse(tokens)
+        }
+
+        val builder = StringBuilder()
+        for (v in values) {
+            builder.append(v).append(" ")
+        }
+
+        val lexer = AirLexer(AirLexerConfig)
+        val newTokens = lexer.lex(builder.toString())
+
+        val newValues = assertDoesNotThrow {
+            parser.parse(newTokens)
+        }
+
+        assertEquals(values, newValues)
     }
 }
