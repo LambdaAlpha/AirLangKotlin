@@ -1,9 +1,6 @@
 package airacle.air.parser
 
-import airacle.air.interpreter.ListValue
-import airacle.air.interpreter.MapValue
-import airacle.air.interpreter.StringValue
-import airacle.air.interpreter.TupleValue
+import airacle.air.interpreter.*
 import airacle.air.lexer.AirLexer
 import airacle.air.lexer.AirLexerConfig
 import airacle.air.lexer.AirToken
@@ -165,7 +162,10 @@ internal class AirParserTest {
                     Pair(StringValue("a"), StringValue("b")),
                     Pair(StringValue("c"), StringValue("d")),
                     Pair(StringValue("e"), StringValue("f")),
-                    Pair(StringValue("g"), StringValue("h"))
+                    Pair(StringValue("g"), StringValue("h")),
+                    Pair(IntegerValue(-1), FloatValue(-2.0)),
+                    Pair(FloatValue(1.0), IntegerValue(2)),
+                    Pair(UnitValue, TrueValue)
                 )
             ),
             values[i]

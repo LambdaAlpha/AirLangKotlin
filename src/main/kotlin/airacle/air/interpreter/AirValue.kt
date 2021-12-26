@@ -26,13 +26,19 @@ object FalseValue : BoolValue(false) {
 
 data class IntegerValue(val value: Long) : PrimitiveValue {
     override fun toString(): String {
-        return value.toString()
+        if (value >= 0) {
+            return value.toString()
+        }
+        return "0$value"
     }
 }
 
 data class FloatValue(val value: Double) : PrimitiveValue {
     override fun toString(): String {
-        return value.toString()
+        if (value >= 0) {
+            return value.toString()
+        }
+        return "0$value"
     }
 }
 
