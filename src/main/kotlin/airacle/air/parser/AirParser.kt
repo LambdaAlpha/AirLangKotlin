@@ -7,9 +7,9 @@ class AirParserError(msg: String) : Error(msg)
 
 interface IAirParserConfig {
     /**
-     * valueNode: key value
-     * return the length of tuple determined by key value
-     * return negative int if key value is not valid
+     * value: key value
+     * return the length of tuple determined by the key value
+     * return non-positive int if the key value is not valid
      */
     fun tupleLength(value: AirValue): Int
 }
@@ -213,7 +213,7 @@ class AirParser(private val config: IAirParserConfig) {
         val list = mutableListOf<AirValue>()
         list.add(first.value)
         var startVar = start
-        for (i in 1..number) {
+        for (i in 2..number) {
             if (startVar >= nodes.size) {
                 throw AirParserError("unexpected ending when parsing fixed-length tuple")
             }
@@ -238,8 +238,8 @@ class AirParser(private val config: IAirParserConfig) {
             throw AirParserError("non-value when parsing keyword: $node")
         }
         val length = config.tupleLength(node.value)
-        if (length < 0) {
-            throw AirParserError("tuple length < 0 when parsing keyword: ${node.value}")
+        if (length <= 0) {
+            throw AirParserError("tuple length <= 0 when parsing keyword: ${node.value}")
         }
         return parseFixedLengthTuple(node, length, nodes, pair.second)
     }
@@ -252,10 +252,10 @@ class AirParser(private val config: IAirParserConfig) {
     ): Pair<AirSyntaxNode, Int> {
         val value = StringValue(token.value)
         val length = config.tupleLength(value)
-        if (length < 0) {
-            throw AirParserError("tuple length < 0 when parsing alias: ${token.value}")
+        if (length <= 0) {
+            throw AirParserError("tuple length <= 0 when parsing alias: ${token.value}")
         }
-        if (infixMode && length == 2) {
+        if (infixMode && length == 2 + 1) {
             return Pair(ValueNode(value), start)
         }
         return parseFixedLengthTuple(ValueNode(value), length, nodes, start)
