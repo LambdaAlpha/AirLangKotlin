@@ -64,7 +64,7 @@ class AirParser(private val config: IAirParserConfig) {
             is BackQuoteToken -> parseKeyword(nodes, next)
 
             // symbols
-            is SymbolStringToken -> parseSymbol(key.token, nodes, next, infixMode = infixMode)
+            is SingleSymbolStringToken -> parseSymbol(key.token, nodes, next, infixMode = infixMode)
 
             else -> throw AirParserError("unknown token: $key")
         }
@@ -245,7 +245,7 @@ class AirParser(private val config: IAirParserConfig) {
     }
 
     private fun parseSymbol(
-        token: SymbolStringToken,
+        token: SingleSymbolStringToken,
         nodes: List<AirSyntaxNode>,
         start: Int,
         infixMode: Boolean = false

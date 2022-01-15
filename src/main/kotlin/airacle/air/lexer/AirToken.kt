@@ -4,17 +4,53 @@ sealed interface AirToken
 
 object DelimiterToken : AirToken
 
-object UnitToken : AirToken
+object UnitToken : AirToken {
+    override fun toString(): String {
+        return "|"
+    }
+}
 
 sealed class BoolToken(val value: Boolean) : AirToken
 
-object TrueToken : BoolToken(true)
+object TrueToken : BoolToken(true) {
+    override fun toString(): String {
+        return "/"
+    }
+}
 
-object FalseToken : BoolToken(false)
+object FalseToken : BoolToken(false) {
+    override fun toString(): String {
+        return "\\"
+    }
+}
 
-data class IntegerToken(val value: Long) : AirToken
+class IntegerToken(val value: Long) : AirToken {
+    override fun equals(other: Any?): Boolean {
+        return other is IntegerToken && value == other.value
+    }
 
-data class FloatToken(val value: Double) : AirToken
+    override fun hashCode(): Int {
+        return value.hashCode()
+    }
+
+    override fun toString(): String {
+        return value.toString()
+    }
+}
+
+data class FloatToken(val value: Double) : AirToken {
+    override fun equals(other: Any?): Boolean {
+        return other is FloatToken && value == other.value
+    }
+
+    override fun hashCode(): Int {
+        return value.hashCode()
+    }
+
+    override fun toString(): String {
+        return value.toString()
+    }
+}
 
 sealed class StringToken(val value: String) : AirToken {
     override fun equals(other: Any?): Boolean {
@@ -24,78 +60,78 @@ sealed class StringToken(val value: String) : AirToken {
     override fun hashCode(): Int {
         return value.hashCode()
     }
+
+    override fun toString(): String {
+        return "\"$value\""
+    }
 }
 
 class FullStringToken(value: String) : StringToken(value)
 
 class AlphaStringToken(value: String) : StringToken(value)
 
-sealed class SymbolStringToken(value: String) : StringToken(value)
-
-class FullSymbolStringToken(value: String) : SymbolStringToken(value)
-
-sealed class SingleSymbolStringToken(value: String) : SymbolStringToken(value)
+sealed class SingleSymbolStringToken(value: String) : StringToken(value)
 
 object LCircleToken : SingleSymbolStringToken("(")
 
-object RCircleToken : SymbolStringToken(")")
+object RCircleToken : SingleSymbolStringToken(")")
 
-object LSquareToken : SymbolStringToken("[")
+object LSquareToken : SingleSymbolStringToken("[")
 
-object RSquareToken : SymbolStringToken("]")
+object RSquareToken : SingleSymbolStringToken("]")
 
-object LCurlyToken : SymbolStringToken("{")
+object LCurlyToken : SingleSymbolStringToken("{")
 
-object RCurlyToken : SymbolStringToken("}")
+object RCurlyToken : SingleSymbolStringToken("}")
 
-object LSlashToken : SymbolStringToken("\\")
+object LSlashToken : SingleSymbolStringToken("\\")
 
-object MSlashToken : SymbolStringToken("|")
+object MSlashToken : SingleSymbolStringToken("|")
 
-object RSlashToken : SymbolStringToken("/")
+object RSlashToken : SingleSymbolStringToken("/")
 
-object LAngleToken : SymbolStringToken("<")
+object LAngleToken : SingleSymbolStringToken("<")
 
-object EqualToken : SymbolStringToken("=")
+object EqualToken : SingleSymbolStringToken("=")
 
-object RAngleToken : SymbolStringToken(">")
+object RAngleToken : SingleSymbolStringToken(">")
 
-object SemicolonToken : SymbolStringToken(";")
+object SemicolonToken : SingleSymbolStringToken(";")
 
-object ColonToken : SymbolStringToken(":")
+object ColonToken : SingleSymbolStringToken(":")
 
-object CommaToken : SymbolStringToken(",")
+object CommaToken : SingleSymbolStringToken(",")
 
-object PeriodToken : SymbolStringToken(".")
+object PeriodToken : SingleSymbolStringToken(".")
 
-object SingleQuoteToken : SymbolStringToken("\'")
+object SingleQuoteToken : SingleSymbolStringToken("\'")
 
-object DoubleQuoteToken : SymbolStringToken("\"")
+object DoubleQuoteToken : SingleSymbolStringToken("\"")
 
-object BackQuoteToken : SymbolStringToken("`")
+object BackQuoteToken : SingleSymbolStringToken("`")
 
-object HatToken : SymbolStringToken("^")
+object HatToken : SingleSymbolStringToken("^")
 
-object MinusToken : SymbolStringToken("-")
+object MinusToken : SingleSymbolStringToken("-")
 
-object PlusToken : SymbolStringToken("+")
+object PlusToken : SingleSymbolStringToken("+")
 
-object ExclamationToken : SymbolStringToken("!")
+object ExclamationToken : SingleSymbolStringToken("!")
 
-object QuestionMarkToken : SymbolStringToken("?")
+object QuestionMarkToken : SingleSymbolStringToken("?")
 
-object TildeToken : SymbolStringToken("~")
+object TildeToken : SingleSymbolStringToken("~")
 
-object AtToken : SymbolStringToken("@")
+object AtToken : SingleSymbolStringToken("@")
 
-object NumToken : SymbolStringToken("#")
+object NumToken : SingleSymbolStringToken("#")
 
-object DollarToken : SymbolStringToken("$")
+object DollarToken : SingleSymbolStringToken("$")
 
-object PercentToken : SymbolStringToken("%")
+object PercentToken : SingleSymbolStringToken("%")
 
-object AmpersandToken : SymbolStringToken("&")
+object AmpersandToken : SingleSymbolStringToken("&")
 
-object AsteriskToken : SymbolStringToken("*")
+object AsteriskToken : SingleSymbolStringToken("*")
 
-object UnderscoreToken : SymbolStringToken("_")
+object UnderscoreToken : SingleSymbolStringToken("_")

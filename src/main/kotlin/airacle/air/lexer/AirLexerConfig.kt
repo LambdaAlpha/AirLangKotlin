@@ -104,7 +104,7 @@ object BoolLexer : IAirRegexLexer {
 }
 
 object SymbolStringLexer : IAirRegexLexer {
-    private val pattern = Regex("\\p{Punct}+")
+    private val pattern = Regex("\\p{Punct}")
 
     override fun pattern(): Regex {
         return pattern
@@ -144,7 +144,8 @@ object SymbolStringLexer : IAirRegexLexer {
             ">" -> RAngleToken
             "/" -> RSlashToken
             "?" -> QuestionMarkToken
-            else -> FullSymbolStringToken(match.value)
+            // never
+            else -> FullStringToken(match.value)
         }
     }
 }
@@ -163,30 +164,48 @@ object AlphaStringLexer : IAirRegexLexer {
 
 object FullStringLexer : IAirRegexLexer {
     const val KEY = '"'
-    private val pattern = Regex("\"((?:[^\"\\\\]|\\\\[rnt\\\\'\"]|\\\\u[a-fA-F0-9]{4})*+)\"")
+    private val pattern = Regex("\"(?:[^\"\\\\]|\\\\[srnt\\\\'\"]|\\\\u[a-fA-F0-9]{4})*+\"")
     private val delimiterPattern = Regex("[\n\r\t]+")
-    private val escapePattern = Regex("\\\\([rnt\\\\'\"])")
-    private val unicodePattern = Regex("\\\\u([a-fA-F0-9]{4})")
 
     override fun pattern(): Regex {
         return pattern
     }
 
     override fun parse(match: MatchResult): AirToken {
-        var s = match.groups[1]!!.value
+        var s = match.groups[0]!!.value
         s = s.replace(delimiterPattern, "")
-        s = s.replace(escapePattern) {
-            when (val c = it.groups[1]!!.value) {
-                "t" -> "\t"
-                "n" -> "\n"
-                "r" -> "\r"
-                else -> c
+        val builder = StringBuilder()
+
+        var escape = false
+        var i = 1
+        val last = s.length - 1
+        while (i < last) {
+            val c = s[i]
+            if (escape) {
+                val escaped = when (c) {
+                    't' -> '\t'
+                    'n' -> '\n'
+                    'r' -> '\r'
+                    's' -> ' '
+                    'u', 'U' -> {
+                        val code = s.substring(i + 1, i + 5).toInt(16).toChar()
+                        i += 4
+                        code
+                    }
+                    else -> c
+                }
+                builder.append(escaped)
+                escape = false
+            } else {
+                if (c == '\\') {
+                    escape = true
+                } else {
+                    builder.append(c)
+                }
             }
+            i += 1
         }
-        s = s.replace(unicodePattern) {
-            it.groups[1]!!.value.toInt(16).toChar().toString()
-        }
-        return FullStringToken(s)
+        return FullStringToken(builder.toString())
     }
 }
 
@@ -208,16 +227,38 @@ object NumberLexer : IAirRegexLexer {
         var s = match.value
         // remove delimiters
         s = s.replace("_", "")
-        val negative = s.length > 2 && s[1] == '-'
-        // remove sign
-        if (s.length > 2 && (s[1] == '-' || s[1] == '+')) {
-            s = s.substring(2)
+
+        if (s == "0") {
+            return IntegerToken(0)
         }
-        return if (s.contains('x', true)) {
-            val value = s.substring(1).toLong(16)
+        // remove prefix 0
+        if (s[0] == '0') {
+            s = s.substring(1)
+        }
+
+        val negative = s.length > 1 && s[0] == '-'
+        // remove sign
+        if (s.length > 1 && (s[0] == '-' || s[0] == '+')) {
+            s = s.substring(1)
+        }
+
+        val radix = if (s[0] == 'x' || s[0] == 'X') {
+            16
+        } else if (s[0] == 'b' || s[0] == 'B') {
+            2
+        } else {
+            10
+        }
+        // remove radix
+        if (radix != 10) {
+            s = s.substring(1)
+        }
+
+        return if (radix == 16) {
+            val value = s.toLong(16)
             IntegerToken(if (negative) -value else value)
-        } else if (s.contains('b', true)) {
-            val value = s.substring(1).toLong(2)
+        } else if (radix == 2) {
+            val value = s.toLong(2)
             IntegerToken(if (negative) -value else value)
         } else if (s.contains('.')) {
             val value = s.toDouble()

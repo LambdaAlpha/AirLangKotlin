@@ -120,7 +120,7 @@ internal class AirParserTest {
                                             StringValue("?"),
                                             TupleValue(
                                                 arrayOf(
-                                                    StringValue("<="),
+                                                    StringValue("le"),
                                                     StringValue("a"),
                                                     StringValue("b")
                                                 )
