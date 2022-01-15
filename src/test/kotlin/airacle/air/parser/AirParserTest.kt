@@ -27,7 +27,7 @@ internal class AirParserTest {
     @Test
     fun parseTest() {
         val values = assertDoesNotThrow {
-            parser.parse(tokens)
+            parser.parse(tokens).value
         }
         println(values)
 
@@ -231,7 +231,7 @@ internal class AirParserTest {
     @Test
     fun toStringTest() {
         val values = assertDoesNotThrow {
-            parser.parse(tokens)
+            parser.parse(tokens).value
         }
 
         val builder = StringBuilder()
@@ -243,7 +243,7 @@ internal class AirParserTest {
         val newTokens = lexer.lex(builder.toString())
 
         val newValues = assertDoesNotThrow {
-            parser.parse(newTokens)
+            parser.parse(newTokens).value
         }
 
         assertEquals(values, newValues)
