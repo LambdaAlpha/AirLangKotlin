@@ -60,17 +60,25 @@ sealed class StringToken(val value: String) : AirToken {
     override fun hashCode(): Int {
         return value.hashCode()
     }
+}
 
+class FullStringToken(value: String) : StringToken(value) {
     override fun toString(): String {
         return "\"$value\""
     }
 }
 
-class FullStringToken(value: String) : StringToken(value)
+class AlphaStringToken(value: String) : StringToken(value) {
+    override fun toString(): String {
+        return value
+    }
+}
 
-class AlphaStringToken(value: String) : StringToken(value)
-
-sealed class SingleSymbolStringToken(value: String) : StringToken(value)
+sealed class SingleSymbolStringToken(value: String) : StringToken(value) {
+    override fun toString(): String {
+        return value
+    }
+}
 
 object LCircleToken : SingleSymbolStringToken("(")
 
