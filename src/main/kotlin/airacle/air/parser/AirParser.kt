@@ -16,7 +16,7 @@ interface IAirParserConfig {
 
 class AirParser(private val config: IAirParserConfig) {
 
-    fun parse(tokens: List<AirToken>): ListValue {
+    fun parse(tokens: List<AirToken>): AirValue {
         val nodes = tokens.map { TokenNode(it) }
         val result = mutableListOf<AirValue>()
         var start = 0
@@ -30,7 +30,11 @@ class AirParser(private val config: IAirParserConfig) {
             }
             start = pair.second
         }
-        return ListValue(result)
+        return when (result.size) {
+            0 -> UnitValue
+            1 -> result[0]
+            else -> ListValue(result)
+        }
     }
 
     private fun parseOne(nodes: List<AirSyntaxNode>, start: Int, infixMode: Boolean = false): Pair<AirSyntaxNode, Int> {
