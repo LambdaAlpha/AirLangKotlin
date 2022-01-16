@@ -48,6 +48,7 @@ internal val TOKENS = listOf(
     AlphaStringToken("a"),
     AlphaStringToken("Abc"),
     AlphaStringToken("A_BB__CCC"),
+    AlphaStringToken("A1B2C3"),
 
     BackQuoteToken,
     TildeToken,
@@ -80,7 +81,9 @@ internal val TOKENS = listOf(
 
     FullStringToken("Hello world!"),
     FullStringToken("`~!@#\$%^&*()-_=+[]{};:'\",.<>?\\|/"),
-    FullStringToken("  \n\r\t\uD83D\uDF01\uD83D\uDF01"),
+    FullStringToken(" \n\r\t\uD83D\uDF01\uD83D\uDF01"),
     FullStringToken("\\s\\n\\r\\t\\uD83D\\uDF01"),
+    FullStringToken("\\ \\\n\\\r\\\t\\\uD83D\\\uDF01"),
     FullStringToken("multiple lines"),
+    FullStringToken("leading\nspaces"),
 )

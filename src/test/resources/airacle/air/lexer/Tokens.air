@@ -45,14 +45,20 @@
 a
 Abc
 A_BB__CCC
+A1B2C3
 
 ` ~ ! @ # $ % ^ & * ( ) - _ = + [ ] { } ; : ' , . < > ?
 
 "Hello world!"
 "`~!@#$%^&*()-_=+[]{};:'\",.<>?\\|/"
-" \s\n\r\t\uD83D\uDF01🜁"
+"\s\n\r\t\uD83D\uDF01🜁"
 "\\s\\n\\r\\t\\uD83D\\uDF01"
+"\\\s\\\n\\\r\\\t\\\uD83D\\\uDF01"
 "
 multiple\s
 lines
+"
+"
+  leading\n
+  spaces
 "

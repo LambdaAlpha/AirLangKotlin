@@ -165,7 +165,7 @@ object AlphaStringLexer : IAirRegexLexer {
 object FullStringLexer : IAirRegexLexer {
     const val KEY = '"'
     private val pattern = Regex("\"(?:[^\"\\\\]|\\\\[srnt\\\\'\"]|\\\\u[a-fA-F0-9]{4})*+\"")
-    private val delimiterPattern = Regex("[\n\r\t]+")
+    private val delimiterPattern = Regex(" *[\n\r\t]+ *")
 
     override fun pattern(): Regex {
         return pattern
