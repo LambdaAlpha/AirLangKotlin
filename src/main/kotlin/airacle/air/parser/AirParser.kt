@@ -61,6 +61,7 @@ class AirParser(private val config: IAirParserConfig) {
             is RSquareToken,
             is RCurlyToken,
             is RAngleToken,
+            is ColonToken,
             is CommaToken -> Pair(key, next)
 
             // keyword tuples
@@ -153,16 +154,15 @@ class AirParser(private val config: IAirParserConfig) {
         return Pair(ValueNode(ListValue(list)), pair.second)
     }
 
-    // map, optional comma
+    // map, optional colon and comma
     private fun parseCurly(nodes: List<AirSyntaxNode>, start: Int): Pair<AirSyntaxNode, Int> {
         val map = mutableMapOf<AirValue, AirValue>()
         var pair = parseOneSkipComment(nodes, start)
         var node = pair.first
-        // 1 key 2 value 3 comma
+        // 1 key 2 colon 3 value 4 comma
         var status = 1
         var key: AirValue? = null
         while (!(node is TokenNode<*> && node.token is RCurlyToken)) {
-
             when (status) {
                 1 -> {
                     if (node !is ValueNode<*>) {
@@ -172,14 +172,27 @@ class AirParser(private val config: IAirParserConfig) {
                     status = 2
                 }
                 2 -> {
-                    if (node !is ValueNode<*>) {
-                        throw AirParserError("non-value for value when parsing map: $node")
+                    if (node is ValueNode<*>) {
+                        val value = node.value
+                        map[key!!] = value
+                        status = 4
+                    } else if (node is TokenNode<*>) {
+                        if (node.token !is ColonToken) {
+                            throw AirParserError("unexpected token when parsing map: ${node.token}")
+                        }
+                        status = 3
                     }
-                    val value = node.value
-                    map[key!!] = value
-                    status = 3
                 }
                 3 -> {
+                    if (node is ValueNode<*>) {
+                        val value = node.value
+                        map[key!!] = value
+                        status = 4
+                    } else {
+                        throw AirParserError("non-value for value when parsing map: $node")
+                    }
+                }
+                4 -> {
                     if (node is ValueNode<*>) {
                         key = node.value
                         status = 2
@@ -198,7 +211,7 @@ class AirParser(private val config: IAirParserConfig) {
             pair = parseOneSkipComment(nodes, pair.second)
             node = pair.first
         }
-        if (status != 1 && status != 3) {
+        if (status != 1 && status != 4) {
             throw AirParserError("unexpected ending when parsing map, status = $status")
         }
         return Pair(ValueNode(MapValue(map)), pair.second)

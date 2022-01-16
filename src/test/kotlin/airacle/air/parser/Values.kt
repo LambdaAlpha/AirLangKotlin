@@ -138,10 +138,10 @@ val VALUES = ListValue(
         ),
         TupleValue(
             arrayOf(
-                StringValue(":"),
+                StringValue("?"),
                 TupleValue(
                     arrayOf(
-                        StringValue(":"),
+                        StringValue("?"),
                         StringValue("a"),
                         StringValue("b"),
                     )
@@ -218,6 +218,29 @@ val VALUES = ListValue(
                         MapValue(mutableMapOf()),
                     )
                 )
+            )
+        ),
+
+        TupleValue(
+            arrayOf(
+                StringValue("a"),
+                StringValue("b"),
+                StringValue("c"),
+            )
+        ),
+        ListValue(
+            mutableListOf(
+                StringValue("a"),
+                StringValue("b"),
+                StringValue("c"),
+            )
+        ),
+        MapValue(
+            mutableMapOf(
+                Pair(StringValue("a"), StringValue("b")),
+                Pair(StringValue("c"), StringValue("d")),
+                Pair(StringValue("e"), StringValue("f")),
+                Pair(StringValue("g"), StringValue("h")),
             )
         )
     )
