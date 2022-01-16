@@ -8,10 +8,10 @@ class AirParserError(msg: String) : Error(msg)
 interface IAirParserConfig {
     /**
      * value: key value
-     * return the length of tuple determined by the key value
-     * return non-positive int if the key value is not valid
+     * return the length of param determined by the key value
+     * return negative int if the key value is not valid
      */
-    fun tupleLength(value: AirValue): Int
+    fun paramLength(value: AirValue): Int
 }
 
 class AirParser(private val config: IAirParserConfig) {
@@ -22,11 +22,10 @@ class AirParser(private val config: IAirParserConfig) {
         var start = 0
         while (start < nodes.size) {
             val pair = parseOne(nodes, start)
-            val node = pair.first
-            if (node is ValueNode<*>) {
-                result.add(node.value)
-            } else {
-                throw AirParserError("non-value: $node")
+            when (val node = pair.first) {
+                is ValueNode<*> -> result.add(node.value)
+                is CommentNode -> {}
+                else -> throw AirParserError("non-value: $node")
             }
             start = pair.second
         }
@@ -65,7 +64,10 @@ class AirParser(private val config: IAirParserConfig) {
             is CommaToken -> Pair(key, next)
 
             // keyword tuples
-            is BackQuoteToken -> parseKeyword(nodes, next)
+            is SemicolonToken -> parseKeyword(nodes, next)
+
+            // comment
+            is NumToken -> parseComment(nodes, next, infixMode)
 
             // symbols
             is SingleSymbolStringToken -> parseSymbol(key.token, nodes, next, infixMode = infixMode)
@@ -74,9 +76,31 @@ class AirParser(private val config: IAirParserConfig) {
         }
     }
 
+    private fun parseOneSkipComment(
+        nodes: List<AirSyntaxNode>,
+        start: Int,
+        infixMode: Boolean = false
+    ): Pair<AirSyntaxNode, Int> {
+        var next = start
+        do {
+            val pair = parseOne(nodes, next, infixMode)
+            next = pair.second
+            if (pair.first !is CommentNode) {
+                return pair
+            }
+        } while (next < nodes.size)
+        throw AirParserError("unexpected end when parsing")
+    }
+
+    private fun parseComment(nodes: List<AirSyntaxNode>, start: Int, infixMode: Boolean): Pair<AirSyntaxNode, Int> {
+        // drop one
+        val pair = parseOne(nodes, start, infixMode)
+        return Pair(CommentNode, pair.second)
+    }
+
     // infix expression with left association
     private fun parseCircle(nodes: List<AirSyntaxNode>, start: Int): Pair<AirSyntaxNode, Int> {
-        var pair = parseOne(nodes, start, infixMode = true)
+        var pair = parseOneSkipComment(nodes, start, infixMode = true)
         var node = pair.first
         var firstValue: AirValue? = null
         var secondValue: AirValue? = null
@@ -94,7 +118,7 @@ class AirParser(private val config: IAirParserConfig) {
                 firstValue = TupleValue(arrayOf(secondValue, firstValue, value))
                 secondValue = null
             }
-            pair = parseOne(nodes, pair.second, infixMode = true)
+            pair = parseOneSkipComment(nodes, pair.second, infixMode = true)
             node = pair.first
         }
         if (firstValue == null || secondValue != null) {
@@ -106,7 +130,7 @@ class AirParser(private val config: IAirParserConfig) {
     // list, optional comma
     private fun parseSquare(nodes: List<AirSyntaxNode>, start: Int): Pair<AirSyntaxNode, Int> {
         val list = mutableListOf<AirValue>()
-        var pair = parseOne(nodes, start)
+        var pair = parseOneSkipComment(nodes, start)
         var node = pair.first
         var allowComma = false
         while (!(node is TokenNode<*> && node.token is RSquareToken)) {
@@ -123,7 +147,7 @@ class AirParser(private val config: IAirParserConfig) {
             if (pair.second >= nodes.size) {
                 throw AirParserError("unexpected ending when parsing list")
             }
-            pair = parseOne(nodes, pair.second)
+            pair = parseOneSkipComment(nodes, pair.second)
             node = pair.first
         }
         return Pair(ValueNode(ListValue(list)), pair.second)
@@ -132,7 +156,7 @@ class AirParser(private val config: IAirParserConfig) {
     // map, optional comma
     private fun parseCurly(nodes: List<AirSyntaxNode>, start: Int): Pair<AirSyntaxNode, Int> {
         val map = mutableMapOf<AirValue, AirValue>()
-        var pair = parseOne(nodes, start)
+        var pair = parseOneSkipComment(nodes, start)
         var node = pair.first
         // 1 key 2 value 3 comma
         var status = 1
@@ -171,7 +195,7 @@ class AirParser(private val config: IAirParserConfig) {
             if (pair.second >= nodes.size) {
                 throw AirParserError("unexpected ending when parsing map")
             }
-            pair = parseOne(nodes, pair.second)
+            pair = parseOneSkipComment(nodes, pair.second)
             node = pair.first
         }
         if (status != 1 && status != 3) {
@@ -183,7 +207,7 @@ class AirParser(private val config: IAirParserConfig) {
     // tuple, optional comma
     private fun parseAngle(nodes: List<AirSyntaxNode>, start: Int): Pair<AirSyntaxNode, Int> {
         val list = mutableListOf<AirValue>()
-        var pair = parseOne(nodes, start)
+        var pair = parseOneSkipComment(nodes, start)
         var node = pair.first
         var allowComma = false
         while (!(node is TokenNode<*> && node.token is RAngleToken)) {
@@ -200,7 +224,7 @@ class AirParser(private val config: IAirParserConfig) {
             if (pair.second >= nodes.size) {
                 throw AirParserError("unexpected ending when parsing surrounded tuple")
             }
-            pair = parseOne(nodes, pair.second)
+            pair = parseOneSkipComment(nodes, pair.second)
             node = pair.first
         }
         val tupleValue = TupleValue(list.toTypedArray())
@@ -217,11 +241,11 @@ class AirParser(private val config: IAirParserConfig) {
         val list = mutableListOf<AirValue>()
         list.add(first.value)
         var startVar = start
-        for (i in 2..number) {
+        for (i in 1..number) {
             if (startVar >= nodes.size) {
                 throw AirParserError("unexpected ending when parsing fixed-length tuple")
             }
-            val pair = parseOne(nodes, startVar)
+            val pair = parseOneSkipComment(nodes, startVar)
             val node = pair.first
             if (node is ValueNode<*>) {
                 list.add(node.value)
@@ -236,14 +260,14 @@ class AirParser(private val config: IAirParserConfig) {
     }
 
     private fun parseKeyword(nodes: List<AirSyntaxNode>, start: Int): Pair<AirSyntaxNode, Int> {
-        val pair = parseOne(nodes, start)
+        val pair = parseOneSkipComment(nodes, start)
         val node = pair.first
         if (node !is ValueNode<*>) {
             throw AirParserError("non-value when parsing keyword: $node")
         }
-        val length = config.tupleLength(node.value)
-        if (length <= 0) {
-            throw AirParserError("tuple length <= 0 when parsing keyword: ${node.value}")
+        val length = config.paramLength(node.value)
+        if (length < 0) {
+            throw AirParserError("param length < 0 when parsing keyword: ${node.value}")
         }
         return parseFixedLengthTuple(node, length, nodes, pair.second)
     }
@@ -252,14 +276,14 @@ class AirParser(private val config: IAirParserConfig) {
         token: SingleSymbolStringToken,
         nodes: List<AirSyntaxNode>,
         start: Int,
-        infixMode: Boolean = false
+        infixMode: Boolean
     ): Pair<AirSyntaxNode, Int> {
         val value = StringValue(token.value)
-        val length = config.tupleLength(value)
-        if (length <= 0) {
-            throw AirParserError("tuple length <= 0 when parsing alias: ${token.value}")
+        val length = config.paramLength(value)
+        if (length < 0) {
+            throw AirParserError("param length < 0 when parsing alias: ${token.value}")
         }
-        if (infixMode && length == 2 + 1) {
+        if (infixMode && length == 2) {
             return Pair(ValueNode(value), start)
         }
         return parseFixedLengthTuple(ValueNode(value), length, nodes, start)

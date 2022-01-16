@@ -1,32 +1,41 @@
+# |
+# \
+# /
+# 123
+# 123.0e-2
+# comment
+# "this is a comment"
+# <this is a comment>
+# [this is a comment]
+# {this is, a comment}
+# ; zero
+# ; one one
+# ; two ; zero ; one one
+# ; three "one" [<> <<>>] {1 1 2 2 3 3}
 
-` comment "this is a syntax example"
+; zero
+;zero
+;one one
+;two ;zero ;one one
 
-`assign max `function [a b] [
-    `if `le a b [
-        `return b,
-    ] [
-        `return a
-    ]
-]
+; | |
+; \ \ /
+; 111 a b c
+; 1.234 a b c d
 
-= max ^ [a b] [
-    ? (a le b) [
-        ~ b
-    ] [
-        ~ a
-    ]
-]
+` "`"
+~ 1
+@ 1.2
+$ <a b>
+% [1 a]
+^ {1 a}
+& |
+* \
+- /
+: : a b c
+. a . b c
 
-{
-    a b
-    c d,
-    e f,
-    g h,
-    0-1 0-2.0,
-    1.0 2,
-    | /,
-}
+<[{[<{}>]<[{}]>}]>
+[[<>{}[]]{[]<><>{}{}[]}<<>[]{}>]
 
-( .a + .b + .c - .d )
-
-< for i min, max [ ] >
+# "comment at the end"

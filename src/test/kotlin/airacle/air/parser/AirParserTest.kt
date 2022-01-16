@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 import java.io.FileReader
 
 internal class AirParserTest {
-    private val parser = AirParser(AirParserConfig)
+    private val parser = AirParser(AirParserTestConfig)
     private lateinit var tokens: List<AirToken>
 
     @BeforeEach

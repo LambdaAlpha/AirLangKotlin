@@ -6,174 +6,219 @@ val VALUES = ListValue(
     mutableListOf(
         TupleValue(
             arrayOf(
-                StringValue("comment"),
-                StringValue("this is a syntax example")
+                StringValue("zero"),
             )
         ),
         TupleValue(
             arrayOf(
-                StringValue("assign"),
-                StringValue("max"),
+                StringValue("zero"),
+            )
+        ),
+        TupleValue(
+            arrayOf(
+                StringValue("one"),
+                StringValue("one"),
+            )
+        ),
+        TupleValue(
+            arrayOf(
+                StringValue("two"),
                 TupleValue(
                     arrayOf(
-                        StringValue("function"),
-                        ListValue(
-                            mutableListOf(
-                                StringValue("a"),
-                                StringValue(("b"))
-                            )
-                        ),
-                        ListValue(
-                            mutableListOf(
-                                TupleValue(
-                                    arrayOf(
-                                        StringValue("if"),
-                                        TupleValue(
-                                            arrayOf(
-                                                StringValue("le"),
-                                                StringValue("a"),
-                                                StringValue("b")
-                                            )
-                                        ),
-                                        ListValue(
-                                            mutableListOf(
-                                                TupleValue(
-                                                    arrayOf(
-                                                        StringValue("return"),
-                                                        StringValue("b")
-                                                    )
-                                                )
-                                            )
-                                        ),
-                                        ListValue(
-                                            mutableListOf(
-                                                TupleValue(
-                                                    arrayOf(
-                                                        StringValue("return"),
-                                                        StringValue("a")
-                                                    )
-                                                )
-                                            )
-                                        )
-                                    )
-                                )
-                            )
-                        )
+                        StringValue("zero"),
+                    )
+                ),
+                TupleValue(
+                    arrayOf(
+                        StringValue("one"),
+                        StringValue("one"),
+                    )
+                ),
+            )
+        ),
+
+        TupleValue(
+            arrayOf(
+                UnitValue,
+                UnitValue,
+            )
+        ),
+        TupleValue(
+            arrayOf(
+                FalseValue,
+                FalseValue,
+                TrueValue,
+            )
+        ),
+        TupleValue(
+            arrayOf(
+                IntegerValue(111),
+                StringValue("a"),
+                StringValue("b"),
+                StringValue("c"),
+            )
+        ),
+        TupleValue(
+            arrayOf(
+                FloatValue(1.234),
+                StringValue("a"),
+                StringValue("b"),
+                StringValue("c"),
+                StringValue("d"),
+            )
+        ),
+
+        TupleValue(
+            arrayOf(
+                StringValue("`"),
+                StringValue("`"),
+            )
+        ),
+        TupleValue(
+            arrayOf(
+                StringValue("~"),
+                IntegerValue(1)
+            )
+        ),
+        TupleValue(
+            arrayOf(
+                StringValue("@"),
+                FloatValue(1.2)
+            )
+        ),
+        TupleValue(
+            arrayOf(
+                StringValue("$"),
+                TupleValue(
+                    arrayOf(
+                        StringValue("a"),
+                        StringValue("b"),
+                    )
+                ),
+            )
+        ),
+        TupleValue(
+            arrayOf(
+                StringValue("%"),
+                ListValue(
+                    mutableListOf(
+                        IntegerValue(1),
+                        StringValue("a"),
                     )
                 )
             )
         ),
         TupleValue(
             arrayOf(
-                StringValue("="),
-                StringValue("max"),
-                TupleValue(
-                    arrayOf(
-                        StringValue("^"),
-                        ListValue(
-                            mutableListOf(
-                                StringValue("a"),
-                                StringValue(("b"))
-                            )
-                        ),
-                        ListValue(
-                            mutableListOf(
-                                TupleValue(
-                                    arrayOf(
-                                        StringValue("?"),
-                                        TupleValue(
-                                            arrayOf(
-                                                StringValue("le"),
-                                                StringValue("a"),
-                                                StringValue("b")
-                                            )
-                                        ),
-                                        ListValue(
-                                            mutableListOf(
-                                                TupleValue(
-                                                    arrayOf(
-                                                        StringValue("~"),
-                                                        StringValue("b")
-                                                    )
-                                                )
-                                            )
-                                        ),
-                                        ListValue(
-                                            mutableListOf(
-                                                TupleValue(
-                                                    arrayOf(
-                                                        StringValue("~"),
-                                                        StringValue("a")
-                                                    )
-                                                )
-                                            )
-                                        )
-                                    )
-                                )
-                            )
-                        )
+                StringValue("^"),
+                MapValue(
+                    mutableMapOf(
+                        Pair(IntegerValue(1), StringValue("a")),
                     )
                 )
             )
         ),
-        MapValue(
-            mutableMapOf(
-                Pair(StringValue("a"), StringValue("b")),
-                Pair(StringValue("c"), StringValue("d")),
-                Pair(StringValue("e"), StringValue("f")),
-                Pair(StringValue("g"), StringValue("h")),
-                Pair(IntegerValue(-1), FloatValue(-2.0)),
-                Pair(FloatValue(1.0), IntegerValue(2)),
-                Pair(UnitValue, TrueValue)
+        TupleValue(
+            arrayOf(
+                StringValue("&"),
+                UnitValue
+            )
+        ),
+        TupleValue(
+            arrayOf(
+                StringValue("*"),
+                FalseValue
             )
         ),
         TupleValue(
             arrayOf(
                 StringValue("-"),
-                TupleValue(
-                    arrayOf(
-                        StringValue("+"),
-                        TupleValue(
-                            arrayOf(
-                                StringValue("+"),
-                                TupleValue(
-                                    arrayOf(
-                                        StringValue("."),
-                                        StringValue("a")
-                                    )
-                                ),
-                                TupleValue(
-                                    arrayOf(
-                                        StringValue("."),
-                                        StringValue("b")
-                                    )
-                                ),
-                            )
-                        ),
-                        TupleValue(
-                            arrayOf(
-                                StringValue("."),
-                                StringValue("c")
-                            )
-                        )
-                    )
-                ),
-                TupleValue(
-                    arrayOf(
-                        StringValue("."),
-                        StringValue("d")
-                    )
-                )
+                TrueValue
             )
         ),
         TupleValue(
             arrayOf(
-                StringValue("for"),
-                StringValue("i"),
-                StringValue("min"),
-                StringValue("max"),
-                ListValue(mutableListOf())
+                StringValue(":"),
+                TupleValue(
+                    arrayOf(
+                        StringValue(":"),
+                        StringValue("a"),
+                        StringValue("b"),
+                    )
+                ),
+                StringValue("c")
             )
         ),
+        TupleValue(
+            arrayOf(
+                StringValue("."),
+                StringValue("a"),
+                TupleValue(
+                    arrayOf(
+                        StringValue("."),
+                        StringValue("b"),
+                        StringValue("c"),
+                    )
+                ),
+            )
+        ),
+
+        TupleValue(
+            arrayOf(
+                ListValue(
+                    mutableListOf(
+                        MapValue(
+                            mutableMapOf(
+                                Pair(
+                                    ListValue(
+                                        mutableListOf(
+                                            TupleValue(
+                                                arrayOf(
+                                                    MapValue(mutableMapOf())
+                                                )
+                                            )
+                                        )
+                                    ),
+                                    TupleValue(
+                                        arrayOf(
+                                            ListValue(
+                                                mutableListOf(
+                                                    MapValue(mutableMapOf())
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        ),
+        ListValue(
+            mutableListOf(
+                ListValue(
+                    mutableListOf(
+                        TupleValue(arrayOf()),
+                        MapValue(mutableMapOf()),
+                        ListValue(mutableListOf()),
+                    )
+                ),
+                MapValue(
+                    mutableMapOf(
+                        Pair(ListValue(mutableListOf()), TupleValue(arrayOf())),
+                        Pair(TupleValue(arrayOf()), MapValue(mutableMapOf())),
+                        Pair(MapValue(mutableMapOf()), ListValue(mutableListOf())),
+                    )
+                ),
+                TupleValue(
+                    arrayOf(
+                        TupleValue(arrayOf()),
+                        ListValue(mutableListOf()),
+                        MapValue(mutableMapOf()),
+                    )
+                )
+            )
+        )
     )
 )
