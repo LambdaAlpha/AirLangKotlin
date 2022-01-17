@@ -113,7 +113,7 @@ val VALUES = ListValue(
                 StringValue("^"),
                 MapValue(
                     mutableMapOf(
-                        Pair(IntegerValue(1), StringValue("a")),
+                        IntegerValue(1) to StringValue("a"),
                     )
                 )
             )
@@ -169,22 +169,19 @@ val VALUES = ListValue(
                     mutableListOf(
                         MapValue(
                             mutableMapOf(
-                                Pair(
-                                    ListValue(
-                                        mutableListOf(
-                                            TupleValue(
-                                                arrayOf(
-                                                    MapValue(mutableMapOf())
-                                                )
+                                ListValue(
+                                    mutableListOf(
+                                        TupleValue(
+                                            arrayOf(
+                                                MapValue(mutableMapOf())
                                             )
                                         )
-                                    ),
-                                    TupleValue(
-                                        arrayOf(
-                                            ListValue(
-                                                mutableListOf(
-                                                    MapValue(mutableMapOf())
-                                                )
+                                    )
+                                ) to TupleValue(
+                                    arrayOf(
+                                        ListValue(
+                                            mutableListOf(
+                                                MapValue(mutableMapOf())
                                             )
                                         )
                                     )
@@ -206,9 +203,9 @@ val VALUES = ListValue(
                 ),
                 MapValue(
                     mutableMapOf(
-                        Pair(ListValue(mutableListOf()), TupleValue(arrayOf())),
-                        Pair(TupleValue(arrayOf()), MapValue(mutableMapOf())),
-                        Pair(MapValue(mutableMapOf()), ListValue(mutableListOf())),
+                        ListValue(mutableListOf()) to TupleValue(arrayOf()),
+                        TupleValue(arrayOf()) to MapValue(mutableMapOf()),
+                        MapValue(mutableMapOf()) to ListValue(mutableListOf()),
                     )
                 ),
                 TupleValue(
@@ -237,10 +234,10 @@ val VALUES = ListValue(
         ),
         MapValue(
             mutableMapOf(
-                Pair(StringValue("a"), StringValue("b")),
-                Pair(StringValue("c"), StringValue("d")),
-                Pair(StringValue("e"), StringValue("f")),
-                Pair(StringValue("g"), StringValue("h")),
+                StringValue("a") to StringValue("b"),
+                StringValue("c") to StringValue("d"),
+                StringValue("e") to StringValue("f"),
+                StringValue("g") to StringValue("h"),
             )
         )
     )
