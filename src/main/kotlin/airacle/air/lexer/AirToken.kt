@@ -34,7 +34,11 @@ class IntegerToken(val value: Long) : AirToken {
     }
 
     override fun toString(): String {
-        return value.toString()
+        return if (value >= 0) {
+            value.toString()
+        } else {
+            "0$value"
+        }
     }
 }
 
@@ -48,7 +52,12 @@ data class FloatToken(val value: Double) : AirToken {
     }
 
     override fun toString(): String {
-        return value.toString()
+        // don't use `value < 0.0`, won't work for -0.0
+        return if (value.compareTo(0.0) < 0) {
+            "0$value"
+        } else {
+            value.toString()
+        }
     }
 }
 
@@ -64,7 +73,15 @@ sealed class StringToken(val value: String) : AirToken {
 
 class FullStringToken(value: String) : StringToken(value) {
     override fun toString(): String {
-        return "\"$value\""
+        return "\"" +
+                // replace \ first
+                value.replace("\\", "\\\\")
+                    .replace("\n", "\\n")
+                    .replace("\r", "\\r")
+                    .replace("\t", "\\t")
+                    .replace(" ", "\\s")
+                    .replace("\"", "\\\"") +
+                "\""
     }
 }
 

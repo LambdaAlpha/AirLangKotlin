@@ -1,29 +1,30 @@
 package airacle.air.lexer
 
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertDoesNotThrow
 import java.io.FileReader
 
 internal class AirLexerTest {
     private val lexer = AirLexer(AirLexerConfig)
-    private lateinit var content: String
 
-    @BeforeEach
-    fun prepare() {
+    private fun readTokens(): String {
         val exampleFile = javaClass.getResource("/airacle/air/lexer/Tokens.air")!!.file
         val reader = FileReader(exampleFile)
-        content = reader.readText()
+        val content = reader.readText()
         reader.close()
+        return content
     }
 
     @Test
     fun lexTest() {
-        val tokens = assertDoesNotThrow {
-            lexer.lex(content)
-        }
-
+        val content = readTokens()
+        val tokens = lexer.lex(content)
         assertEquals(TOKENS, tokens)
+    }
+
+    @Test
+    fun toStringTest() {
+        val str = TOKENS.joinToString(separator = " ")
+        assertEquals(TOKENS, lexer.lex(str))
     }
 }

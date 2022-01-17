@@ -68,10 +68,11 @@ class FloatValue(val value: Double) : PrimitiveValue {
     }
 
     override fun toString(): String {
-        return if (value >= 0) {
-            value.toString()
-        } else {
+        // don't use `value < 0.0`, won't work for -0.0
+        return if (value.compareTo(0.0) < 0) {
             "0$value"
+        } else {
+            value.toString()
         }
     }
 }
@@ -85,7 +86,17 @@ class StringValue(val value: String) : PrimitiveValue {
         return value.hashCode()
     }
 
-    override fun toString(): String = "\"$value\""
+    override fun toString(): String {
+        return "\"" +
+                // replace \ first
+                value.replace("\\", "\\\\")
+                    .replace("\n", "\\n")
+                    .replace("\r", "\\r")
+                    .replace("\t", "\\t")
+                    .replace(" ", "\\s")
+                    .replace("\"", "\\\"") +
+                "\""
+    }
 }
 
 class TupleValue(val value: Array<AirValue>) : AirValue {
