@@ -2,7 +2,7 @@ package airacle.air.parser
 
 import airacle.air.interpreter.*
 
-val VALUES = ListValue(
+internal val VALUES = ListValue(
     mutableListOf(
         TupleValue(
             arrayOf(

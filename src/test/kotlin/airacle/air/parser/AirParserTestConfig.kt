@@ -2,7 +2,7 @@ package airacle.air.parser
 
 import airacle.air.interpreter.*
 
-object AirParserTestConfig : IAirParserConfig {
+internal object AirParserTestConfig : IAirParserConfig {
     override fun paramLength(value: AirValue): Int {
         return when (value) {
             is StringValue -> {
