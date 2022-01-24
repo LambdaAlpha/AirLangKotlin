@@ -6,7 +6,7 @@ import airacle.air.interpreter.StringValue
 object AirParserConfig : IAirParserConfig {
     override fun paramLength(value: AirValue): Int {
         if (value is StringValue) {
-            return 1 + when (value.value) {
+            return when (value.value) {
                 "if" -> 3
                 "for" -> 4
                 "while" -> 2
