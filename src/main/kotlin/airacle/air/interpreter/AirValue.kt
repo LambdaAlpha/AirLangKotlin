@@ -1,5 +1,9 @@
 package airacle.air.interpreter
 
+import airacle.air.lexer.*
+import java.math.BigDecimal
+import java.math.BigInteger
+
 sealed interface AirValue
 
 sealed interface PrimitiveValue : AirValue
@@ -14,11 +18,20 @@ object UnitValue : PrimitiveValue {
     }
 
     override fun toString(): String {
-        return "|"
+        return UnitToken.toString()
     }
 }
 
-sealed class BoolValue(val value: Boolean) : PrimitiveValue {
+class BoolValue private constructor(val value: Boolean) : PrimitiveValue {
+    companion object {
+        val TRUE: BoolValue = BoolValue(true)
+        val FALSE: BoolValue = BoolValue(false)
+
+        fun valueOf(value: Boolean): BoolValue {
+            return if (value) TRUE else FALSE
+        }
+    }
+
     override fun equals(other: Any?): Boolean {
         return other is BoolValue && value == other.value
     }
@@ -26,23 +39,30 @@ sealed class BoolValue(val value: Boolean) : PrimitiveValue {
     override fun hashCode(): Int {
         return value.hashCode()
     }
-}
 
-object TrueValue : BoolValue(true) {
     override fun toString(): String {
-        return "/"
+        return BoolToken.valueOf(value).toString()
     }
 }
 
-object FalseValue : BoolValue(false) {
-    override fun toString(): String {
-        return "\\"
-    }
-}
+class IntValue private constructor(val value: BigInteger) : PrimitiveValue {
+    companion object {
+        val ZERO: IntValue = IntValue(BigInteger.ZERO)
+        val ONE: IntValue = IntValue(BigInteger.ONE)
+        val TWO: IntValue = IntValue(BigInteger.TWO)
 
-class IntegerValue(val value: Long) : PrimitiveValue {
+        fun valueOf(value: BigInteger): IntValue {
+            return when (value) {
+                BigInteger.ZERO -> ZERO
+                BigInteger.ONE -> ONE
+                BigInteger.TWO -> TWO
+                else -> IntValue(value)
+            }
+        }
+    }
+
     override fun equals(other: Any?): Boolean {
-        return other is IntegerValue && value == other.value
+        return other is IntValue && value == other.value
     }
 
     override fun hashCode(): Int {
@@ -50,17 +70,28 @@ class IntegerValue(val value: Long) : PrimitiveValue {
     }
 
     override fun toString(): String {
-        return if (value >= 0) {
-            value.toString()
-        } else {
-            "0$value"
-        }
+        return IntToken.valueOf(value).toString()
     }
 }
 
-class FloatValue(val value: Double) : PrimitiveValue {
+class RealValue private constructor(val value: BigDecimal) : PrimitiveValue {
+    companion object {
+        val ZERO: RealValue = RealValue(BigDecimal.ZERO)
+        val ONE: RealValue = RealValue(BigDecimal.ONE)
+        val TWO: RealValue = RealValue("2".toBigDecimal())
+
+        fun valueOf(value: BigDecimal): RealValue {
+            return when (value) {
+                BigDecimal.ZERO -> ZERO
+                BigDecimal.ONE -> ONE
+                "2".toBigDecimal() -> TWO
+                else -> RealValue(value)
+            }
+        }
+    }
+
     override fun equals(other: Any?): Boolean {
-        return other is FloatValue && value == other.value
+        return other is RealValue && value == other.value
     }
 
     override fun hashCode(): Int {
@@ -68,12 +99,7 @@ class FloatValue(val value: Double) : PrimitiveValue {
     }
 
     override fun toString(): String {
-        // don't use `value < 0.0`, won't work for -0.0
-        return if (value.compareTo(0.0) < 0) {
-            "0$value"
-        } else {
-            value.toString()
-        }
+        return RealToken.valueOf(value).toString()
     }
 }
 
@@ -87,15 +113,7 @@ class StringValue(val value: String) : PrimitiveValue {
     }
 
     override fun toString(): String {
-        return "\"" +
-                // replace \ first
-                value.replace("\\", "\\\\")
-                    .replace("\n", "\\n")
-                    .replace("\r", "\\r")
-                    .replace("\t", "\\t")
-                    .replace(" ", "\\s")
-                    .replace("\"", "\\\"") +
-                "\""
+        return FullStringToken(value).toString()
     }
 }
 

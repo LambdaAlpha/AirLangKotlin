@@ -45,14 +45,14 @@ internal val VALUES = ListValue(
         ),
         TupleValue(
             arrayOf(
-                FalseValue,
-                FalseValue,
-                TrueValue,
+                BoolValue.FALSE,
+                BoolValue.FALSE,
+                BoolValue.TRUE,
             )
         ),
         TupleValue(
             arrayOf(
-                IntegerValue(111),
+                IntValue.valueOf(111.toBigInteger()),
                 StringValue("a"),
                 StringValue("b"),
                 StringValue("c"),
@@ -60,7 +60,7 @@ internal val VALUES = ListValue(
         ),
         TupleValue(
             arrayOf(
-                FloatValue(1.234),
+                RealValue.valueOf("1.234".toBigDecimal()),
                 StringValue("a"),
                 StringValue("b"),
                 StringValue("c"),
@@ -77,13 +77,13 @@ internal val VALUES = ListValue(
         TupleValue(
             arrayOf(
                 StringValue("~"),
-                IntegerValue(1)
+                IntValue.ONE,
             )
         ),
         TupleValue(
             arrayOf(
                 StringValue("@"),
-                FloatValue(1.2)
+                RealValue.valueOf("1.2".toBigDecimal())
             )
         ),
         TupleValue(
@@ -102,7 +102,7 @@ internal val VALUES = ListValue(
                 StringValue("%"),
                 ListValue(
                     mutableListOf(
-                        IntegerValue(1),
+                        IntValue.ONE,
                         StringValue("a"),
                     )
                 )
@@ -113,7 +113,7 @@ internal val VALUES = ListValue(
                 StringValue("^"),
                 MapValue(
                     mutableMapOf(
-                        IntegerValue(1) to StringValue("a"),
+                        IntValue.ONE to StringValue("a"),
                     )
                 )
             )
@@ -127,13 +127,13 @@ internal val VALUES = ListValue(
         TupleValue(
             arrayOf(
                 StringValue("*"),
-                FalseValue
+                BoolValue.FALSE,
             )
         ),
         TupleValue(
             arrayOf(
                 StringValue("-"),
-                TrueValue
+                BoolValue.TRUE,
             )
         ),
         TupleValue(

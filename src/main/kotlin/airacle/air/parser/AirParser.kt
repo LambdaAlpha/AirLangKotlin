@@ -42,36 +42,35 @@ class AirParser(private val config: IAirParserConfig) {
         if (key !is TokenNode<*>) {
             return Pair(key, next)
         }
-        return when (key.token) {
+        return when (val token = key.token) {
             // basic values
             is UnitToken -> Pair(ValueNode(UnitValue), next)
-            is TrueToken -> Pair(ValueNode(TrueValue), next)
-            is FalseToken -> Pair(ValueNode(FalseValue), next)
-            is IntegerToken -> Pair(ValueNode(IntegerValue(key.token.value)), next)
-            is FloatToken -> Pair(ValueNode(FloatValue(key.token.value)), next)
-            is AlphaStringToken -> Pair(ValueNode(StringValue(key.token.value)), next)
-            is FullStringToken -> Pair(ValueNode(StringValue(key.token.value)), next)
+            is BoolToken -> Pair(ValueNode(BoolValue.valueOf(token.value)), next)
+            is IntToken -> Pair(ValueNode(IntValue.valueOf(token.value)), next)
+            is RealToken -> Pair(ValueNode(RealValue.valueOf(token.value)), next)
+            is AlphaStringToken -> Pair(ValueNode(StringValue(token.value)), next)
+            is FullStringToken -> Pair(ValueNode(StringValue(token.value)), next)
 
             // compound values
-            is LCircleToken -> parseCircle(nodes, next)
-            is LSquareToken -> parseSquare(nodes, next)
-            is LCurlyToken -> parseCurly(nodes, next)
-            is LAngleToken -> parseAngle(nodes, next)
-            is RCircleToken,
-            is RSquareToken,
-            is RCurlyToken,
-            is RAngleToken,
-            is ColonToken,
-            is CommaToken -> Pair(key, next)
+            SymbolStringToken.LCircle -> parseCircle(nodes, next)
+            SymbolStringToken.LSquare -> parseSquare(nodes, next)
+            SymbolStringToken.LCurly -> parseCurly(nodes, next)
+            SymbolStringToken.LAngle -> parseAngle(nodes, next)
+            SymbolStringToken.RCircle,
+            SymbolStringToken.RSquare,
+            SymbolStringToken.RCurly,
+            SymbolStringToken.RAngle,
+            SymbolStringToken.Colon,
+            SymbolStringToken.Comma -> Pair(key, next)
 
             // keyword tuples
-            is SemicolonToken -> parseKeyword(nodes, next)
+            SymbolStringToken.Semicolon -> parseKeyword(nodes, next)
 
             // comment
-            is NumToken -> parseComment(nodes, next, infixMode)
+            SymbolStringToken.Sharp -> parseComment(nodes, next, infixMode)
 
             // symbols
-            is SingleSymbolStringToken -> parseSymbol(key.token, nodes, next, infixMode = infixMode)
+            is SymbolStringToken -> parseSymbol(token, nodes, next, infixMode = infixMode)
 
             else -> throw AirParserError("unknown token: $key")
         }
@@ -105,7 +104,7 @@ class AirParser(private val config: IAirParserConfig) {
         var node = pair.first
         var firstValue: AirValue? = null
         var secondValue: AirValue? = null
-        while (!(node is TokenNode<*> && node.token is RCircleToken)) {
+        while (!(node is TokenNode<*> && node.token == SymbolStringToken.RCircle)) {
             val value: AirValue = if (node is ValueNode<*>) {
                 node.value
             } else {
@@ -134,12 +133,12 @@ class AirParser(private val config: IAirParserConfig) {
         var pair = parseOneSkipComment(nodes, start)
         var node = pair.first
         var allowComma = false
-        while (!(node is TokenNode<*> && node.token is RSquareToken)) {
+        while (!(node is TokenNode<*> && node.token == SymbolStringToken.RSquare)) {
             if (node is ValueNode<*>) {
                 allowComma = true
                 list.add(node.value)
             } else {
-                if (allowComma && node is TokenNode<*> && node.token is CommaToken) {
+                if (allowComma && node is TokenNode<*> && node.token == SymbolStringToken.Comma) {
                     allowComma = false
                 } else {
                     throw AirParserError("non-value when parsing list: $node")
@@ -162,7 +161,7 @@ class AirParser(private val config: IAirParserConfig) {
         // 1 key 2 colon 3 value 4 comma
         var status = 1
         var key: AirValue? = null
-        while (!(node is TokenNode<*> && node.token is RCurlyToken)) {
+        while (!(node is TokenNode<*> && node.token == SymbolStringToken.RCurly)) {
             when (status) {
                 1 -> {
                     if (node !is ValueNode<*>) {
@@ -177,7 +176,7 @@ class AirParser(private val config: IAirParserConfig) {
                         map[key!!] = value
                         status = 4
                     } else if (node is TokenNode<*>) {
-                        if (node.token !is ColonToken) {
+                        if (node.token != SymbolStringToken.Colon) {
                             throw AirParserError("unexpected token when parsing map: ${node.token}")
                         }
                         status = 3
@@ -197,7 +196,7 @@ class AirParser(private val config: IAirParserConfig) {
                         key = node.value
                         status = 2
                     } else if (node is TokenNode<*>) {
-                        if (node.token !is CommaToken) {
+                        if (node.token != SymbolStringToken.Comma) {
                             throw AirParserError("unexpected token when parsing map: ${node.token}")
                         }
                         status = 1
@@ -223,12 +222,12 @@ class AirParser(private val config: IAirParserConfig) {
         var pair = parseOneSkipComment(nodes, start)
         var node = pair.first
         var allowComma = false
-        while (!(node is TokenNode<*> && node.token is RAngleToken)) {
+        while (!(node is TokenNode<*> && node.token == SymbolStringToken.RAngle)) {
             if (node is ValueNode<*>) {
                 allowComma = true
                 list.add(node.value)
             } else {
-                if (allowComma && node is TokenNode<*> && node.token is CommaToken) {
+                if (allowComma && node is TokenNode<*> && node.token == SymbolStringToken.Comma) {
                     allowComma = false
                 } else {
                     throw AirParserError("non-value when parsing tuple: $node")
@@ -286,7 +285,7 @@ class AirParser(private val config: IAirParserConfig) {
     }
 
     private fun parseSymbol(
-        token: SingleSymbolStringToken,
+        token: SymbolStringToken,
         nodes: List<AirSyntaxNode>,
         start: Int,
         infixMode: Boolean

@@ -1,32 +1,38 @@
 package airacle.air.lexer
 
+import java.math.BigDecimal
+import java.math.BigInteger
+
 sealed interface AirToken
 
 object DelimiterToken : AirToken
 
 object UnitToken : AirToken {
+    override fun equals(other: Any?): Boolean {
+        return other is UnitToken
+    }
+
+    override fun hashCode(): Int {
+        return Unit.hashCode()
+    }
+
     override fun toString(): String {
         return "|"
     }
 }
 
-sealed class BoolToken(val value: Boolean) : AirToken
+class BoolToken private constructor(val value: Boolean) : AirToken {
+    companion object {
+        val FALSE: BoolToken = BoolToken(false)
+        val TRUE: BoolToken = BoolToken(true)
 
-object TrueToken : BoolToken(true) {
-    override fun toString(): String {
-        return "/"
+        fun valueOf(value: Boolean): BoolToken {
+            return if (value) TRUE else FALSE
+        }
     }
-}
 
-object FalseToken : BoolToken(false) {
-    override fun toString(): String {
-        return "\\"
-    }
-}
-
-class IntegerToken(val value: Long) : AirToken {
     override fun equals(other: Any?): Boolean {
-        return other is IntegerToken && value == other.value
+        return other is BoolToken && value == other.value
     }
 
     override fun hashCode(): Int {
@@ -34,7 +40,36 @@ class IntegerToken(val value: Long) : AirToken {
     }
 
     override fun toString(): String {
-        return if (value >= 0) {
+        return if (value) "/" else "\\"
+    }
+}
+
+class IntToken private constructor(val value: BigInteger) : AirToken {
+    companion object {
+        val ZERO: IntToken = IntToken(BigInteger.ZERO)
+        val ONE: IntToken = IntToken(BigInteger.ONE)
+        val TWO: IntToken = IntToken(BigInteger.TWO)
+
+        fun valueOf(value: BigInteger): IntToken {
+            return when (value) {
+                BigInteger.ZERO -> ZERO
+                BigInteger.ONE -> ONE
+                BigInteger.TWO -> TWO
+                else -> IntToken(value)
+            }
+        }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return other is IntToken && value == other.value
+    }
+
+    override fun hashCode(): Int {
+        return value.hashCode()
+    }
+
+    override fun toString(): String {
+        return if (value >= BigInteger.ZERO) {
             value.toString()
         } else {
             "0$value"
@@ -42,9 +77,24 @@ class IntegerToken(val value: Long) : AirToken {
     }
 }
 
-data class FloatToken(val value: Double) : AirToken {
+class RealToken private constructor(val value: BigDecimal) : AirToken {
+    companion object {
+        val ZERO: RealToken = RealToken(BigDecimal.ZERO)
+        val ONE: RealToken = RealToken(BigDecimal.ONE)
+        val TWO: RealToken = RealToken("2".toBigDecimal())
+
+        fun valueOf(value: BigDecimal): RealToken {
+            return when (value) {
+                BigDecimal.ZERO -> ZERO
+                BigDecimal.ONE -> ONE
+                "2".toBigDecimal() -> TWO
+                else -> RealToken(value)
+            }
+        }
+    }
+
     override fun equals(other: Any?): Boolean {
-        return other is FloatToken && value == other.value
+        return other is RealToken && value == other.value
     }
 
     override fun hashCode(): Int {
@@ -52,8 +102,7 @@ data class FloatToken(val value: Double) : AirToken {
     }
 
     override fun toString(): String {
-        // don't use `value < 0.0`, won't work for -0.0
-        return if (value.compareTo(0.0) < 0) {
+        return if (value < BigDecimal.ZERO) {
             "0$value"
         } else {
             value.toString()
@@ -91,72 +140,43 @@ class AlphaStringToken(value: String) : StringToken(value) {
     }
 }
 
-sealed class SingleSymbolStringToken(value: String) : StringToken(value) {
+class SymbolStringToken private constructor(value: String) : StringToken(value) {
+    companion object {
+        val LCircle = SymbolStringToken("(")
+        val RCircle = SymbolStringToken(")")
+        val LSquare = SymbolStringToken("[")
+        val RSquare = SymbolStringToken("]")
+        val LCurly = SymbolStringToken("{")
+        val RCurly = SymbolStringToken("}")
+        val LSlash = SymbolStringToken("\\")
+        val MSlash = SymbolStringToken("|")
+        val RSlash = SymbolStringToken("/")
+        val LAngle = SymbolStringToken("<")
+        val Equal = SymbolStringToken("=")
+        val RAngle = SymbolStringToken(">")
+        val Semicolon = SymbolStringToken(";")
+        val Colon = SymbolStringToken(":")
+        val Comma = SymbolStringToken(",")
+        val Period = SymbolStringToken(".")
+        val SingleQuote = SymbolStringToken("\'")
+        val DoubleQuote = SymbolStringToken("\"")
+        val BackQuote = SymbolStringToken("`")
+        val Hat = SymbolStringToken("^")
+        val Minus = SymbolStringToken("-")
+        val Plus = SymbolStringToken("+")
+        val Exclamation = SymbolStringToken("!")
+        val QuestionMark = SymbolStringToken("?")
+        val Tilde = SymbolStringToken("~")
+        val At = SymbolStringToken("@")
+        val Sharp = SymbolStringToken("#")
+        val Dollar = SymbolStringToken("$")
+        val Percent = SymbolStringToken("%")
+        val Ampersand = SymbolStringToken("&")
+        val Star = SymbolStringToken("*")
+        val Underscore = SymbolStringToken("_")
+    }
+
     override fun toString(): String {
         return value
     }
 }
-
-object LCircleToken : SingleSymbolStringToken("(")
-
-object RCircleToken : SingleSymbolStringToken(")")
-
-object LSquareToken : SingleSymbolStringToken("[")
-
-object RSquareToken : SingleSymbolStringToken("]")
-
-object LCurlyToken : SingleSymbolStringToken("{")
-
-object RCurlyToken : SingleSymbolStringToken("}")
-
-object LSlashToken : SingleSymbolStringToken("\\")
-
-object MSlashToken : SingleSymbolStringToken("|")
-
-object RSlashToken : SingleSymbolStringToken("/")
-
-object LAngleToken : SingleSymbolStringToken("<")
-
-object EqualToken : SingleSymbolStringToken("=")
-
-object RAngleToken : SingleSymbolStringToken(">")
-
-object SemicolonToken : SingleSymbolStringToken(";")
-
-object ColonToken : SingleSymbolStringToken(":")
-
-object CommaToken : SingleSymbolStringToken(",")
-
-object PeriodToken : SingleSymbolStringToken(".")
-
-object SingleQuoteToken : SingleSymbolStringToken("\'")
-
-object DoubleQuoteToken : SingleSymbolStringToken("\"")
-
-object BackQuoteToken : SingleSymbolStringToken("`")
-
-object HatToken : SingleSymbolStringToken("^")
-
-object MinusToken : SingleSymbolStringToken("-")
-
-object PlusToken : SingleSymbolStringToken("+")
-
-object ExclamationToken : SingleSymbolStringToken("!")
-
-object QuestionMarkToken : SingleSymbolStringToken("?")
-
-object TildeToken : SingleSymbolStringToken("~")
-
-object AtToken : SingleSymbolStringToken("@")
-
-object NumToken : SingleSymbolStringToken("#")
-
-object DollarToken : SingleSymbolStringToken("$")
-
-object PercentToken : SingleSymbolStringToken("%")
-
-object AmpersandToken : SingleSymbolStringToken("&")
-
-object AsteriskToken : SingleSymbolStringToken("*")
-
-object UnderscoreToken : SingleSymbolStringToken("_")

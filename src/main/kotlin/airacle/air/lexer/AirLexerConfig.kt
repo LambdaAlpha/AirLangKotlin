@@ -99,7 +99,7 @@ object BoolLexer : IAirRegexLexer {
     }
 
     override fun parse(match: MatchResult): AirToken {
-        return if (match.value == "/") TrueToken else FalseToken
+        return BoolToken.valueOf(match.value == "/")
     }
 }
 
@@ -112,38 +112,38 @@ object SymbolStringLexer : IAirRegexLexer {
 
     override fun parse(match: MatchResult): AirToken {
         return when (match.value) {
-            "`" -> BackQuoteToken
-            "~" -> TildeToken
-            "!" -> ExclamationToken
-            "@" -> AtToken
-            "#" -> NumToken
-            "$" -> DollarToken
-            "%" -> PercentToken
-            "^" -> HatToken
-            "&" -> AmpersandToken
-            "*" -> AsteriskToken
-            "(" -> LCircleToken
-            ")" -> RCircleToken
-            "-" -> MinusToken
-            "_" -> UnderscoreToken
-            "=" -> EqualToken
-            "+" -> PlusToken
-            "[" -> LSquareToken
-            "{" -> LCurlyToken
-            "]" -> RSquareToken
-            "}" -> RCurlyToken
-            "\\" -> LSlashToken
-            "|" -> MSlashToken
-            ";" -> SemicolonToken
-            ":" -> ColonToken
-            "\'" -> SingleQuoteToken
-            "\"" -> DoubleQuoteToken
-            "," -> CommaToken
-            "<" -> LAngleToken
-            "." -> PeriodToken
-            ">" -> RAngleToken
-            "/" -> RSlashToken
-            "?" -> QuestionMarkToken
+            "`" -> SymbolStringToken.BackQuote
+            "~" -> SymbolStringToken.Tilde
+            "!" -> SymbolStringToken.Exclamation
+            "@" -> SymbolStringToken.At
+            "#" -> SymbolStringToken.Sharp
+            "$" -> SymbolStringToken.Dollar
+            "%" -> SymbolStringToken.Percent
+            "^" -> SymbolStringToken.Hat
+            "&" -> SymbolStringToken.Ampersand
+            "*" -> SymbolStringToken.Star
+            "(" -> SymbolStringToken.LCircle
+            ")" -> SymbolStringToken.RCircle
+            "-" -> SymbolStringToken.Minus
+            "_" -> SymbolStringToken.Underscore
+            "=" -> SymbolStringToken.Equal
+            "+" -> SymbolStringToken.Plus
+            "[" -> SymbolStringToken.LSquare
+            "{" -> SymbolStringToken.LCurly
+            "]" -> SymbolStringToken.RSquare
+            "}" -> SymbolStringToken.RCurly
+            "\\" -> SymbolStringToken.LSlash
+            "|" -> SymbolStringToken.MSlash
+            ";" -> SymbolStringToken.Semicolon
+            ":" -> SymbolStringToken.Colon
+            "\'" -> SymbolStringToken.SingleQuote
+            "\"" -> SymbolStringToken.DoubleQuote
+            "," -> SymbolStringToken.Comma
+            "<" -> SymbolStringToken.LAngle
+            "." -> SymbolStringToken.Period
+            ">" -> SymbolStringToken.RAngle
+            "/" -> SymbolStringToken.RSlash
+            "?" -> SymbolStringToken.QuestionMark
             // never
             else -> FullStringToken(match.value)
         }
@@ -228,44 +228,49 @@ object NumberLexer : IAirRegexLexer {
         // remove delimiters
         s = s.replace("_", "")
 
-        if (s == "0") {
-            return IntegerToken(0)
-        }
-        // remove prefix 0
-        if (s[0] == '0') {
-            s = s.substring(1)
+        var i = 0
+        val prefixZero = s.length > 1 && ("+-xXbB".contains(s[1]))
+
+        if (prefixZero) {
+            i += 1
         }
 
-        val negative = s.length > 1 && s[0] == '-'
-        // remove sign
-        if (s.length > 1 && (s[0] == '-' || s[0] == '+')) {
-            s = s.substring(1)
+        val hasSign = s.length > i && (s[i] == '+' || s[i] == '-')
+        val negative = hasSign && s[i] == '-'
+        if (hasSign) {
+            i += 1
         }
 
-        val radix = if (s[0] == 'x' || s[0] == 'X') {
-            16
-        } else if (s[0] == 'b' || s[0] == 'B') {
-            2
+        val hasRadix = s.length > i && "xXbB".contains(s[i])
+        val radix = if (hasRadix) {
+            if (s[i] == 'x' || s[i] == 'X') {
+                16
+            } else if (s[i] == 'b' || s[i] == 'B') {
+                2
+            } else {
+                10
+            }
         } else {
             10
         }
-        // remove radix
-        if (radix != 10) {
-            s = s.substring(1)
+
+        if (hasRadix) {
+            i += 1
         }
 
-        return if (radix == 16) {
-            val value = s.toLong(16)
-            IntegerToken(if (negative) -value else value)
-        } else if (radix == 2) {
-            val value = s.toLong(2)
-            IntegerToken(if (negative) -value else value)
-        } else if (s.contains('.')) {
-            val value = s.toDouble()
-            FloatToken(if (negative) -value else value)
-        } else {
-            val value = s.toLong()
-            IntegerToken(if (negative) -value else value)
+        s = s.substring(i)
+
+        val isReal = s.contains(".")
+        if (isReal) {
+            val value = s.toBigDecimal().let {
+                if (negative) it.negate() else it
+            }
+            return RealToken.valueOf(value)
         }
+
+        val value = s.toBigInteger(radix).let {
+            if (negative) it.negate() else it
+        }
+        return IntToken.valueOf(value)
     }
 }
