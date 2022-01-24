@@ -33,19 +33,8 @@ dependencies {
     // basic utils
     // https://mvnrepository.com/artifact/com.google.guava/guava
     implementation("com.google.guava:guava:31.0.1-jre")
-
-    // to parse command line
-    implementation("info.picocli:picocli:4.6.1")
-    kapt("info.picocli:picocli-codegen:4.6.1")
 }
 
 application {
     mainClass.set("MainKt")
-}
-
-// picocli annotation
-kapt {
-    arguments {
-        arg("project", "${project.group}/${project.name}")
-    }
 }
