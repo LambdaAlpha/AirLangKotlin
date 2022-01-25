@@ -41,7 +41,7 @@ class BoolValue private constructor(val value: Boolean) : PrimitiveValue {
     }
 
     override fun toString(): String {
-        return BoolToken.valueOf(value).toString()
+        return BoolToken.toString(value)
     }
 }
 
@@ -70,7 +70,7 @@ class IntValue private constructor(val value: BigInteger) : PrimitiveValue {
     }
 
     override fun toString(): String {
-        return IntToken.valueOf(value).toString()
+        return IntToken.toString(value)
     }
 }
 
@@ -99,7 +99,7 @@ class RealValue private constructor(val value: BigDecimal) : PrimitiveValue {
     }
 
     override fun toString(): String {
-        return RealToken.valueOf(value).toString()
+        return RealToken.toString(value)
     }
 }
 
@@ -113,7 +113,7 @@ class StringValue(val value: String) : PrimitiveValue {
     }
 
     override fun toString(): String {
-        return FullStringToken(value).toString()
+        return FullStringToken.toString(value)
     }
 }
 

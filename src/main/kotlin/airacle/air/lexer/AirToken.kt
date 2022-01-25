@@ -29,6 +29,10 @@ class BoolToken private constructor(val value: Boolean) : AirToken {
         fun valueOf(value: Boolean): BoolToken {
             return if (value) TRUE else FALSE
         }
+
+        fun toString(value: Boolean): String {
+            return if (value) "/" else "\\"
+        }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -40,7 +44,7 @@ class BoolToken private constructor(val value: Boolean) : AirToken {
     }
 
     override fun toString(): String {
-        return if (value) "/" else "\\"
+        return Companion.toString(value)
     }
 }
 
@@ -58,6 +62,14 @@ class IntToken private constructor(val value: BigInteger) : AirToken {
                 else -> IntToken(value)
             }
         }
+
+        fun toString(value: BigInteger): String {
+            return if (value >= BigInteger.ZERO) {
+                value.toString()
+            } else {
+                "0$value"
+            }
+        }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -69,11 +81,7 @@ class IntToken private constructor(val value: BigInteger) : AirToken {
     }
 
     override fun toString(): String {
-        return if (value >= BigInteger.ZERO) {
-            value.toString()
-        } else {
-            "0$value"
-        }
+        return Companion.toString(value)
     }
 }
 
@@ -91,6 +99,14 @@ class RealToken private constructor(val value: BigDecimal) : AirToken {
                 else -> RealToken(value)
             }
         }
+
+        fun toString(value: BigDecimal): String {
+            return if (value < BigDecimal.ZERO) {
+                "0$value"
+            } else {
+                value.toString()
+            }
+        }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -102,11 +118,7 @@ class RealToken private constructor(val value: BigDecimal) : AirToken {
     }
 
     override fun toString(): String {
-        return if (value < BigDecimal.ZERO) {
-            "0$value"
-        } else {
-            value.toString()
-        }
+        return Companion.toString(value)
     }
 }
 
@@ -121,22 +133,40 @@ sealed class StringToken(val value: String) : AirToken {
 }
 
 class FullStringToken(value: String) : StringToken(value) {
+    companion object {
+        fun toString(value: String): String {
+            val builder = StringBuilder(value.length)
+            builder.append('"')
+            for (c in value) {
+                when (c) {
+                    '\\' -> builder.append("\\\\")
+                    '\n' -> builder.append("\\n")
+                    '\r' -> builder.append("\\r")
+                    '\t' -> builder.append("\\t")
+                    ' ' -> builder.append("\\s")
+                    '"' -> builder.append("\\\"")
+                    else -> builder.append(c)
+                }
+            }
+            builder.append('"')
+            return builder.toString()
+        }
+    }
+
     override fun toString(): String {
-        return "\"" +
-                // replace \ first
-                value.replace("\\", "\\\\")
-                    .replace("\n", "\\n")
-                    .replace("\r", "\\r")
-                    .replace("\t", "\\t")
-                    .replace(" ", "\\s")
-                    .replace("\"", "\\\"") +
-                "\""
+        return Companion.toString(value)
     }
 }
 
 class AlphaStringToken(value: String) : StringToken(value) {
+    companion object {
+        fun toString(value: String): String {
+            return value
+        }
+    }
+
     override fun toString(): String {
-        return value
+        return Companion.toString(value)
     }
 }
 
@@ -174,9 +204,13 @@ class SymbolStringToken private constructor(value: String) : StringToken(value) 
         val Ampersand = SymbolStringToken("&")
         val Star = SymbolStringToken("*")
         val Underscore = SymbolStringToken("_")
+
+        fun toString(value: String): String {
+            return value
+        }
     }
 
     override fun toString(): String {
-        return value
+        return Companion.toString(value)
     }
 }
