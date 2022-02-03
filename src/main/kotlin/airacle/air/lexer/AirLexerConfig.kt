@@ -265,7 +265,7 @@ object NumberLexer : IAirRegexLexer {
             val value = s.toBigDecimal().let {
                 if (negative) it.negate() else it
             }
-            return RealToken.valueOf(value)
+            return DecimalToken.valueOf(value)
         }
 
         val value = s.toBigInteger(radix).let {

@@ -1,5 +1,7 @@
 package airacle.air.lexer
 
+import airacle.air.api.IAirLexer
+
 interface IAirLexerConfig {
     // return a regex lexer, or null if char is illegal
     fun dispatch(char: Char): IAirRegexLexer?
@@ -23,9 +25,10 @@ class AirLexerError(
 )
 
 class AirLexer(
+    val version: AirLexerVersion,
     private val config: IAirLexerConfig
-) {
-    fun lex(source: String): List<AirToken> {
+) : IAirLexer<AirToken> {
+    override fun lex(source: String): List<AirToken> {
         val tokens = mutableListOf<AirToken>()
         lex(source, tokens)
         return tokens

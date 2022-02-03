@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import java.io.FileReader
 
 internal class AirLexerTest {
-    private val lexer = AirLexer(AirLexerConfig)
+    private val lexer = AirLexer(AirLexerVersion.V0, AirLexerConfig)
 
     private fun readTokens(): String {
         val exampleFile = javaClass.getResource("/airacle/air/lexer/Tokens.air")!!.file

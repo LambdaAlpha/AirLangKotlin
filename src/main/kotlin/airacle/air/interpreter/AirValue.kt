@@ -47,15 +47,21 @@ class BoolValue private constructor(val value: Boolean) : PrimitiveValue {
 
 class IntValue private constructor(val value: BigInteger) : PrimitiveValue {
     companion object {
+        private val positiveConstants: Array<IntValue> = Array(17) { i: Int ->
+            IntValue(BigInteger.valueOf(i.toLong()))
+        }
+        private val negativeConstants: Array<IntValue> = Array(17) { i: Int ->
+            IntValue(BigInteger.valueOf(-i.toLong()))
+        }
         val ZERO: IntValue = IntValue(BigInteger.ZERO)
-        val ONE: IntValue = IntValue(BigInteger.ONE)
-        val TWO: IntValue = IntValue(BigInteger.TWO)
+        val ONE: IntValue = valueOf(BigInteger.ONE)
+        val TWO: IntValue = valueOf(BigInteger.TWO)
 
         fun valueOf(value: BigInteger): IntValue {
-            return when (value) {
-                BigInteger.ZERO -> ZERO
-                BigInteger.ONE -> ONE
-                BigInteger.TWO -> TWO
+            return when {
+                value == BigInteger.ZERO -> ZERO
+                value > BigInteger.ZERO && value <= BigInteger.valueOf(16L) -> positiveConstants[value.toInt()]
+                value < BigInteger.ZERO && value >= BigInteger.valueOf(-16L) -> negativeConstants[-value.toInt()]
                 else -> IntValue(value)
             }
         }
@@ -74,24 +80,24 @@ class IntValue private constructor(val value: BigInteger) : PrimitiveValue {
     }
 }
 
-class RealValue private constructor(val value: BigDecimal) : PrimitiveValue {
+class DecimalValue private constructor(val value: BigDecimal) : PrimitiveValue {
     companion object {
-        val ZERO: RealValue = RealValue(BigDecimal.ZERO)
-        val ONE: RealValue = RealValue(BigDecimal.ONE)
-        val TWO: RealValue = RealValue("2".toBigDecimal())
+        val ZERO: DecimalValue = DecimalValue(BigDecimal.ZERO)
+        val ONE: DecimalValue = DecimalValue(BigDecimal.ONE)
+        val TWO: DecimalValue = DecimalValue("2".toBigDecimal())
 
-        fun valueOf(value: BigDecimal): RealValue {
+        fun valueOf(value: BigDecimal): DecimalValue {
             return when (value) {
                 BigDecimal.ZERO -> ZERO
                 BigDecimal.ONE -> ONE
                 "2".toBigDecimal() -> TWO
-                else -> RealValue(value)
+                else -> DecimalValue(value)
             }
         }
     }
 
     override fun equals(other: Any?): Boolean {
-        return other is RealValue && value == other.value
+        return other is DecimalValue && value == other.value
     }
 
     override fun hashCode(): Int {
@@ -99,11 +105,28 @@ class RealValue private constructor(val value: BigDecimal) : PrimitiveValue {
     }
 
     override fun toString(): String {
-        return RealToken.toString(value)
+        return DecimalToken.toString(value)
     }
 }
 
-class StringValue(val value: String) : PrimitiveValue {
+class StringValue private constructor(val value: String) : PrimitiveValue {
+    companion object {
+        val EMPTY = StringValue("")
+        private val CONSTANTS: Array<StringValue> = Array(128) {
+            StringValue(it.toChar().toString())
+        }
+
+        fun valueOf(value: String): StringValue {
+            return if (value.isEmpty()) {
+                EMPTY
+            } else if (value.length == 1 && value[0].code < 128) {
+                CONSTANTS[value[0].code]
+            } else {
+                StringValue(value)
+            }
+        }
+    }
+
     override fun equals(other: Any?): Boolean {
         return other is StringValue && value == other.value
     }

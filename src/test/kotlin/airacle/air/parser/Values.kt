@@ -6,32 +6,32 @@ internal val VALUES = ListValue(
     mutableListOf(
         TupleValue(
             arrayOf(
-                StringValue("zero"),
+                StringValue.valueOf("zero"),
             )
         ),
         TupleValue(
             arrayOf(
-                StringValue("zero"),
+                StringValue.valueOf("zero"),
             )
         ),
         TupleValue(
             arrayOf(
-                StringValue("one"),
-                StringValue("one"),
+                StringValue.valueOf("one"),
+                StringValue.valueOf("one"),
             )
         ),
         TupleValue(
             arrayOf(
-                StringValue("two"),
+                StringValue.valueOf("two"),
                 TupleValue(
                     arrayOf(
-                        StringValue("zero"),
+                        StringValue.valueOf("zero"),
                     )
                 ),
                 TupleValue(
                     arrayOf(
-                        StringValue("one"),
-                        StringValue("one"),
+                        StringValue.valueOf("one"),
+                        StringValue.valueOf("one"),
                     )
                 ),
             )
@@ -53,111 +53,111 @@ internal val VALUES = ListValue(
         TupleValue(
             arrayOf(
                 IntValue.valueOf(111.toBigInteger()),
-                StringValue("a"),
-                StringValue("b"),
-                StringValue("c"),
+                StringValue.valueOf("a"),
+                StringValue.valueOf("b"),
+                StringValue.valueOf("c"),
             )
         ),
         TupleValue(
             arrayOf(
-                RealValue.valueOf("1.234".toBigDecimal()),
-                StringValue("a"),
-                StringValue("b"),
-                StringValue("c"),
-                StringValue("d"),
+                DecimalValue.valueOf("1.234".toBigDecimal()),
+                StringValue.valueOf("a"),
+                StringValue.valueOf("b"),
+                StringValue.valueOf("c"),
+                StringValue.valueOf("d"),
             )
         ),
 
         TupleValue(
             arrayOf(
-                StringValue("`"),
-                StringValue("`"),
+                StringValue.valueOf("`"),
+                StringValue.valueOf("`"),
             )
         ),
         TupleValue(
             arrayOf(
-                StringValue("~"),
+                StringValue.valueOf("~"),
                 IntValue.ONE,
             )
         ),
         TupleValue(
             arrayOf(
-                StringValue("@"),
-                RealValue.valueOf("1.2".toBigDecimal())
+                StringValue.valueOf("@"),
+                DecimalValue.valueOf("1.2".toBigDecimal())
             )
         ),
         TupleValue(
             arrayOf(
-                StringValue("$"),
+                StringValue.valueOf("$"),
                 TupleValue(
                     arrayOf(
-                        StringValue("a"),
-                        StringValue("b"),
+                        StringValue.valueOf("a"),
+                        StringValue.valueOf("b"),
                     )
                 ),
             )
         ),
         TupleValue(
             arrayOf(
-                StringValue("%"),
+                StringValue.valueOf("%"),
                 ListValue(
                     mutableListOf(
                         IntValue.ONE,
-                        StringValue("a"),
+                        StringValue.valueOf("a"),
                     )
                 )
             )
         ),
         TupleValue(
             arrayOf(
-                StringValue("^"),
+                StringValue.valueOf("^"),
                 MapValue(
                     mutableMapOf(
-                        IntValue.ONE to StringValue("a"),
+                        IntValue.ONE to StringValue.valueOf("a"),
                     )
                 )
             )
         ),
         TupleValue(
             arrayOf(
-                StringValue("&"),
+                StringValue.valueOf("&"),
                 UnitValue
             )
         ),
         TupleValue(
             arrayOf(
-                StringValue("*"),
+                StringValue.valueOf("*"),
                 BoolValue.FALSE,
             )
         ),
         TupleValue(
             arrayOf(
-                StringValue("-"),
+                StringValue.valueOf("-"),
                 BoolValue.TRUE,
             )
         ),
         TupleValue(
             arrayOf(
-                StringValue("?"),
+                StringValue.valueOf("?"),
                 TupleValue(
                     arrayOf(
-                        StringValue("?"),
-                        StringValue("a"),
-                        StringValue("b"),
+                        StringValue.valueOf("?"),
+                        StringValue.valueOf("a"),
+                        StringValue.valueOf("b"),
                     )
                 ),
-                StringValue("c")
+                StringValue.valueOf("c")
             )
         ),
         TupleValue(
             arrayOf(
-                StringValue("."),
-                StringValue("a"),
+                StringValue.valueOf("."),
+                StringValue.valueOf("a"),
                 TupleValue(
                     arrayOf(
-                        StringValue("."),
-                        StringValue("b"),
-                        StringValue("c"),
+                        StringValue.valueOf("."),
+                        StringValue.valueOf("b"),
+                        StringValue.valueOf("c"),
                     )
                 ),
             )
@@ -220,24 +220,24 @@ internal val VALUES = ListValue(
 
         TupleValue(
             arrayOf(
-                StringValue("a"),
-                StringValue("b"),
-                StringValue("c"),
+                StringValue.valueOf("a"),
+                StringValue.valueOf("b"),
+                StringValue.valueOf("c"),
             )
         ),
         ListValue(
             mutableListOf(
-                StringValue("a"),
-                StringValue("b"),
-                StringValue("c"),
+                StringValue.valueOf("a"),
+                StringValue.valueOf("b"),
+                StringValue.valueOf("c"),
             )
         ),
         MapValue(
             mutableMapOf(
-                StringValue("a") to StringValue("b"),
-                StringValue("c") to StringValue("d"),
-                StringValue("e") to StringValue("f"),
-                StringValue("g") to StringValue("h"),
+                StringValue.valueOf("a") to StringValue.valueOf("b"),
+                StringValue.valueOf("c") to StringValue.valueOf("d"),
+                StringValue.valueOf("e") to StringValue.valueOf("f"),
+                StringValue.valueOf("g") to StringValue.valueOf("h"),
             )
         )
     )

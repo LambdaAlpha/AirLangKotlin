@@ -1,5 +1,6 @@
 package airacle.air.parser
 
+import airacle.air.api.IAirParser
 import airacle.air.interpreter.*
 import airacle.air.lexer.*
 
@@ -14,9 +15,12 @@ interface IAirParserConfig {
     fun paramLength(value: AirValue): Int
 }
 
-class AirParser(private val config: IAirParserConfig) {
+class AirParser(
+    val version: AirParserVersion,
+    private val config: IAirParserConfig
+) : IAirParser<AirToken, AirValue> {
 
-    fun parse(tokens: List<AirToken>): AirValue {
+    override fun parse(tokens: List<AirToken>): AirValue {
         val nodes = tokens.map { TokenNode(it) }
         val result = mutableListOf<AirValue>()
         var start = 0
@@ -47,9 +51,9 @@ class AirParser(private val config: IAirParserConfig) {
             is UnitToken -> Pair(ValueNode(UnitValue), next)
             is BoolToken -> Pair(ValueNode(BoolValue.valueOf(token.value)), next)
             is IntToken -> Pair(ValueNode(IntValue.valueOf(token.value)), next)
-            is RealToken -> Pair(ValueNode(RealValue.valueOf(token.value)), next)
-            is AlphaStringToken -> Pair(ValueNode(StringValue(token.value)), next)
-            is FullStringToken -> Pair(ValueNode(StringValue(token.value)), next)
+            is DecimalToken -> Pair(ValueNode(DecimalValue.valueOf(token.value)), next)
+            is AlphaStringToken -> Pair(ValueNode(StringValue.valueOf(token.value)), next)
+            is FullStringToken -> Pair(ValueNode(StringValue.valueOf(token.value)), next)
 
             // compound values
             SymbolStringToken.LCircle -> parseCircle(nodes, next)
@@ -290,7 +294,7 @@ class AirParser(private val config: IAirParserConfig) {
         start: Int,
         infixMode: Boolean
     ): Pair<AirSyntaxNode, Int> {
-        val value = StringValue(token.value)
+        val value = StringValue.valueOf(token.value)
         val length = config.paramLength(value)
         if (length < 0) {
             throw AirParserError("param length < 0 when parsing alias: ${token.value}")

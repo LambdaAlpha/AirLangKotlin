@@ -16,6 +16,7 @@ object AirParserConfig : IAirParserConfig {
                 "read", "." -> 1
                 "assign", "=" -> 2
                 "le", "lt", "ge", "gt", "eq", "ne" -> 2
+                "exit", "quit" -> 0
                 else -> -1
             }
         }

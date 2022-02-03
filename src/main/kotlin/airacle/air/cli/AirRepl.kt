@@ -1,45 +1,42 @@
 package airacle.air.cli
 
-import airacle.air.interpreter.AirValue
+import airacle.air.api.Air
+import airacle.air.api.AirVersion
 import airacle.air.interpreter.StringValue
 import airacle.air.interpreter.TupleValue
-import airacle.air.lexer.AirLexer
-import airacle.air.lexer.AirLexerConfig
-import airacle.air.parser.AirParser
 import airacle.air.util.log.Logger
 
 class AirRepl {
-    private val lexer = AirLexer(AirLexerConfig)
-    private val parser = AirParser(AirCliParserConfig)
-    private val interpreter = AirCliInterpreter()
+    private val air: Air = Air(AirVersion.V0)
 
     fun call(): Int {
-        val metaInfoCmd = TupleValue(arrayOf(StringValue(AirCliInterpreter.CMD_META_INFO)))
-        println(interpreter.interpret(metaInfoCmd))
+        println("Air ${air.version.versionName}(${air.version.versionCode})")
 
         while (true) {
             print("> ")
 
             try {
                 val s = readLine() ?: break
-                if (s == "exit" || s == "quit") {
-                    Logger.i("exit repl")
-                    break
+                val tokens = air.lexer.lex(s)
+                val value = air.parser.parse(tokens)
+                if (value is TupleValue && value.value.isNotEmpty()) {
+                    val first = value.value[0]
+                    if (first is StringValue) {
+                        when (first.value) {
+                            "exit", "quit" -> {
+                                Logger.i("exit repl")
+                                break
+                            }
+                        }
+                    }
                 }
-                val tokens = lexer.lex(s)
-                val value = parser.parse(tokens)
-                val ret = interpreter.interpret(value)
+                val ret = air.interpreter.interpret(value)
                 println(ret)
             } catch (t: Throwable) {
-                println("throw $t")
-                Logger.i("throw $t in repl")
-                break
+                t.printStackTrace()
+                Logger.i("throw ${t.javaClass} in repl", throwable = t)
             }
         }
         return 0
-    }
-
-    private fun println(value: AirValue) {
-        println(if (value is StringValue) value.value else value)
     }
 }

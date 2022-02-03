@@ -26,7 +26,7 @@ internal object AirParserTestConfig : IAirParserConfig {
             is UnitValue -> 1
             is BoolValue -> 2
             is IntValue -> 3
-            is RealValue -> 4
+            is DecimalValue -> 4
             else -> -1
         }
     }

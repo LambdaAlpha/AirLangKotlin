@@ -1,20 +1,32 @@
 package airacle.air.api
 
-class Air {
+import airacle.air.interpreter.AirInterpreter
+import airacle.air.interpreter.AirInterpreterVersion
+import airacle.air.interpreter.AirValue
+import airacle.air.lexer.AirLexer
+import airacle.air.lexer.AirLexerConfig
+import airacle.air.lexer.AirLexerVersion
+import airacle.air.lexer.AirToken
+import airacle.air.parser.AirParser
+import airacle.air.parser.AirParserConfig
+import airacle.air.parser.AirParserVersion
 
-    companion object {
-        val META_INFO: AirMetaInfo = AirMetaInfo(
-            1,
-            "0.0.1"
-        )
-    }
+class Air(val version: AirVersion) {
+    val lexer: IAirLexer<AirToken>
+    val parser: IAirParser<AirToken, AirValue>
+    val interpreter: IAirInterpreter<AirValue>
 
-    fun metaInfo(): AirMetaInfo {
-        return META_INFO
+    init {
+        when (version) {
+            AirVersion.V0 -> {
+                lexer = AirLexer(AirLexerVersion.V0, AirLexerConfig)
+                parser = AirParser(AirParserVersion.V0, AirParserConfig)
+                interpreter = AirInterpreter(
+                    AirInterpreterVersion.V0,
+                    lexer,
+                    parser
+                )
+            }
+        }
     }
 }
-
-data class AirMetaInfo(
-    val versionCode: Int,
-    val versionName: String,
-)

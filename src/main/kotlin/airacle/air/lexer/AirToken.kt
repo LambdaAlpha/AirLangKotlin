@@ -85,18 +85,20 @@ class IntToken private constructor(val value: BigInteger) : AirToken {
     }
 }
 
-class RealToken private constructor(val value: BigDecimal) : AirToken {
+class DecimalToken private constructor(val value: BigDecimal) : AirToken {
     companion object {
-        val ZERO: RealToken = RealToken(BigDecimal.ZERO)
-        val ONE: RealToken = RealToken(BigDecimal.ONE)
-        val TWO: RealToken = RealToken("2".toBigDecimal())
+        val ZERO: DecimalToken = DecimalToken(BigDecimal.ZERO)
+        val ONE: DecimalToken = DecimalToken(BigDecimal.ONE)
+        val TWO: DecimalToken = DecimalToken("2".toBigDecimal())
+        val HALF: DecimalToken = DecimalToken("0.5".toBigDecimal())
 
-        fun valueOf(value: BigDecimal): RealToken {
+        fun valueOf(value: BigDecimal): DecimalToken {
             return when (value) {
                 BigDecimal.ZERO -> ZERO
                 BigDecimal.ONE -> ONE
                 "2".toBigDecimal() -> TWO
-                else -> RealToken(value)
+                "0.5".toBigDecimal() -> HALF
+                else -> DecimalToken(value)
             }
         }
 
@@ -110,7 +112,7 @@ class RealToken private constructor(val value: BigDecimal) : AirToken {
     }
 
     override fun equals(other: Any?): Boolean {
-        return other is RealToken && value == other.value
+        return other is DecimalToken && value == other.value
     }
 
     override fun hashCode(): Int {
