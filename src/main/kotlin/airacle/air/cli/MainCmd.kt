@@ -9,7 +9,7 @@ object MainCmd {
     fun main(args: Array<String>) {
         init()
         Logger.i("Hello Air!")
-        AirRepl().call()
+        AirRepl().start()
     }
 
     private fun init() {
