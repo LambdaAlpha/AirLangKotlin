@@ -41,6 +41,9 @@ class AirParser(
     }
 
     private fun parseOne(nodes: List<AirSyntaxNode>, start: Int, infixMode: Boolean = false): Pair<AirSyntaxNode, Int> {
+        if (start >= nodes.size) {
+            throw AirParserError("unexpected end when parsing")
+        }
         val key = nodes[start]
         val next = start + 1
         if (key !is TokenNode<*>) {
@@ -148,9 +151,6 @@ class AirParser(
                     throw AirParserError("non-value when parsing list: $node")
                 }
             }
-            if (pair.second >= nodes.size) {
-                throw AirParserError("unexpected ending when parsing list")
-            }
             pair = parseOneSkipComment(nodes, pair.second)
             node = pair.first
         }
@@ -208,9 +208,6 @@ class AirParser(
                 }
             }
 
-            if (pair.second >= nodes.size) {
-                throw AirParserError("unexpected ending when parsing map")
-            }
             pair = parseOneSkipComment(nodes, pair.second)
             node = pair.first
         }
@@ -236,9 +233,6 @@ class AirParser(
                 } else {
                     throw AirParserError("non-value when parsing tuple: $node")
                 }
-            }
-            if (pair.second >= nodes.size) {
-                throw AirParserError("unexpected ending when parsing surrounded tuple")
             }
             pair = parseOneSkipComment(nodes, pair.second)
             node = pair.first
