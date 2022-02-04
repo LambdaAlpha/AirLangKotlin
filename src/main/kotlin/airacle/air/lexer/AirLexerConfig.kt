@@ -12,7 +12,7 @@ object AirLexerConfig : IAirLexerConfig {
         if (isAsciiAlpha(char)) {
             return AlphaStringLexer
         }
-        if (isAsciiDigit(char)) {
+        if (isAsciiDigit(char) || char == '+' || char == '-') {
             return NumberLexer
         }
 
@@ -211,11 +211,13 @@ object FullStringLexer : IAirRegexLexer {
 
 object NumberLexer : IAirRegexLexer {
     // binary, decimal, hexadecimal integers and decimal float numbers
-    // prefix with 0 if not start with digit
-    // match binary or hexadecimal first because otherwise the prefix 0 will always match decimal integer pattern
+    // match float numbers first
     private val pattern = Regex(
-        "0[-+]?(?:[xX][a-fA-F0-9]+[a-fA-F0-9_]*|[bB][01]+[01_]*)" +
-                "|(?:0[-+])?\\d+[_\\d]*(?:\\.\\d+[_\\d]*(?:[eE][-+]?\\d+)?)?"
+        "[-+]?(?:" +
+                "\\d+[\\d_]*\\.[\\d_]*(?:[eE][-+]?\\d+)?" +
+                "|" +
+                "(?:0[xX][a-fA-F0-9]+[a-fA-F0-9_]*|0[bB][01]+[01_]*|[0-9]+[0-9_]*)" +
+                ")"
     )
 
 
@@ -229,20 +231,16 @@ object NumberLexer : IAirRegexLexer {
         s = s.replace("_", "")
 
         var i = 0
-        val prefixZero = s.length > 1 && ("+-xXbB".contains(s[1]))
 
-        if (prefixZero) {
-            i += 1
-        }
-
-        val hasSign = s.length > i && (s[i] == '+' || s[i] == '-')
+        val hasSign = s.length > 1 && (s[0] == '+' || s[0] == '-')
         val negative = hasSign && s[i] == '-'
         if (hasSign) {
             i += 1
         }
 
-        val hasRadix = s.length > i && "xXbB".contains(s[i])
+        val hasRadix = s.length > i + 1 && "xXbB".contains(s[i + 1])
         val radix = if (hasRadix) {
+            i += 1
             if (s[i] == 'x' || s[i] == 'X') {
                 16
             } else if (s[i] == 'b' || s[i] == 'B') {
@@ -258,19 +256,15 @@ object NumberLexer : IAirRegexLexer {
             i += 1
         }
 
-        s = s.substring(i)
+        s = "${if (negative) "-" else "+"}${s.substring(i)}"
 
         val isReal = s.contains(".")
         if (isReal) {
-            val value = s.toBigDecimal().let {
-                if (negative) it.negate() else it
-            }
+            val value = s.toBigDecimal()
             return DecimalToken.valueOf(value)
         }
 
-        val value = s.toBigInteger(radix).let {
-            if (negative) it.negate() else it
-        }
+        val value = s.toBigInteger(radix)
         return IntToken.valueOf(value)
     }
 }

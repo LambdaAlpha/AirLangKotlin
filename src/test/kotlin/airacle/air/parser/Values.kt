@@ -132,12 +132,6 @@ internal val VALUES = ListValue(
         ),
         TupleValue(
             arrayOf(
-                StringValue.valueOf("-"),
-                BoolValue.TRUE,
-            )
-        ),
-        TupleValue(
-            arrayOf(
                 StringValue.valueOf("?"),
                 TupleValue(
                     arrayOf(

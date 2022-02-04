@@ -64,11 +64,7 @@ class IntToken private constructor(val value: BigInteger) : AirToken {
         }
 
         fun toString(value: BigInteger): String {
-            return if (value >= BigInteger.ZERO) {
-                value.toString()
-            } else {
-                "0$value"
-            }
+            return value.toString()
         }
     }
 
@@ -103,11 +99,7 @@ class DecimalToken private constructor(val value: BigDecimal) : AirToken {
         }
 
         fun toString(value: BigDecimal): String {
-            return if (value < BigDecimal.ZERO) {
-                "0$value"
-            } else {
-                value.toString()
-            }
+            return value.toString()
         }
     }
 
