@@ -1,5 +1,8 @@
 package airacle.air.lexer
 
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 object AirLexerConfig : IAirLexerConfig {
     private val lexers: Array<IAirRegexLexer?> = Array(128) {
         init(it.toChar())
@@ -65,26 +68,26 @@ object AirLexerConfig : IAirLexerConfig {
 }
 
 object DelimiterLexer : IAirRegexLexer {
-    private val pattern = Regex("[ \r\n\t]+")
+    private val pattern = Pattern.compile("[ \r\n\t]+")
 
-    override fun pattern(): Regex {
+    override fun pattern(): Pattern {
         return pattern
     }
 
-    override fun parse(match: MatchResult): AirToken {
+    override fun parse(match: Matcher): AirToken {
         return DelimiterToken
     }
 }
 
 object UnitLexer : IAirRegexLexer {
     const val KEY = '|'
-    private val pattern = Regex("\\|")
+    private val pattern = Pattern.compile("\\|")
 
-    override fun pattern(): Regex {
+    override fun pattern(): Pattern {
         return pattern
     }
 
-    override fun parse(match: MatchResult): AirToken {
+    override fun parse(match: Matcher): AirToken {
         return UnitToken
     }
 }
@@ -92,26 +95,26 @@ object UnitLexer : IAirRegexLexer {
 object BoolLexer : IAirRegexLexer {
     const val KEY_TRUE = '/'
     const val KEY_FALSE = '\\'
-    private val pattern = Regex("[\\\\/]")
+    private val pattern = Pattern.compile("[\\\\/]")
 
-    override fun pattern(): Regex {
+    override fun pattern(): Pattern {
         return pattern
     }
 
-    override fun parse(match: MatchResult): AirToken {
-        return BoolToken.valueOf(match.value == "/")
+    override fun parse(match: Matcher): AirToken {
+        return BoolToken.valueOf(match.group() == "/")
     }
 }
 
 object SymbolStringLexer : IAirRegexLexer {
-    private val pattern = Regex("\\p{Punct}")
+    private val pattern = Pattern.compile("\\p{Punct}")
 
-    override fun pattern(): Regex {
+    override fun pattern(): Pattern {
         return pattern
     }
 
-    override fun parse(match: MatchResult): AirToken {
-        return when (match.value) {
+    override fun parse(match: Matcher): AirToken {
+        return when (match.group()) {
             "`" -> SymbolStringToken.BackQuote
             "~" -> SymbolStringToken.Tilde
             "!" -> SymbolStringToken.Exclamation
@@ -145,34 +148,34 @@ object SymbolStringLexer : IAirRegexLexer {
             "/" -> SymbolStringToken.RSlash
             "?" -> SymbolStringToken.QuestionMark
             // never
-            else -> FullStringToken(match.value)
+            else -> FullStringToken(match.group())
         }
     }
 }
 
 object AlphaStringLexer : IAirRegexLexer {
-    private val pattern = Regex("\\p{Alpha}\\w*")
+    private val pattern = Pattern.compile("\\p{Alpha}\\w*")
 
-    override fun pattern(): Regex {
+    override fun pattern(): Pattern {
         return pattern
     }
 
-    override fun parse(match: MatchResult): AirToken {
-        return AlphaStringToken(match.value)
+    override fun parse(match: Matcher): AirToken {
+        return AlphaStringToken(match.group())
     }
 }
 
 object FullStringLexer : IAirRegexLexer {
     const val KEY = '"'
-    private val pattern = Regex("\"(?:[^\"\\\\]|\\\\[srnt\\\\'\"]|\\\\u[a-fA-F0-9]{4})*+\"")
+    private val pattern = Pattern.compile("\"(?:[^\"\\\\]|\\\\[srnt\\\\'\"]|\\\\u[a-fA-F0-9]{4})*+\"")
     private val delimiterPattern = Regex(" *[\n\r\t]+ *")
 
-    override fun pattern(): Regex {
+    override fun pattern(): Pattern {
         return pattern
     }
 
-    override fun parse(match: MatchResult): AirToken {
-        var s = match.groups[0]!!.value
+    override fun parse(match: Matcher): AirToken {
+        var s = match.group(0)!!
         s = s.replace(delimiterPattern, "")
         val builder = StringBuilder()
 
@@ -212,21 +215,25 @@ object FullStringLexer : IAirRegexLexer {
 object NumberLexer : IAirRegexLexer {
     // binary, decimal, hexadecimal integers and decimal float numbers
     // match float numbers first
-    private val pattern = Regex(
+    private val pattern = Pattern.compile(
         "[-+]?(?:" +
                 "\\d+[\\d_]*\\.[\\d_]*(?:[eE][-+]?\\d+)?" +
                 "|" +
-                "(?:0[xX][a-fA-F0-9]+[a-fA-F0-9_]*|0[bB][01]+[01_]*|[0-9]+[0-9_]*)" +
+                "0[xX][a-fA-F0-9]+[a-fA-F0-9_]*" +
+                "|" +
+                "0[bB][01]+[01_]*" +
+                "|" +
+                "[0-9]+[0-9_]*" +
                 ")"
     )
 
 
-    override fun pattern(): Regex {
+    override fun pattern(): Pattern {
         return pattern
     }
 
-    override fun parse(match: MatchResult): AirToken {
-        var s = match.value
+    override fun parse(match: Matcher): AirToken {
+        var s = match.group()
         // remove delimiters
         s = s.replace("_", "")
 

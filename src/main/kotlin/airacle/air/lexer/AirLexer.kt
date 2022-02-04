@@ -1,6 +1,8 @@
 package airacle.air.lexer
 
 import airacle.air.api.IAirLexer
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 interface IAirLexerConfig {
     // return a regex lexer, or null if char is illegal
@@ -11,8 +13,8 @@ interface IAirLexerConfig {
 }
 
 interface IAirRegexLexer {
-    fun pattern(): Regex
-    fun parse(match: MatchResult): AirToken
+    fun pattern(): Pattern
+    fun parse(match: Matcher): AirToken
 }
 
 class AirLexerError(
@@ -43,15 +45,18 @@ class AirLexer(
         while (start < source.length) {
             val lexer = config.dispatch(source[start]) ?: throw AirLexerError("", source, start)
             val pattern = lexer.pattern()
-            val matchResult = pattern.find(source, start)
-            if (matchResult == null) {
-                throw AirLexerError(pattern.pattern, source, start)
+            val matchResult = pattern.matcher(source)
+                .useAnchoringBounds(false)
+                .useTransparentBounds(true)
+                .region(start, source.length)
+            if (!matchResult.lookingAt()) {
+                throw AirLexerError(pattern.pattern(), source, start)
             } else {
                 val token = lexer.parse(matchResult)
                 if (config.filter(token)) {
                     tokens.add(token)
                 }
-                start = matchResult.range.last + 1
+                start = matchResult.end()
             }
         }
     }
