@@ -61,7 +61,7 @@ object Ints : IInts {
                 UnitValue
             } else {
                 val result = a.value.divideAndRemainder(b.value)
-                TupleValue(arrayOf(IntValue.valueOf(result[0]), IntValue.valueOf(result[1])))
+                TupleValue.valueOf(IntValue.valueOf(result[0]), IntValue.valueOf(result[1]))
             }
         } else {
             UnitValue

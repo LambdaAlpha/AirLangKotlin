@@ -2,237 +2,153 @@ package airacle.air.parser
 
 import airacle.air.interpreter.*
 
-internal val VALUES = ListValue(
-    mutableListOf(
-        TupleValue(
-            arrayOf(
-                StringValue.valueOf("zero"),
-            )
+internal val VALUES = ListValue.valueOf(
+    TupleValue.valueOf(
+        StringValue.valueOf("zero"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("zero"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("one"),
+        StringValue.valueOf("one"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("two"),
+        TupleValue.valueOf(
+            StringValue.valueOf("zero"),
         ),
-        TupleValue(
-            arrayOf(
-                StringValue.valueOf("zero"),
-            )
+        TupleValue.valueOf(
+            StringValue.valueOf("one"),
+            StringValue.valueOf("one"),
         ),
-        TupleValue(
-            arrayOf(
-                StringValue.valueOf("one"),
-                StringValue.valueOf("one"),
-            )
+    ),
+    TupleValue.valueOf(
+        UnitValue,
+        UnitValue,
+    ),
+    TupleValue.valueOf(
+        BoolValue.FALSE,
+        BoolValue.FALSE,
+        BoolValue.TRUE,
+    ),
+    TupleValue.valueOf(
+        IntValue.valueOf(111.toBigInteger()),
+        StringValue.valueOf("a"),
+        StringValue.valueOf("b"),
+        StringValue.valueOf("c"),
+    ),
+    TupleValue.valueOf(
+        DecimalValue.valueOf("1.234".toBigDecimal()),
+        StringValue.valueOf("a"),
+        StringValue.valueOf("b"),
+        StringValue.valueOf("c"),
+        StringValue.valueOf("d"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("`"),
+        StringValue.valueOf("`"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("~"),
+        IntValue.ONE,
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("@"),
+        DecimalValue.valueOf("1.2".toBigDecimal())
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("$"),
+        TupleValue.valueOf(
+            StringValue.valueOf("a"),
+            StringValue.valueOf("b"),
         ),
-        TupleValue(
-            arrayOf(
-                StringValue.valueOf("two"),
-                TupleValue(
-                    arrayOf(
-                        StringValue.valueOf("zero"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("%"),
+        ListValue.valueOf(
+            IntValue.ONE,
+            StringValue.valueOf("a"),
+        )
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("^"),
+        MapValue.valueOf(
+            IntValue.ONE to StringValue.valueOf("a"),
+        )
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("&"),
+        UnitValue
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("*"),
+        BoolValue.FALSE,
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("?"),
+        TupleValue.valueOf(
+            StringValue.valueOf("?"),
+            StringValue.valueOf("a"),
+            StringValue.valueOf("b"),
+        ),
+        StringValue.valueOf("c")
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("."),
+        StringValue.valueOf("a"),
+        TupleValue.valueOf(
+            StringValue.valueOf("."),
+            StringValue.valueOf("b"),
+            StringValue.valueOf("c"),
+        ),
+    ),
+    TupleValue.valueOf(
+        ListValue.valueOf(
+            MapValue.valueOf(
+                ListValue.valueOf(
+                    TupleValue.valueOf(
+                        MapValue.valueOf()
                     )
-                ),
-                TupleValue(
-                    arrayOf(
-                        StringValue.valueOf("one"),
-                        StringValue.valueOf("one"),
-                    )
-                ),
-            )
-        ),
-
-        TupleValue(
-            arrayOf(
-                UnitValue,
-                UnitValue,
-            )
-        ),
-        TupleValue(
-            arrayOf(
-                BoolValue.FALSE,
-                BoolValue.FALSE,
-                BoolValue.TRUE,
-            )
-        ),
-        TupleValue(
-            arrayOf(
-                IntValue.valueOf(111.toBigInteger()),
-                StringValue.valueOf("a"),
-                StringValue.valueOf("b"),
-                StringValue.valueOf("c"),
-            )
-        ),
-        TupleValue(
-            arrayOf(
-                DecimalValue.valueOf("1.234".toBigDecimal()),
-                StringValue.valueOf("a"),
-                StringValue.valueOf("b"),
-                StringValue.valueOf("c"),
-                StringValue.valueOf("d"),
-            )
-        ),
-
-        TupleValue(
-            arrayOf(
-                StringValue.valueOf("`"),
-                StringValue.valueOf("`"),
-            )
-        ),
-        TupleValue(
-            arrayOf(
-                StringValue.valueOf("~"),
-                IntValue.ONE,
-            )
-        ),
-        TupleValue(
-            arrayOf(
-                StringValue.valueOf("@"),
-                DecimalValue.valueOf("1.2".toBigDecimal())
-            )
-        ),
-        TupleValue(
-            arrayOf(
-                StringValue.valueOf("$"),
-                TupleValue(
-                    arrayOf(
-                        StringValue.valueOf("a"),
-                        StringValue.valueOf("b"),
-                    )
-                ),
-            )
-        ),
-        TupleValue(
-            arrayOf(
-                StringValue.valueOf("%"),
-                ListValue(
-                    mutableListOf(
-                        IntValue.ONE,
-                        StringValue.valueOf("a"),
-                    )
-                )
-            )
-        ),
-        TupleValue(
-            arrayOf(
-                StringValue.valueOf("^"),
-                MapValue(
-                    mutableMapOf(
-                        IntValue.ONE to StringValue.valueOf("a"),
-                    )
-                )
-            )
-        ),
-        TupleValue(
-            arrayOf(
-                StringValue.valueOf("&"),
-                UnitValue
-            )
-        ),
-        TupleValue(
-            arrayOf(
-                StringValue.valueOf("*"),
-                BoolValue.FALSE,
-            )
-        ),
-        TupleValue(
-            arrayOf(
-                StringValue.valueOf("?"),
-                TupleValue(
-                    arrayOf(
-                        StringValue.valueOf("?"),
-                        StringValue.valueOf("a"),
-                        StringValue.valueOf("b"),
-                    )
-                ),
-                StringValue.valueOf("c")
-            )
-        ),
-        TupleValue(
-            arrayOf(
-                StringValue.valueOf("."),
-                StringValue.valueOf("a"),
-                TupleValue(
-                    arrayOf(
-                        StringValue.valueOf("."),
-                        StringValue.valueOf("b"),
-                        StringValue.valueOf("c"),
-                    )
-                ),
-            )
-        ),
-
-        TupleValue(
-            arrayOf(
-                ListValue(
-                    mutableListOf(
-                        MapValue(
-                            mutableMapOf(
-                                ListValue(
-                                    mutableListOf(
-                                        TupleValue(
-                                            arrayOf(
-                                                MapValue(mutableMapOf())
-                                            )
-                                        )
-                                    )
-                                ) to TupleValue(
-                                    arrayOf(
-                                        ListValue(
-                                            mutableListOf(
-                                                MapValue(mutableMapOf())
-                                            )
-                                        )
-                                    )
-                                )
-                            )
-                        )
+                ) to TupleValue.valueOf(
+                    ListValue.valueOf(
+                        MapValue.valueOf()
                     )
                 )
-            )
-        ),
-        ListValue(
-            mutableListOf(
-                ListValue(
-                    mutableListOf(
-                        TupleValue(arrayOf()),
-                        MapValue(mutableMapOf()),
-                        ListValue(mutableListOf()),
-                    )
-                ),
-                MapValue(
-                    mutableMapOf(
-                        ListValue(mutableListOf()) to TupleValue(arrayOf()),
-                        TupleValue(arrayOf()) to MapValue(mutableMapOf()),
-                        MapValue(mutableMapOf()) to ListValue(mutableListOf()),
-                    )
-                ),
-                TupleValue(
-                    arrayOf(
-                        TupleValue(arrayOf()),
-                        ListValue(mutableListOf()),
-                        MapValue(mutableMapOf()),
-                    )
-                )
-            )
-        ),
-
-        TupleValue(
-            arrayOf(
-                StringValue.valueOf("a"),
-                StringValue.valueOf("b"),
-                StringValue.valueOf("c"),
-            )
-        ),
-        ListValue(
-            mutableListOf(
-                StringValue.valueOf("a"),
-                StringValue.valueOf("b"),
-                StringValue.valueOf("c"),
-            )
-        ),
-        MapValue(
-            mutableMapOf(
-                StringValue.valueOf("a") to StringValue.valueOf("b"),
-                StringValue.valueOf("c") to StringValue.valueOf("d"),
-                StringValue.valueOf("e") to StringValue.valueOf("f"),
-                StringValue.valueOf("g") to StringValue.valueOf("h"),
             )
         )
+    ),
+    ListValue.valueOf(
+        ListValue.valueOf(
+            TupleValue.valueOf(),
+            MapValue.valueOf(),
+            ListValue.valueOf(),
+        ),
+        MapValue.valueOf(
+            ListValue.valueOf() to TupleValue.valueOf(),
+            TupleValue.valueOf() to MapValue.valueOf(),
+            MapValue.valueOf() to ListValue.valueOf(),
+        ),
+        TupleValue.valueOf(
+            TupleValue.valueOf(),
+            ListValue.valueOf(),
+            MapValue.valueOf(),
+        )
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("a"),
+        StringValue.valueOf("b"),
+        StringValue.valueOf("c"),
+    ),
+    ListValue.valueOf(
+        StringValue.valueOf("a"),
+        StringValue.valueOf("b"),
+        StringValue.valueOf("c"),
+    ),
+    MapValue.valueOf(
+        StringValue.valueOf("a") to StringValue.valueOf("b"),
+        StringValue.valueOf("c") to StringValue.valueOf("d"),
+        StringValue.valueOf("e") to StringValue.valueOf("f"),
+        StringValue.valueOf("g") to StringValue.valueOf("h"),
     )
 )

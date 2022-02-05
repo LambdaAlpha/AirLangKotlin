@@ -141,7 +141,17 @@ class StringValue private constructor(val value: String) : PrimitiveValue {
     }
 }
 
-class TupleValue(val value: Array<AirValue>) : AirValue {
+class TupleValue private constructor(val value: Array<AirValue>) : AirValue {
+    companion object {
+        fun valueOf(vararg values: AirValue): TupleValue {
+            return TupleValue(arrayOf(*values))
+        }
+
+        fun fromArray(values: Array<AirValue>): TupleValue {
+            return TupleValue(values)
+        }
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -159,7 +169,17 @@ class TupleValue(val value: Array<AirValue>) : AirValue {
     }
 }
 
-class ListValue(val value: MutableList<AirValue>) : AirValue {
+class ListValue private constructor(val value: MutableList<AirValue>) : AirValue {
+    companion object {
+        fun valueOf(value: MutableList<AirValue>): ListValue {
+            return ListValue(value)
+        }
+
+        fun valueOf(vararg values: AirValue): ListValue {
+            return ListValue(mutableListOf(*values))
+        }
+    }
+
     override fun equals(other: Any?): Boolean {
         return other is ListValue && value == other.value
     }
@@ -173,7 +193,17 @@ class ListValue(val value: MutableList<AirValue>) : AirValue {
     }
 }
 
-class MapValue(val value: MutableMap<AirValue, AirValue>) : AirValue {
+class MapValue private constructor(val value: MutableMap<AirValue, AirValue>) : AirValue {
+    companion object {
+        fun valueOf(value: MutableMap<AirValue, AirValue>): MapValue {
+            return MapValue(value)
+        }
+
+        fun valueOf(vararg values: Pair<AirValue, AirValue>): MapValue {
+            return MapValue(mutableMapOf(*values))
+        }
+    }
+
     override fun equals(other: Any?): Boolean {
         return other is MapValue && value == other.value
     }

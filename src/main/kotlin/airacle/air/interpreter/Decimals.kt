@@ -208,11 +208,9 @@ object Decimals : IDecimals {
         return if (a is DecimalValue && b is DecimalValue && mc != null) {
             try {
                 val ret = a.value.divideAndRemainder(b.value, mc)
-                TupleValue(
-                    arrayOf(
-                        DecimalValue.valueOf(ret[0]),
-                        DecimalValue.valueOf(ret[1])
-                    )
+                TupleValue.valueOf(
+                    DecimalValue.valueOf(ret[0]),
+                    DecimalValue.valueOf(ret[1])
                 )
             } catch (t: Throwable) {
                 UnitValue

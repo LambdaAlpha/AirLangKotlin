@@ -36,7 +36,7 @@ class AirParser(
         return when (result.size) {
             0 -> UnitValue
             1 -> result[0]
-            else -> ListValue(result)
+            else -> ListValue.valueOf(result)
         }
     }
 
@@ -122,7 +122,7 @@ class AirParser(
             } else if (secondValue == null) {
                 secondValue = value
             } else {
-                firstValue = TupleValue(arrayOf(secondValue, firstValue, value))
+                firstValue = TupleValue.valueOf(secondValue, firstValue, value)
                 secondValue = null
             }
             pair = parseOneSkipComment(nodes, pair.second, infixMode = true)
@@ -154,7 +154,7 @@ class AirParser(
             pair = parseOneSkipComment(nodes, pair.second)
             node = pair.first
         }
-        return Pair(ValueNode(ListValue(list)), pair.second)
+        return Pair(ValueNode(ListValue.valueOf(list)), pair.second)
     }
 
     // map, optional colon and comma
@@ -214,7 +214,7 @@ class AirParser(
         if (status != 1 && status != 4) {
             throw AirParserError("unexpected ending when parsing map, status = $status")
         }
-        return Pair(ValueNode(MapValue(map)), pair.second)
+        return Pair(ValueNode(MapValue.valueOf(map)), pair.second)
     }
 
     // tuple, optional comma
@@ -237,7 +237,7 @@ class AirParser(
             pair = parseOneSkipComment(nodes, pair.second)
             node = pair.first
         }
-        val tupleValue = TupleValue(list.toTypedArray())
+        val tupleValue = TupleValue.fromArray(list.toTypedArray())
         val resultNode = ValueNode(tupleValue)
         return Pair(resultNode, pair.second)
     }
@@ -264,7 +264,7 @@ class AirParser(
                 throw AirParserError("non-value when parsing fixed-length tuple: $node")
             }
         }
-        val tupleValue = TupleValue(list.toTypedArray())
+        val tupleValue = TupleValue.fromArray(list.toTypedArray())
         val resultNode = ValueNode(tupleValue)
         return Pair(resultNode, startVar)
     }
