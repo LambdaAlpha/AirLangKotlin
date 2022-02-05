@@ -1,13 +1,6 @@
 package airacle.air.interpreter
 
 interface IInts {
-    fun unaryPlus(a: AirValue): AirValue
-    fun unaryMinus(a: AirValue): AirValue
-    fun abs(a: AirValue): AirValue
-    fun sign(a: AirValue): AirValue
-    fun min(a: AirValue, b: AirValue): AirValue
-    fun max(a: AirValue, b: AirValue): AirValue
-
     fun add(a: AirValue, b: AirValue): AirValue
     fun subtract(a: AirValue, b: AirValue): AirValue
     fun multiply(a: AirValue, b: AirValue): AirValue
