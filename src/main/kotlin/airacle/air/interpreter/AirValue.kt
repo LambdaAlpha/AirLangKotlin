@@ -56,6 +56,7 @@ class IntValue private constructor(val value: BigInteger) : PrimitiveValue {
         val ZERO: IntValue = IntValue(BigInteger.ZERO)
         val ONE: IntValue = valueOf(BigInteger.ONE)
         val TWO: IntValue = valueOf(BigInteger.TWO)
+        val NEG_ONE: IntValue = valueOf(BigInteger.valueOf(-1L))
 
         fun valueOf(value: BigInteger): IntValue {
             return when {

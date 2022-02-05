@@ -19,18 +19,38 @@ object AirParserConfig : IAirParserConfig {
     const val EQ = "eq"
     const val NE = "ne"
 
+    // int
+    const val UNARY_PLUS = "plus"
+    const val UNARY_MINUS = "minus"
+    const val ABS = "abs"
+    const val SIGN = "sign"
+    const val MIN = "min"
+    const val MAX = "max"
     const val ADD = "add"
     const val SUBTRACT = "sub"
     const val MULTIPLY = "mul"
-    const val DIVIDE = "div"
+    const val DIVIDE_TO_INTEGRAL = "dii"
     const val REMAINDER = "rem"
-    const val DIVIDE_AND_REMAINDER = "divAndRem"
-
+    const val DIVIDE_AND_REMAINDER = "dir"
+    const val POWER = "pow"
+    const val LOG = "log"
+    const val MODULO = "mod"
+    const val BIT_NOT = "bitNot"
     const val BIT_AND = "bitAnd"
     const val BIT_OR = "bitOr"
     const val BIT_XOR = "bitXor"
+    const val BIT_AND_NOT = "bitAndNot"
+    const val TEST_BIT = "testBit"
+    const val SET_BIT = "setBit"
+    const val CLEAR_BIT = "clearBit"
+    const val FLIP_BIT = "flipBit"
+    const val BIT_COUNT = "bitCount"
+    const val BIT_LENGTH = "bitLength"
+    const val LOWEST_SET_BIT = "lowestSetBit"
     const val SHIFT_LEFT = "shl"
     const val SHIFT_RIGHT = "shr"
+    const val RANDOM = "rand"
+    const val RANDOM_SEED = "seed"
 
     const val ENCODE_TO_STRING = "toString"
     const val DECODE_FROM_STRING = "fromString"
@@ -59,9 +79,17 @@ object AirParserConfig : IAirParserConfig {
 
                 LE, LT, GE, GT, EQ, NE -> 2
 
-                ADD, SUBTRACT, MULTIPLY, DIVIDE, REMAINDER, DIVIDE_AND_REMAINDER -> 2
+                UNARY_PLUS, UNARY_MINUS, ABS, SIGN -> 1
+                MIN, MAX,
+                ADD, SUBTRACT, MULTIPLY, DIVIDE_TO_INTEGRAL, REMAINDER, DIVIDE_AND_REMAINDER,
+                POWER, LOG, MODULO -> 2
 
-                BIT_AND, BIT_OR, BIT_XOR, SHIFT_LEFT, SHIFT_RIGHT -> 2
+                BIT_NOT -> 1
+                BIT_AND, BIT_OR, BIT_XOR, BIT_AND_NOT, SHIFT_LEFT, SHIFT_RIGHT,
+                TEST_BIT, SET_BIT, CLEAR_BIT, FLIP_BIT -> 2
+                BIT_COUNT, BIT_LENGTH, LOWEST_SET_BIT -> 1
+                RANDOM -> 1
+                RANDOM_SEED -> 2
 
                 TYPE_OF -> 1
                 TYPE_CAST -> 2

@@ -25,14 +25,10 @@ tasks.test {
 }
 
 dependencies {
-    // https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-reflect
-    runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:1.5.31")
-
     implementation("org.junit.jupiter:junit-jupiter:5.8.1")
 
-    // basic utils
-    // https://mvnrepository.com/artifact/com.google.guava/guava
-    implementation("com.google.guava:guava:31.0.1-jre")
+    // big math
+    implementation("ch.obermuhlner:big-math:2.3.0")
 }
 
 application {
