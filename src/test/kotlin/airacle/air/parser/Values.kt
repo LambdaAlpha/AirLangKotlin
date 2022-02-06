@@ -4,6 +4,20 @@ import airacle.air.interpreter.*
 
 internal val VALUES = ListValue.valueOf(
     TupleValue.valueOf(
+        StringValue.valueOf("zero")
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("b"),
+        StringValue.valueOf("e"),
+    ),
+    TupleValue.valueOf(),
+    TupleValue.valueOf(
+        StringValue.valueOf("c"),
+        StringValue.valueOf("b"),
+        StringValue.valueOf("f"),
+    ),
+
+    TupleValue.valueOf(
         StringValue.valueOf("zero"),
     ),
     TupleValue.valueOf(
@@ -23,6 +37,7 @@ internal val VALUES = ListValue.valueOf(
             StringValue.valueOf("one"),
         ),
     ),
+
     TupleValue.valueOf(
         UnitValue,
         UnitValue,
@@ -45,6 +60,7 @@ internal val VALUES = ListValue.valueOf(
         StringValue.valueOf("c"),
         StringValue.valueOf("d"),
     ),
+
     TupleValue.valueOf(
         StringValue.valueOf("`"),
         StringValue.valueOf("`"),
@@ -103,6 +119,83 @@ internal val VALUES = ListValue.valueOf(
             StringValue.valueOf("c"),
         ),
     ),
+
+    StringValue.valueOf("a"),
+    TupleValue.valueOf(
+        StringValue.valueOf("b"),
+        StringValue.valueOf("a"),
+        StringValue.valueOf("c"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("two"),
+        StringValue.valueOf("a"),
+        StringValue.valueOf("b"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("two"),
+        StringValue.valueOf("two"),
+        StringValue.valueOf("two"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("?"),
+        StringValue.valueOf("a"),
+        StringValue.valueOf("b"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("?"),
+        StringValue.valueOf("?"),
+        StringValue.valueOf("?"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("?"),
+        StringValue.valueOf("a"),
+        StringValue.valueOf("b"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("."),
+        TupleValue.valueOf(
+            StringValue.valueOf("."),
+            TupleValue.valueOf(
+                StringValue.valueOf("."),
+                StringValue.valueOf("a"),
+                StringValue.valueOf("b"),
+            ),
+            StringValue.valueOf("c"),
+        ),
+        StringValue.valueOf("d"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("."),
+        TupleValue.valueOf(
+            StringValue.valueOf("."),
+            TupleValue.valueOf(
+                StringValue.valueOf("."),
+                TupleValue.valueOf(
+                    StringValue.valueOf("."),
+                    TupleValue.valueOf(
+                        StringValue.valueOf("~"),
+                        StringValue.valueOf("a")
+                    ),
+                    TupleValue.valueOf(
+                        StringValue.valueOf("zero")
+                    ),
+                ),
+                TupleValue.valueOf(),
+            ),
+            ListValue.valueOf(),
+        ),
+        MapValue.valueOf(),
+    ),
+    TupleValue.valueOf(
+        TupleValue.valueOf(
+            StringValue.valueOf("c"),
+            StringValue.valueOf("b"),
+            StringValue.valueOf("d"),
+        ),
+        StringValue.valueOf("a"),
+        StringValue.valueOf("e"),
+    ),
+
     TupleValue.valueOf(
         ListValue.valueOf(
             MapValue.valueOf(

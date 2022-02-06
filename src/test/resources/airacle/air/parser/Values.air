@@ -12,6 +12,11 @@
 # ; one one
 # ; two ; zero ; one one
 # ; three "one" [<> <<>>] {1 1 2 2 3 3}
+############a
+; #a zero #b
+<#a b #c #d, e #f>
+<#<#<#a>>>
+(#a b c #d #e f #g)
 
 ; zero
 ;zero
@@ -33,6 +38,17 @@ $ <a b>
 * \
 ? ? a b c
 . a . b c
+
+(a)
+(a b c)
+(a two b)
+(two two two)
+(a ? b)
+(? ? ?)
+(a "?" b)
+(a . b . c . d)
+(~a . ;zero . <> . [] . {})
+((a) (b c d) e)
 
 <
     [
