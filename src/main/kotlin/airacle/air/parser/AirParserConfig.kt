@@ -183,6 +183,13 @@ object AirParserConfig : IAirParserConfig {
     const val TYPE_OF = "typeOf"
     const val TYPE_CAST = "toType"
 
+    const val VALUE = "value"
+    const val VALUE_SYMBOL = "'"
+    const val QUOTE = "quote"
+    const val QUOTE_SYMBOL = "`"
+    const val EVAL = "eval"
+    const val EVAL_SYMBOL = "~"
+
     const val NOP = "nop"
     const val IF = "if"
     const val FOR = "for"
@@ -266,6 +273,9 @@ object AirParserConfig : IAirParserConfig {
 
                 // parse
                 ENCODE_TO_STRING, DECODE_FROM_STRING -> 1
+
+                // eval
+                VALUE, VALUE_SYMBOL, QUOTE, QUOTE_SYMBOL, EVAL, EVAL_SYMBOL -> 1
 
                 // control
                 NOP -> 0

@@ -6,6 +6,8 @@ import airacle.air.api.IAirParser
 import airacle.air.lexer.AirToken
 import airacle.air.parser.AirParserConfig
 
+private typealias C = AirParserConfig
+
 class AirInterpreter(
     val version: AirInterpreterVersion,
     private val lexer: IAirLexer<AirToken>,
@@ -26,7 +28,6 @@ class AirInterpreter(
     private val computability: IComputability
     private val contexts: IContexts
     private val controls: IControls
-    private val evaluations: IEvaluations
     private val types: ITypes
     private val parsers: IParsers
 
@@ -48,7 +49,6 @@ class AirInterpreter(
                 computability = Computability
                 contexts = Contexts
                 controls = Controls
-                evaluations = Evaluations
                 types = Types
                 parsers = Parsers(lexer, parser)
             }
@@ -56,292 +56,260 @@ class AirInterpreter(
     }
 
     override fun interpret(value: AirValue): AirValue {
+        return i(value)
+    }
+
+    // just for a shorter name
+    private fun i(value: AirValue): AirValue {
         if (value !is TupleValue) {
             return value
         }
-        if (value.value.isNotEmpty()) {
-            val tuple = value.value
-            val keyword = tuple[0]
-            if (keyword is StringValue) {
-                when (keyword.value) {
-                    // bool
-                    AirParserConfig.NOT -> return booleans.not(interpret(tuple[1]))
-                    AirParserConfig.AND -> return booleans.and(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.OR -> return booleans.or(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.XOR -> return booleans.xor(interpret(tuple[1]), interpret(tuple[2]))
 
-                    // comparator
-                    AirParserConfig.LE -> return comparators.le(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.LT -> return comparators.lt(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.GE -> return comparators.ge(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.GT -> return comparators.gt(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.EQ -> return comparators.eq(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.NE -> return comparators.ne(interpret(tuple[1]), interpret(tuple[2]))
+        val tuple = value.value
+        if (tuple.isEmpty()) {
+            return value
+        }
 
-                    // number
-                    AirParserConfig.UNARY_PLUS -> return numbers.unaryPlus(interpret(tuple[1]))
-                    AirParserConfig.UNARY_MINUS -> return numbers.unaryMinus(interpret(tuple[1]))
-                    AirParserConfig.ABS -> return numbers.abs(interpret(tuple[1]))
-                    AirParserConfig.SIGN -> return numbers.sign(interpret(tuple[1]))
-                    AirParserConfig.MIN -> return numbers.min(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.MAX -> return numbers.max(interpret(tuple[1]), interpret(tuple[2]))
+        val keyword = tuple[0]
+        if (C.paramLength(keyword) + 1 != tuple.size) {
+            return UnitValue
+        }
 
-                    // int
-                    AirParserConfig.ADD -> return ints.add(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.SUBTRACT -> return ints.subtract(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.MULTIPLY -> return ints.multiply(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.DIV_INT -> return ints.divide(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.REMAINDER -> return ints.remainder(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.DIV_REM -> return ints.divRem(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.POWER -> return ints.power(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.LOG -> return ints.log(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.MODULO -> return ints.mod(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.BIT_NOT -> return ints.bitNot(interpret(tuple[1]))
-                    AirParserConfig.BIT_AND -> return ints.bitAnd(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.BIT_OR -> return ints.bitOr(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.BIT_XOR -> return ints.bitXor(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.BIT_AND_NOT -> return ints.bitAndNot(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.TEST_BIT -> return ints.testBit(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.SET_BIT -> return ints.setBit(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.CLEAR_BIT -> return ints.clearBit(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.FLIP_BIT -> return ints.flipBit(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.BIT_COUNT -> return ints.bitCount(interpret(tuple[1]))
-                    AirParserConfig.BIT_LENGTH -> return ints.bitLength(interpret(tuple[1]))
-                    AirParserConfig.LOWEST_SET_BIT -> return ints.lowestSetBit(interpret(tuple[1]))
-                    AirParserConfig.SHIFT_LEFT -> return ints.shiftLeft(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.SHIFT_RIGHT -> return ints.shiftRight(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.RANDOM -> return ints.random(interpret(tuple[1]))
-                    AirParserConfig.SEED -> return ints.randomWithSeed(
-                        interpret(tuple[1]),
-                        interpret(tuple[2])
-                    )
+        if (keyword is StringValue) {
+            return interpretString(keyword.value, value)
+        }
 
-                    // decimal
-                    AirParserConfig.PRECISION -> return decimals.precision(interpret(tuple[1]))
+        return value
+    }
 
-                    AirParserConfig.RAND0 -> return decimals.random(interpret(tuple[1]))
-                    AirParserConfig.SEED0 -> return decimals.seed(
-                        interpret(tuple[1]),
-                        interpret(tuple[2])
-                    )
-                    AirParserConfig.ROUND0 -> return decimals.round(
-                        interpret(tuple[1]),
-                        interpret(tuple[2])
-                    )
-                    AirParserConfig.ADD0 -> return decimals.add(
-                        interpret(tuple[1]),
-                        interpret(tuple[2]),
-                        interpret(tuple[3])
-                    )
-                    AirParserConfig.SUBTRACT0 -> return decimals.subtract(
-                        interpret(tuple[1]),
-                        interpret(tuple[2]),
-                        interpret(tuple[3])
-                    )
-                    AirParserConfig.MULTIPLY0 -> return decimals.multiply(
-                        interpret(tuple[1]),
-                        interpret(tuple[2]),
-                        interpret(tuple[3])
-                    )
-                    AirParserConfig.DIVIDE0 -> return decimals.divide(
-                        interpret(tuple[1]),
-                        interpret(tuple[2]),
-                        interpret(tuple[3])
-                    )
-                    AirParserConfig.DIVIDE_TO_INT0 -> return decimals.divideToInt(
-                        interpret(tuple[1]),
-                        interpret(tuple[2]),
-                        interpret(tuple[3])
-                    )
-                    AirParserConfig.REMAINDER0 -> return decimals.remainder(
-                        interpret(tuple[1]),
-                        interpret(tuple[2]),
-                        interpret(tuple[3])
-                    )
-                    AirParserConfig.DIVIDE_AND_REMAINDER0 -> return decimals.divRem(
-                        interpret(tuple[1]),
-                        interpret(tuple[2]),
-                        interpret(tuple[3])
-                    )
-                    AirParserConfig.POWER0 -> return decimals.power(
-                        interpret(tuple[1]),
-                        interpret(tuple[2]),
-                        interpret(tuple[3])
-                    )
-                    AirParserConfig.EXP0 -> return decimals.exp(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.LOG0 -> return decimals.log(
-                        interpret(tuple[1]),
-                        interpret(tuple[2]),
-                        interpret(tuple[3])
-                    )
-                    AirParserConfig.LN0 -> return decimals.ln(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.SHIFT_LEFT0 -> return decimals.shiftLeft(
-                        interpret(tuple[1]),
-                        interpret(tuple[2]),
-                        interpret(tuple[3])
-                    )
-                    AirParserConfig.SHIFT_RIGHT0 -> return decimals.shiftRight(
-                        interpret(tuple[1]),
-                        interpret(tuple[2]),
-                        interpret(tuple[3])
-                    )
-                    AirParserConfig.SIN0 -> return decimals.sin(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.COS0 -> return decimals.cos(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.TAN0 -> return decimals.tan(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.ASIN0 -> return decimals.asin(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.ACOS0 -> return decimals.acos(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.ATAN0 -> return decimals.atan(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.ATAN20 -> return decimals.atan2(
-                        interpret(tuple[1]),
-                        interpret(tuple[2]),
-                        interpret(tuple[3])
-                    )
-                    AirParserConfig.SINH0 -> return decimals.sinh(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.COSH0 -> return decimals.cosh(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.TANH0 -> return decimals.tanh(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.ASINH0 -> return decimals.asinh(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.ACOSH0 -> return decimals.acosh(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.ATANH0 -> return decimals.atanh(interpret(tuple[1]), interpret(tuple[2]))
+    private fun interpretString(keyword: String, value: TupleValue): AirValue {
+        val t = value.value
+        return when (keyword) {
+            // eval
+            C.VALUE, C.VALUE_SYMBOL -> t[1]
+            C.QUOTE, C.QUOTE_SYMBOL -> quote(t[1])
+            C.EVAL, C.EVAL_SYMBOL -> i(i(t[1]))
 
-                    AirParserConfig.RAND32 -> return decimals.random32()
-                    AirParserConfig.SEED32 -> return decimals.seed32(interpret(tuple[1]))
-                    AirParserConfig.ROUND32 -> return decimals.round32(interpret(tuple[1]))
-                    AirParserConfig.ADD32 -> return decimals.add32(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.SUBTRACT32 -> return decimals.subtract32(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.MULTIPLY32 -> return decimals.multiply32(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.DIVIDE32 -> return decimals.divide32(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.DIVIDE_TO_INT32 -> return decimals.divideToInt32(
-                        interpret(tuple[1]),
-                        interpret(tuple[2])
-                    )
-                    AirParserConfig.REMAINDER32 -> return decimals.remainder32(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.DIVIDE_AND_REMAINDER32 -> return decimals.divRem32(
-                        interpret(tuple[1]),
-                        interpret(tuple[2])
-                    )
-                    AirParserConfig.POWER32 -> return decimals.power32(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.EXP32 -> return decimals.exp32(interpret(tuple[1]))
-                    AirParserConfig.LOG32 -> return decimals.log32(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.LN32 -> return decimals.ln32(interpret(tuple[1]))
-                    AirParserConfig.SHIFT_LEFT32 -> return decimals.shiftLeft32(
-                        interpret(tuple[1]),
-                        interpret(tuple[2])
-                    )
-                    AirParserConfig.SHIFT_RIGHT32 -> return decimals.shiftRight32(
-                        interpret(tuple[1]),
-                        interpret(tuple[2])
-                    )
-                    AirParserConfig.SIN32 -> return decimals.sin32(interpret(tuple[1]))
-                    AirParserConfig.COS32 -> return decimals.cos32(interpret(tuple[1]))
-                    AirParserConfig.TAN32 -> return decimals.tan32(interpret(tuple[1]))
-                    AirParserConfig.ASIN32 -> return decimals.asin32(interpret(tuple[1]))
-                    AirParserConfig.ACOS32 -> return decimals.acos32(interpret(tuple[1]))
-                    AirParserConfig.ATAN32 -> return decimals.atan32(interpret(tuple[1]))
-                    AirParserConfig.ATAN232 -> return decimals.atan232(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.SINH32 -> return decimals.sinh32(interpret(tuple[1]))
-                    AirParserConfig.COSH32 -> return decimals.cosh32(interpret(tuple[1]))
-                    AirParserConfig.TANH32 -> return decimals.tanh32(interpret(tuple[1]))
-                    AirParserConfig.ASINH32 -> return decimals.asinh32(interpret(tuple[1]))
-                    AirParserConfig.ACOSH32 -> return decimals.acosh32(interpret(tuple[1]))
-                    AirParserConfig.ATANH32 -> return decimals.atanh32(interpret(tuple[1]))
+            // bool
+            C.NOT -> booleans.not(i(t[1]))
+            C.AND -> booleans.and(i(t[1]), i(t[2]))
+            C.OR -> booleans.or(i(t[1]), i(t[2]))
+            C.XOR -> booleans.xor(i(t[1]), i(t[2]))
 
-                    AirParserConfig.RAND64 -> return decimals.random64()
-                    AirParserConfig.SEED64 -> return decimals.seed64(interpret(tuple[1]))
-                    AirParserConfig.ROUND64 -> return decimals.round64(interpret(tuple[1]))
-                    AirParserConfig.ADD64 -> return decimals.add64(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.SUBTRACT64 -> return decimals.subtract64(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.MULTIPLY64 -> return decimals.multiply64(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.DIVIDE64 -> return decimals.divide64(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.DIVIDE_TO_INT64 -> return decimals.divideToInt64(
-                        interpret(tuple[1]),
-                        interpret(tuple[2])
-                    )
-                    AirParserConfig.REMAINDER64 -> return decimals.remainder64(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.DIVIDE_AND_REMAINDER64 -> return decimals.divRem64(
-                        interpret(tuple[1]),
-                        interpret(tuple[2])
-                    )
-                    AirParserConfig.POWER64 -> return decimals.power64(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.EXP64 -> return decimals.exp64(interpret(tuple[1]))
-                    AirParserConfig.LOG64 -> return decimals.log64(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.LN64 -> return decimals.ln64(interpret(tuple[1]))
-                    AirParserConfig.SHIFT_LEFT64 -> return decimals.shiftLeft64(
-                        interpret(tuple[1]),
-                        interpret(tuple[2])
-                    )
-                    AirParserConfig.SHIFT_RIGHT64 -> return decimals.shiftRight64(
-                        interpret(tuple[1]),
-                        interpret(tuple[2])
-                    )
-                    AirParserConfig.SIN64 -> return decimals.sin64(interpret(tuple[1]))
-                    AirParserConfig.COS64 -> return decimals.cos64(interpret(tuple[1]))
-                    AirParserConfig.TAN64 -> return decimals.tan64(interpret(tuple[1]))
-                    AirParserConfig.ASIN64 -> return decimals.asin64(interpret(tuple[1]))
-                    AirParserConfig.ACOS64 -> return decimals.acos64(interpret(tuple[1]))
-                    AirParserConfig.ATAN64 -> return decimals.atan64(interpret(tuple[1]))
-                    AirParserConfig.ATAN264 -> return decimals.atan264(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.SINH64 -> return decimals.sinh64(interpret(tuple[1]))
-                    AirParserConfig.COSH64 -> return decimals.cosh64(interpret(tuple[1]))
-                    AirParserConfig.TANH64 -> return decimals.tanh64(interpret(tuple[1]))
-                    AirParserConfig.ASINH64 -> return decimals.asinh64(interpret(tuple[1]))
-                    AirParserConfig.ACOSH64 -> return decimals.acosh64(interpret(tuple[1]))
-                    AirParserConfig.ATANH64 -> return decimals.atanh64(interpret(tuple[1]))
+            // comparator
+            C.LE -> comparators.le(i(t[1]), i(t[2]))
+            C.LT -> comparators.lt(i(t[1]), i(t[2]))
+            C.GE -> comparators.ge(i(t[1]), i(t[2]))
+            C.GT -> comparators.gt(i(t[1]), i(t[2]))
+            C.EQ -> comparators.eq(i(t[1]), i(t[2]))
+            C.NE -> comparators.ne(i(t[1]), i(t[2]))
 
-                    AirParserConfig.RAND128 -> return decimals.random128()
-                    AirParserConfig.SEED128 -> return decimals.seed128(interpret(tuple[1]))
-                    AirParserConfig.ROUND128 -> return decimals.round128(interpret(tuple[1]))
-                    AirParserConfig.ADD128 -> return decimals.add128(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.SUBTRACT128 -> return decimals.subtract128(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.MULTIPLY128 -> return decimals.multiply128(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.DIVIDE128 -> return decimals.divide128(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.DIVIDE_TO_INT128 -> return decimals.divideToInt128(
-                        interpret(tuple[1]),
-                        interpret(tuple[2])
-                    )
-                    AirParserConfig.REMAINDER128 -> return decimals.remainder128(
-                        interpret(tuple[1]),
-                        interpret(tuple[2])
-                    )
-                    AirParserConfig.DIVIDE_AND_REMAINDER128 -> return decimals.divRem128(
-                        interpret(tuple[1]),
-                        interpret(tuple[2])
-                    )
-                    AirParserConfig.POWER128 -> return decimals.power128(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.EXP128 -> return decimals.exp128(interpret(tuple[1]))
-                    AirParserConfig.LOG128 -> return decimals.log128(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.LN128 -> return decimals.ln128(interpret(tuple[1]))
-                    AirParserConfig.SHIFT_LEFT128 -> return decimals.shiftLeft128(
-                        interpret(tuple[1]),
-                        interpret(tuple[2])
-                    )
-                    AirParserConfig.SHIFT_RIGHT128 -> return decimals.shiftRight128(
-                        interpret(tuple[1]),
-                        interpret(tuple[2])
-                    )
-                    AirParserConfig.SIN128 -> return decimals.sin128(interpret(tuple[1]))
-                    AirParserConfig.COS128 -> return decimals.cos128(interpret(tuple[1]))
-                    AirParserConfig.TAN128 -> return decimals.tan128(interpret(tuple[1]))
-                    AirParserConfig.ASIN128 -> return decimals.asin128(interpret(tuple[1]))
-                    AirParserConfig.ACOS128 -> return decimals.acos128(interpret(tuple[1]))
-                    AirParserConfig.ATAN128 -> return decimals.atan128(interpret(tuple[1]))
-                    AirParserConfig.ATAN2128 -> return decimals.atan2128(interpret(tuple[1]), interpret(tuple[2]))
-                    AirParserConfig.SINH128 -> return decimals.sinh128(interpret(tuple[1]))
-                    AirParserConfig.COSH128 -> return decimals.cosh128(interpret(tuple[1]))
-                    AirParserConfig.TANH128 -> return decimals.tanh128(interpret(tuple[1]))
-                    AirParserConfig.ASINH128 -> return decimals.asinh128(interpret(tuple[1]))
-                    AirParserConfig.ACOSH128 -> return decimals.acosh128(interpret(tuple[1]))
-                    AirParserConfig.ATANH128 -> return decimals.atanh128(interpret(tuple[1]))
+            // number
+            C.UNARY_PLUS -> numbers.unaryPlus(i(t[1]))
+            C.UNARY_MINUS -> numbers.unaryMinus(i(t[1]))
+            C.ABS -> numbers.abs(i(t[1]))
+            C.SIGN -> numbers.sign(i(t[1]))
+            C.MIN -> numbers.min(i(t[1]), i(t[2]))
+            C.MAX -> numbers.max(i(t[1]), i(t[2]))
 
-                    // type
-                    AirParserConfig.TYPE_OF -> return types.typeOf(interpret(tuple[1]))
-                    AirParserConfig.TYPE_CAST -> return types.toType(interpret(tuple[1]), interpret(tuple[2]))
+            // int
+            C.ADD -> ints.add(i(t[1]), i(t[2]))
+            C.SUBTRACT -> ints.subtract(i(t[1]), i(t[2]))
+            C.MULTIPLY -> ints.multiply(i(t[1]), i(t[2]))
+            C.DIV_INT -> ints.divide(i(t[1]), i(t[2]))
+            C.REMAINDER -> ints.remainder(i(t[1]), i(t[2]))
+            C.DIV_REM -> ints.divRem(i(t[1]), i(t[2]))
+            C.POWER -> ints.power(i(t[1]), i(t[2]))
+            C.LOG -> ints.log(i(t[1]), i(t[2]))
+            C.MODULO -> ints.mod(i(t[1]), i(t[2]))
+            C.BIT_NOT -> ints.bitNot(i(t[1]))
+            C.BIT_AND -> ints.bitAnd(i(t[1]), i(t[2]))
+            C.BIT_OR -> ints.bitOr(i(t[1]), i(t[2]))
+            C.BIT_XOR -> ints.bitXor(i(t[1]), i(t[2]))
+            C.BIT_AND_NOT -> ints.bitAndNot(i(t[1]), i(t[2]))
+            C.TEST_BIT -> ints.testBit(i(t[1]), i(t[2]))
+            C.SET_BIT -> ints.setBit(i(t[1]), i(t[2]))
+            C.CLEAR_BIT -> ints.clearBit(i(t[1]), i(t[2]))
+            C.FLIP_BIT -> ints.flipBit(i(t[1]), i(t[2]))
+            C.BIT_COUNT -> ints.bitCount(i(t[1]))
+            C.BIT_LENGTH -> ints.bitLength(i(t[1]))
+            C.LOWEST_SET_BIT -> ints.lowestSetBit(i(t[1]))
+            C.SHIFT_LEFT -> ints.shiftLeft(i(t[1]), i(t[2]))
+            C.SHIFT_RIGHT -> ints.shiftRight(i(t[1]), i(t[2]))
+            C.RANDOM -> ints.random(i(t[1]))
+            C.SEED -> ints.randomWithSeed(i(t[1]), i(t[2]))
 
-                    // parse
-                    AirParserConfig.ENCODE_TO_STRING -> return parsers.encodeToString(interpret(tuple[1]))
-                    AirParserConfig.DECODE_FROM_STRING -> return parsers.decodeFromString(interpret(tuple[1]))
-                }
+            // decimal
+            C.PRECISION -> decimals.precision(i(t[1]))
+
+            C.RAND0 -> decimals.random(i(t[1]))
+            C.SEED0 -> decimals.seed(i(t[1]), i(t[2]))
+            C.ROUND0 -> decimals.round(i(t[1]), i(t[2]))
+            C.ADD0 -> decimals.add(i(t[1]), i(t[2]), i(t[3]))
+            C.SUBTRACT0 -> decimals.subtract(i(t[1]), i(t[2]), i(t[3]))
+            C.MULTIPLY0 -> decimals.multiply(i(t[1]), i(t[2]), i(t[3]))
+            C.DIVIDE0 -> decimals.divide(i(t[1]), i(t[2]), i(t[3]))
+            C.DIVIDE_TO_INT0 -> decimals.divideToInt(i(t[1]), i(t[2]), i(t[3]))
+            C.REMAINDER0 -> decimals.remainder(i(t[1]), i(t[2]), i(t[3]))
+            C.DIVIDE_AND_REMAINDER0 -> decimals.divRem(i(t[1]), i(t[2]), i(t[3]))
+            C.POWER0 -> decimals.power(i(t[1]), i(t[2]), i(t[3]))
+            C.EXP0 -> decimals.exp(i(t[1]), i(t[2]))
+            C.LOG0 -> decimals.log(i(t[1]), i(t[2]), i(t[3]))
+            C.LN0 -> decimals.ln(i(t[1]), i(t[2]))
+            C.SHIFT_LEFT0 -> decimals.shiftLeft(i(t[1]), i(t[2]), i(t[3]))
+            C.SHIFT_RIGHT0 -> decimals.shiftRight(i(t[1]), i(t[2]), i(t[3]))
+            C.SIN0 -> decimals.sin(i(t[1]), i(t[2]))
+            C.COS0 -> decimals.cos(i(t[1]), i(t[2]))
+            C.TAN0 -> decimals.tan(i(t[1]), i(t[2]))
+            C.ASIN0 -> decimals.asin(i(t[1]), i(t[2]))
+            C.ACOS0 -> decimals.acos(i(t[1]), i(t[2]))
+            C.ATAN0 -> decimals.atan(i(t[1]), i(t[2]))
+            C.ATAN20 -> decimals.atan2(i(t[1]), i(t[2]), i(t[3]))
+            C.SINH0 -> decimals.sinh(i(t[1]), i(t[2]))
+            C.COSH0 -> decimals.cosh(i(t[1]), i(t[2]))
+            C.TANH0 -> decimals.tanh(i(t[1]), i(t[2]))
+            C.ASINH0 -> decimals.asinh(i(t[1]), i(t[2]))
+            C.ACOSH0 -> decimals.acosh(i(t[1]), i(t[2]))
+            C.ATANH0 -> decimals.atanh(i(t[1]), i(t[2]))
+
+            C.RAND32 -> decimals.random32()
+            C.SEED32 -> decimals.seed32(i(t[1]))
+            C.ROUND32 -> decimals.round32(i(t[1]))
+            C.ADD32 -> decimals.add32(i(t[1]), i(t[2]))
+            C.SUBTRACT32 -> decimals.subtract32(i(t[1]), i(t[2]))
+            C.MULTIPLY32 -> decimals.multiply32(i(t[1]), i(t[2]))
+            C.DIVIDE32 -> decimals.divide32(i(t[1]), i(t[2]))
+            C.DIVIDE_TO_INT32 -> decimals.divideToInt32(i(t[1]), i(t[2]))
+            C.REMAINDER32 -> decimals.remainder32(i(t[1]), i(t[2]))
+            C.DIVIDE_AND_REMAINDER32 -> decimals.divRem32(i(t[1]), i(t[2]))
+            C.POWER32 -> decimals.power32(i(t[1]), i(t[2]))
+            C.EXP32 -> decimals.exp32(i(t[1]))
+            C.LOG32 -> decimals.log32(i(t[1]), i(t[2]))
+            C.LN32 -> decimals.ln32(i(t[1]))
+            C.SHIFT_LEFT32 -> decimals.shiftLeft32(i(t[1]), i(t[2]))
+            C.SHIFT_RIGHT32 -> decimals.shiftRight32(i(t[1]), i(t[2]))
+            C.SIN32 -> decimals.sin32(i(t[1]))
+            C.COS32 -> decimals.cos32(i(t[1]))
+            C.TAN32 -> decimals.tan32(i(t[1]))
+            C.ASIN32 -> decimals.asin32(i(t[1]))
+            C.ACOS32 -> decimals.acos32(i(t[1]))
+            C.ATAN32 -> decimals.atan32(i(t[1]))
+            C.ATAN232 -> decimals.atan232(i(t[1]), i(t[2]))
+            C.SINH32 -> decimals.sinh32(i(t[1]))
+            C.COSH32 -> decimals.cosh32(i(t[1]))
+            C.TANH32 -> decimals.tanh32(i(t[1]))
+            C.ASINH32 -> decimals.asinh32(i(t[1]))
+            C.ACOSH32 -> decimals.acosh32(i(t[1]))
+            C.ATANH32 -> decimals.atanh32(i(t[1]))
+
+            C.RAND64 -> decimals.random64()
+            C.SEED64 -> decimals.seed64(i(t[1]))
+            C.ROUND64 -> decimals.round64(i(t[1]))
+            C.ADD64 -> decimals.add64(i(t[1]), i(t[2]))
+            C.SUBTRACT64 -> decimals.subtract64(i(t[1]), i(t[2]))
+            C.MULTIPLY64 -> decimals.multiply64(i(t[1]), i(t[2]))
+            C.DIVIDE64 -> decimals.divide64(i(t[1]), i(t[2]))
+            C.DIVIDE_TO_INT64 -> decimals.divideToInt64(i(t[1]), i(t[2]))
+            C.REMAINDER64 -> decimals.remainder64(i(t[1]), i(t[2]))
+            C.DIVIDE_AND_REMAINDER64 -> decimals.divRem64(i(t[1]), i(t[2]))
+            C.POWER64 -> decimals.power64(i(t[1]), i(t[2]))
+            C.EXP64 -> decimals.exp64(i(t[1]))
+            C.LOG64 -> decimals.log64(i(t[1]), i(t[2]))
+            C.LN64 -> decimals.ln64(i(t[1]))
+            C.SHIFT_LEFT64 -> decimals.shiftLeft64(i(t[1]), i(t[2]))
+            C.SHIFT_RIGHT64 -> decimals.shiftRight64(i(t[1]), i(t[2]))
+            C.SIN64 -> decimals.sin64(i(t[1]))
+            C.COS64 -> decimals.cos64(i(t[1]))
+            C.TAN64 -> decimals.tan64(i(t[1]))
+            C.ASIN64 -> decimals.asin64(i(t[1]))
+            C.ACOS64 -> decimals.acos64(i(t[1]))
+            C.ATAN64 -> decimals.atan64(i(t[1]))
+            C.ATAN264 -> decimals.atan264(i(t[1]), i(t[2]))
+            C.SINH64 -> decimals.sinh64(i(t[1]))
+            C.COSH64 -> decimals.cosh64(i(t[1]))
+            C.TANH64 -> decimals.tanh64(i(t[1]))
+            C.ASINH64 -> decimals.asinh64(i(t[1]))
+            C.ACOSH64 -> decimals.acosh64(i(t[1]))
+            C.ATANH64 -> decimals.atanh64(i(t[1]))
+
+            C.RAND128 -> decimals.random128()
+            C.SEED128 -> decimals.seed128(i(t[1]))
+            C.ROUND128 -> decimals.round128(i(t[1]))
+            C.ADD128 -> decimals.add128(i(t[1]), i(t[2]))
+            C.SUBTRACT128 -> decimals.subtract128(i(t[1]), i(t[2]))
+            C.MULTIPLY128 -> decimals.multiply128(i(t[1]), i(t[2]))
+            C.DIVIDE128 -> decimals.divide128(i(t[1]), i(t[2]))
+            C.DIVIDE_TO_INT128 -> decimals.divideToInt128(i(t[1]), i(t[2]))
+            C.REMAINDER128 -> decimals.remainder128(i(t[1]), i(t[2]))
+            C.DIVIDE_AND_REMAINDER128 -> decimals.divRem128(i(t[1]), i(t[2]))
+            C.POWER128 -> decimals.power128(i(t[1]), i(t[2]))
+            C.EXP128 -> decimals.exp128(i(t[1]))
+            C.LOG128 -> decimals.log128(i(t[1]), i(t[2]))
+            C.LN128 -> decimals.ln128(i(t[1]))
+            C.SHIFT_LEFT128 -> decimals.shiftLeft128(i(t[1]), i(t[2]))
+            C.SHIFT_RIGHT128 -> decimals.shiftRight128(i(t[1]), i(t[2]))
+            C.SIN128 -> decimals.sin128(i(t[1]))
+            C.COS128 -> decimals.cos128(i(t[1]))
+            C.TAN128 -> decimals.tan128(i(t[1]))
+            C.ASIN128 -> decimals.asin128(i(t[1]))
+            C.ACOS128 -> decimals.acos128(i(t[1]))
+            C.ATAN128 -> decimals.atan128(i(t[1]))
+            C.ATAN2128 -> decimals.atan2128(i(t[1]), i(t[2]))
+            C.SINH128 -> decimals.sinh128(i(t[1]))
+            C.COSH128 -> decimals.cosh128(i(t[1]))
+            C.TANH128 -> decimals.tanh128(i(t[1]))
+            C.ASINH128 -> decimals.asinh128(i(t[1]))
+            C.ACOSH128 -> decimals.acosh128(i(t[1]))
+            C.ATANH128 -> decimals.atanh128(i(t[1]))
+
+            // type
+            C.TYPE_OF -> types.typeOf(i(t[1]))
+            C.TYPE_CAST -> types.toType(i(t[1]), i(t[2]))
+
+            // parse
+            C.ENCODE_TO_STRING -> parsers.encodeToString(i(t[1]))
+            C.DECODE_FROM_STRING -> parsers.decodeFromString(i(t[1]))
+            else -> value
+        }
+    }
+
+    private fun quote(v: AirValue): AirValue {
+        if (v is ListValue) {
+            val list = ArrayList<AirValue>(v.value.size)
+            for (i in v.value) {
+                list.add(quote(i))
+            }
+            return ListValue.valueOf(list)
+        }
+
+        if (v is MapValue) {
+            val map = HashMap<AirValue, AirValue>(v.value.size)
+            for (entry in map) {
+                map[quote(entry.key)] = quote(entry.value)
+            }
+            return MapValue.valueOf(map)
+        }
+
+        if (v !is TupleValue) {
+            return v
+        }
+
+        val t = v.value
+
+        if (t.isEmpty()) {
+            return v
+        }
+
+        val keyword = t[0]
+        if (keyword is StringValue) {
+            when (keyword.value) {
+                C.VALUE, C.VALUE_SYMBOL -> return t[1]
+                C.QUOTE, C.QUOTE_SYMBOL -> return quote(quote(t[1]))
+                C.EVAL, C.EVAL_SYMBOL -> return i(t[1])
             }
         }
-        return value
+        return TupleValue.fromArray(Array(t.size) {
+            quote(t[it])
+        })
     }
 }
