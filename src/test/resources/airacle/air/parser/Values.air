@@ -11,47 +11,28 @@
 # <this is a comment>
 # [this is a comment]
 # {this: is, a: comment}
-# ; zero
-# ; one one
-# ; two ; zero ; one one
-# ; three "one" [<> <<>>] {1 1 2 2 3 3}
+# ;exit
 ############a
-; #a zero #b
+; #a quit #b
 <#a b #c #d, e #f>
 <#<#<#a>>>
 (#a b c #d #e f #g)
 
-; zero
-;zero
-;one one
-;two ;zero ;one one
+;le a b
+;and ;le a b ;le b c
 
-; | |
-; \ \ /
-; 111 a b c
-; 1.234 a b c d
-
-` "`"
-~ 1
-@ 1.2
-$ <a b>
-% [1 a]
-^ {1 a}
-& |
-* \
-? ? a b c
-. a . b c
+`a
+`~'a
+`<'~a b ~;le a b>
 
 (a)
 (a b c)
-(a two b)
-(two two two)
-(a ? b)
-(? ? ?)
-(a "?" b)
-(a . b . c . d)
-(~a . ;zero . <> . [] . {})
+(a and b)
+(and and and)
+(a and b and c and d)
+(~a and ;le a b and <> and [] and {})
 ((a) (b c d) e)
+# "add some infix symbol test cases"
 
 <
     [
@@ -94,6 +75,202 @@ $ <a b>
     e:f
     g h,
 }
+
+# "full command list"
+
+;exit
+;quit
+
+;not a
+;and a b
+;or a b
+;xor a b
+
+;le a b
+;lt a b
+;ge a b
+;gt a b
+;eq a b
+;ne a b
+
+;plus a
+;minus a
+;abs a
+;sign a
+;min a b
+;max a b
+
+;add a b
+;sub a b
+;mul a b
+;dii a b
+;rem a b
+;dir a b
+;pow a b
+;log a b
+;mod a b
+;bitNot a
+;bitAnd a b
+;bitOr a b
+;bitXor a b
+;bitAndNot a b
+;testBit a b
+;setBit a b
+;clearBit a b
+;flipBit a b
+;bitCount a
+;bitLength a
+;lowestSetBit a
+;shl a b
+;shr a b
+;rand a
+;seed a b
+
+;precision a
+
+;rand0 a
+;seed0 a b
+;round0 a b
+;add0 a b c
+;sub0 a b c
+;mul0 a b c
+;div0 a b c
+;dii0 a b c
+;rem0 a b c
+;dir0 a b c
+;pow0 a b c
+;exp0 a b
+;log0 a b c
+;ln0 a b
+;shl0 a b c
+;shr0 a b c
+;sin0 a b
+;cos0 a b
+;tan0 a b
+;asin0 a b
+;acos0 a b
+;atan0 a b
+;atan20 a b c
+;sinh0 a b
+;cosh0 a b
+;tanh0 a b
+;asinh0 a b
+;acosh0 a b
+;atanh0 a b
+
+;rand32
+;seed32 a
+;round32 a
+;add32 a b
+;sub32 a b
+;mul32 a b
+;div32 a b
+;dii32 a b
+;rem32 a b
+;dir32 a b
+;pow32 a b
+;exp32 a
+;log32 a b
+;ln32 a
+;shl32 a b
+;shr32 a b
+;sin32 a
+;cos32 a
+;tan32 a
+;asin32 a
+;acos32 a
+;atan32 a
+;atan232 a b
+;sinh32 a
+;cosh32 a
+;tanh32 a
+;asinh32 a
+;acosh32 a
+;atanh32 a
+
+;rand64
+;seed64 a
+;round64 a
+;add64 a b
+;sub64 a b
+;mul64 a b
+;div64 a b
+;dii64 a b
+;rem64 a b
+;dir64 a b
+;pow64 a b
+;exp64 a
+;log64 a b
+;ln64 a
+;shl64 a b
+;shr64 a b
+;sin64 a
+;cos64 a
+;tan64 a
+;asin64 a
+;acos64 a
+;atan64 a
+;atan264 a b
+;sinh64 a
+;cosh64 a
+;tanh64 a
+;asinh64 a
+;acosh64 a
+;atanh64 a
+
+;rand128
+;seed128 a
+;round128 a
+;add128 a b
+;sub128 a b
+;mul128 a b
+;div128 a b
+;dii128 a b
+;rem128 a b
+;dir128 a b
+;pow128 a b
+;exp128 a
+;log128 a b
+;ln128 a
+;shl128 a b
+;shr128 a b
+;sin128 a
+;cos128 a
+;tan128 a
+;asin128 a
+;acos128 a
+;atan128 a
+;atan2128 a b
+;sinh128 a
+;cosh128 a
+;tanh128 a
+;asinh128 a
+;acosh128 a
+;atanh128 a
+
+;toString a
+;fromString a
+
+;typeOf a
+;toType a b
+
+;value a
+'a
+;quote a
+`a
+;eval a
+~a
+
+;nop
+;if a b c
+;for a b c d
+;while a b
+;function a b
+;return a
+;call a b
+
+;read a
+;write a b
 
 ]
 # "comment at the end"

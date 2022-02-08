@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 
 internal class AirParserTest {
     private val lexer: IAirLexer<AirToken> = AirLexer(AirLexerVersion.V0, AirLexerConfig)
-    private val parser = AirParser(AirParserVersion.V0, AirParserTestConfig)
+    private val parser = AirParser(AirParserVersion.V0, AirParserConfig)
     private val parserReader = ParserReader(lexer, parser)
 
     @Test
