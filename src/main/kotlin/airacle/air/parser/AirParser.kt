@@ -16,9 +16,15 @@ interface IAirParserConfig {
 }
 
 class AirParser(
-    val version: AirParserVersion,
-    private val config: IAirParserConfig
+    val version: AirParserVersion
 ) : IAirParser<AirToken, AirValue> {
+    private val config: IAirParserConfig
+
+    init {
+        when (version) {
+            AirParserVersion.V0 -> config = AirParserConfig
+        }
+    }
 
     override fun parse(tokens: List<AirToken>): AirValue {
         val nodes = tokens.map { TokenNode(it) }

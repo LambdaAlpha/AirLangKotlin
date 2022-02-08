@@ -27,9 +27,16 @@ class AirLexerError(
 )
 
 class AirLexer(
-    val version: AirLexerVersion,
-    private val config: IAirLexerConfig
+    val version: AirLexerVersion
 ) : IAirLexer<AirToken> {
+    private val config: IAirLexerConfig
+
+    init {
+        when (version) {
+            AirLexerVersion.V0 -> config = AirLexerConfig
+        }
+    }
+
     override fun lex(source: String): List<AirToken> {
         val tokens = mutableListOf<AirToken>()
         lex(source, tokens)

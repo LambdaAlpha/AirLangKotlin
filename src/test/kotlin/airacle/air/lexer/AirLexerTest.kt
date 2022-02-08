@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 internal class AirLexerTest {
-    private val lexer = AirLexer(AirLexerVersion.V0, AirLexerConfig)
+    private val lexer = AirLexer(AirLexerVersion.V0)
     private val lexerReader = LexerReader(lexer)
 
     @Test
