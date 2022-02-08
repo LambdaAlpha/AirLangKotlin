@@ -98,7 +98,11 @@ object Decimals : IDecimals {
 
     private fun round(a: AirValue, mc: MathContext?): AirValue {
         return if (a is DecimalValue && mc != null) {
-            DecimalValue.valueOf(a.value.plus(mc))
+            try {
+                DecimalValue.valueOf(a.value.plus(mc))
+            } catch (t: Throwable) {
+                UnitValue
+            }
         } else {
             UnitValue
         }

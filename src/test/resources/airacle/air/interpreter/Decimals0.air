@@ -1,3 +1,63 @@
 `[
 
+~ ;precision 0.
+~ ;precision 0.0
+~ ;precision 0.00
+~ ;precision 00.0
+~ ;precision 0.00e-2
+~ ;precision 0.01
+~ ;precision 0.010
+~ ;precision 1.010
+~ ;precision -1.010
+~ ;precision 1000.
+~ ;precision 1000.0
+~ ;precision 1.0e3
+
+~ ;round0 1. '<2,up>
+~ ;round0 1.1 '<2,up>
+~ ;round0 1.15 '<2,up>
+~ ;round0 -1.15 '<2,up>
+~ ;round0 1.15 '<2,down>
+~ ;round0 -1.15 '<2,down>
+~ ;round0 1.15 '<2,ceiling>
+~ ;round0 -1.15 '<2,ceiling>
+~ ;round0 1.15 '<2,floor>
+~ ;round0 -1.15 '<2,floor>
+~ ;round0 1.15 '<2,halfUp>
+~ ;round0 1.15 '<2,halfDown>
+~ ;round0 1.15 '<2,halfEven>
+~ ;round0 1.25 '<2,halfEven>
+~ ;round0 1.1 '<2,unnecessary>
+~ ;round0 1.15 '<2,unnecessary>
+~ ;round32 1.2345678
+~ ;round64 1.2345678901234567
+~ ;round128 1.2345678901234567890123456789012345
+
+~ ;add32 1. 1.
+~ ;sub32 2. 1.
+~ ;mul32 2. 3.
+~ ;div32 3. 2.
+~ ;dii32 3. 2.
+~ ;rem32 3. 2.
+~ ;dir32 3. 2.
+~ ;pow32 2. 3.
+~ ;exp32 1.
+~ ;log32 8. 2.
+~ ;ln32 2.718282
+~ ;shl32 1. 2
+~ ;shr32 1. 2
+~ ;sin32 1.
+~ ;cos32 1.
+~ ;tan32 1.
+~ ;asin32 1.
+~ ;acos32 0.5
+~ ;atan32 1.
+~ ;atan232 1. 1.
+~ ;sinh32 1.
+~ ;cosh32 1.
+~ ;tanh32 1.
+~ ;asinh32 1.
+~ ;acosh32 1.5
+~ ;atanh32 0.5
+
 ]
