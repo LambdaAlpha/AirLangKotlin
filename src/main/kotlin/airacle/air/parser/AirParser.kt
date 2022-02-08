@@ -22,21 +22,11 @@ class AirParser(
 
     override fun parse(tokens: List<AirToken>): AirValue {
         val nodes = tokens.map { TokenNode(it) }
-        val result = mutableListOf<AirValue>()
-        var start = 0
-        while (start < nodes.size) {
-            val pair = parseOne(nodes, start)
-            when (val node = pair.first) {
-                is ValueNode<*> -> result.add(node.value)
-                is CommentNode -> {}
-                else -> throw AirParserError("non-value: $node")
-            }
-            start = pair.second
-        }
-        return when (result.size) {
-            0 -> UnitValue
-            1 -> result[0]
-            else -> ListValue.valueOf(result)
+        val node = parseOneSkipComment(nodes, 0, false).first
+        if (node is ValueNode<*>) {
+            return node.value
+        } else {
+            throw AirParserError("non-value: $node")
         }
     }
 
