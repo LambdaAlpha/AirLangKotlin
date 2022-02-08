@@ -111,6 +111,8 @@ class AirInterpreter(
             C.GT -> comparators.gt(t[1], t[2])
             C.EQ -> comparators.eq(t[1], t[2])
             C.NE -> comparators.ne(t[1], t[2])
+            C.VEQ -> comparators.veq(t[1], t[2])
+            C.VNE -> comparators.vne(t[1], t[2])
 
             // number
             C.UNARY_PLUS -> numbers.unaryPlus(t[1])

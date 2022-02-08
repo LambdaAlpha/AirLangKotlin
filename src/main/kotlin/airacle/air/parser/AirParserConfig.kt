@@ -18,6 +18,8 @@ object AirParserConfig : IAirParserConfig {
     const val GT = "gt"
     const val EQ = "eq"
     const val NE = "ne"
+    const val VEQ = "veq"
+    const val VNE = "vne"
 
     // number
     const val UNARY_PLUS = "plus"
@@ -211,7 +213,7 @@ object AirParserConfig : IAirParserConfig {
                 AND, OR, XOR -> 2
 
                 // comparator
-                LE, LT, GE, GT, EQ, NE -> 2
+                LE, LT, GE, GT, EQ, NE, VEQ, VNE -> 2
 
                 // number
                 UNARY_PLUS, UNARY_MINUS, ABS, SIGN -> 1

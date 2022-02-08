@@ -59,6 +59,7 @@
 ~ ;eq -0. 0.
 ~ ;eq 0. 1.
 ~ ;eq -0.3 -0.3
+~ ;eq 0.1 0.100
 ~ ;eq a "a"
 ~ ;eq a b
 ~ ;eq "\uD83D\uDF01" "🜁"
@@ -83,6 +84,7 @@
 ~ ;ne -0. 0.
 ~ ;ne 0. 1.
 ~ ;ne -0.3 -0.3
+~ ;ne 0.1 0.100
 ~ ;ne a "a"
 ~ ;ne a b
 ~ ;ne "\uD83D\uDF01" "🜁"
@@ -95,5 +97,55 @@
 ~ ;ne | /
 ~ ;ne 0 0.
 ~ ;ne [] {}
+
+~ ;veq | |
+~ ;veq \ /
+~ ;veq / /
+~ ;veq 0 0
+~ ;veq 0 -0
+~ ;veq 0 1
+~ ;veq -1 -1
+~ ;veq 0. 0.
+~ ;veq -0. 0.
+~ ;veq 0. 1.
+~ ;veq -0.3 -0.3
+~ ;veq 0.1 0.100
+~ ;veq a "a"
+~ ;veq a b
+~ ;veq "\uD83D\uDF01" "🜁"
+~ ;veq '<a b c> '<a b c>
+~ ;veq '<a b c> '<a b d>
+~ ;veq [a b c] [a b c]
+~ ;veq [a b c] [a b d]
+~ ;veq {a:b, c:d} {a:b, c:d}
+~ ;veq {a:b, c:d} {a:b, c:e}
+~ ;veq | /
+~ ;veq 0 0.
+~ ;veq [] {}
+
+~ ;vne | |
+~ ;vne \ /
+~ ;vne / /
+~ ;vne 0 0
+~ ;vne 0 -0
+~ ;vne 0 1
+~ ;vne -1 -1
+~ ;vne 0. 0.
+~ ;vne -0. 0.
+~ ;vne 0. 1.
+~ ;vne -0.3 -0.3
+~ ;vne 0.1 0.100
+~ ;vne a "a"
+~ ;vne a b
+~ ;vne "\uD83D\uDF01" "🜁"
+~ ;vne '<a b c> '<a b c>
+~ ;vne '<a b c> '<a b d>
+~ ;vne [a b c] [a b c]
+~ ;vne [a b c] [a b d]
+~ ;vne {a:b, c:d} {a:b, c:d}
+~ ;vne {a:b, c:d} {a:b, c:e}
+~ ;vne | /
+~ ;vne 0 0.
+~ ;vne [] {}
 
 ]
