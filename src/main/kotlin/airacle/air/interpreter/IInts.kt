@@ -8,6 +8,7 @@ interface IInts {
     fun remainder(a: AirValue, b: AirValue): AirValue
     fun divRem(a: AirValue, b: AirValue): AirValue
     fun power(a: AirValue, b: AirValue): AirValue
+    fun root(a: AirValue, b: AirValue): AirValue
     fun log(a: AirValue, b: AirValue): AirValue
     fun mod(a: AirValue, b: AirValue): AirValue
 

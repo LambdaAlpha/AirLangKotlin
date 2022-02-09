@@ -37,6 +37,7 @@ object AirParserConfig : IAirParserConfig {
     const val REMAINDER = "rem"
     const val DIV_REM = "dir"
     const val POWER = "pow"
+    const val ROOT = "root"
     const val LOG = "log"
     const val MODULO = "mod"
     const val BIT_NOT = "bitNot"
@@ -221,7 +222,7 @@ object AirParserConfig : IAirParserConfig {
 
                 // int
                 ADD, SUBTRACT, MULTIPLY, DIV_INT, REMAINDER, DIV_REM,
-                POWER, LOG, MODULO -> 2
+                POWER, ROOT, LOG, MODULO -> 2
 
                 BIT_NOT -> 1
                 BIT_AND, BIT_OR, BIT_XOR, BIT_AND_NOT, SHIFT_LEFT, SHIFT_RIGHT,

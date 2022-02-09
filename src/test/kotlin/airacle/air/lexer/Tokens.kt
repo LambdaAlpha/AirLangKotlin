@@ -1,5 +1,7 @@
 package airacle.air.lexer
 
+import java.math.BigInteger
+
 internal val TOKENS = listOf(
     UnitToken,
 
@@ -18,10 +20,10 @@ internal val TOKENS = listOf(
     IntToken.valueOf(0x012345.toBigInteger()),
     IntToken.valueOf(0xa0b1c2d3.toBigInteger()),
     IntToken.valueOf(0xabcdef.toBigInteger()),
-    IntToken.valueOf((-0x012345).toBigInteger()),
+    IntToken.valueOf((0x012345 - (1 shl 24)).toBigInteger()),
     IntToken.valueOf(0b1101.toBigInteger()),
     IntToken.valueOf(0b0011.toBigInteger()),
-    IntToken.valueOf((-0b1111).toBigInteger()),
+    IntToken.valueOf((0b1111 - (1 shl 4)).toBigInteger()),
 
     IntToken.valueOf("11111111222222223333333344444444555555556666666677777777888888889999999900000000".toBigInteger()),
     IntToken.valueOf("+11111111222222223333333344444444555555556666666677777777888888889999999900000000".toBigInteger()),
@@ -37,9 +39,9 @@ internal val TOKENS = listOf(
         )
     ),
     IntToken.valueOf(
-        "-11111111222222223333333344444444555555556666666677777777888888889999999900000000aaaaaaaabbbbbbbbccccccccddddddddeeeeeeeeffffffff".toBigInteger(
+        "11111111222222223333333344444444555555556666666677777777888888889999999900000000aaaaaaaabbbbbbbbccccccccddddddddeeeeeeeeffffffff".toBigInteger(
             16
-        )
+        ) - BigInteger.ONE.shl(512)
     ),
 
     IntToken.valueOf(123.toBigInteger()),
@@ -49,10 +51,10 @@ internal val TOKENS = listOf(
     IntToken.valueOf((-122333).toBigInteger()),
     IntToken.valueOf(0xabbccc.toBigInteger()),
     IntToken.valueOf(0xabbccc.toBigInteger()),
-    IntToken.valueOf((-0xabbccc).toBigInteger()),
+    IntToken.valueOf((0xabbccc - (1 shl 24)).toBigInteger()),
     IntToken.valueOf(0b011000.toBigInteger()),
     IntToken.valueOf(0b011000.toBigInteger()),
-    IntToken.valueOf((-0b011000).toBigInteger()),
+    IntToken.valueOf((0b011000 - (1 shl 6)).toBigInteger()),
 
     DecimalToken.valueOf("0.0".toBigDecimal()),
     DecimalToken.valueOf("+0.0".toBigDecimal()),

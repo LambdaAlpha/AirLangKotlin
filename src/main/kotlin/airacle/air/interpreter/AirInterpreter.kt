@@ -130,6 +130,7 @@ class AirInterpreter(
             C.REMAINDER -> ints.remainder(t[1], t[2])
             C.DIV_REM -> ints.divRem(t[1], t[2])
             C.POWER -> ints.power(t[1], t[2])
+            C.ROOT -> ints.root(t[1], t[2])
             C.LOG -> ints.log(t[1], t[2])
             C.MODULO -> ints.mod(t[1], t[2])
             C.BIT_NOT -> ints.bitNot(t[1])

@@ -70,23 +70,55 @@ object Ints : IInts {
 
     override fun power(a: AirValue, b: AirValue): AirValue {
         return if (a is IntValue && b is IntValue) {
-            if (b.value.signum() < 0) {
-                UnitValue
-            } else if (b == IntValue.ZERO) {
-                IntValue.ONE
-            } else if (a == IntValue.ZERO || a == IntValue.ONE || b == IntValue.ONE) {
-                a
-            } else if (a == IntValue.NEG_ONE) {
-                if (b.value.testBit(0)) {
+            when {
+                b.value.signum() < 0 -> UnitValue
+                b == IntValue.ZERO -> IntValue.ONE
+                a == IntValue.ZERO || a == IntValue.ONE || b == IntValue.ONE -> a
+                a == IntValue.TWO -> IntValue.valueOf(BigInteger.ONE.shl(b.value.intValueExact()))
+                a == IntValue.NEG_ONE -> if (b.value.testBit(0)) {
                     IntValue.NEG_ONE
                 } else {
                     IntValue.ONE
                 }
-            } else {
-                try {
+                a == IntValue.NEG_TWO -> if (b.value.testBit(0)) {
+                    IntValue.valueOf(BigInteger.ONE.shl(b.value.intValueExact()).negate())
+                } else {
+                    IntValue.valueOf(BigInteger.ONE.shl(b.value.intValueExact()))
+                }
+                else -> try {
                     IntValue.valueOf(a.value.pow(b.value.intValueExact()))
                 } catch (t: Throwable) {
                     UnitValue
+                }
+            }
+        } else {
+            UnitValue
+        }
+    }
+
+    override fun root(a: AirValue, b: AirValue): AirValue {
+        return if (a is IntValue && b is IntValue) {
+            when {
+                b.value.signum() <= 0 -> UnitValue
+                a == IntValue.ZERO || a == IntValue.ONE -> a
+                b == IntValue.ONE -> a
+                a.value.bitLength().toBigInteger() < b.value -> IntValue.ONE
+                else -> {
+                    try {
+                        val floor = BigDecimalMath.root(
+                            a.value.toBigDecimal(),
+                            b.value.toBigDecimal(),
+                            MathContext(11, RoundingMode.FLOOR)
+                        ).toInt()
+                        val ceiling = (floor + 1).toBigInteger()
+                        if (ceiling.pow(b.value.intValueExact()) <= a.value) {
+                            IntValue.valueOf(ceiling)
+                        } else {
+                            IntValue.valueOf(floor.toBigInteger())
+                        }
+                    } catch (t: Throwable) {
+                        UnitValue
+                    }
                 }
             }
         } else {
@@ -100,11 +132,24 @@ object Ints : IInts {
                 IntValue.ZERO
             } else {
                 try {
-                    // TODO: 2022/2/5 maybe not accurate
-                    val logA = BigDecimalMath.log(a.value.toBigDecimal(), MathContext.DECIMAL64)
-                    val logB = BigDecimalMath.log(b.value.toBigDecimal(), MathContext.DECIMAL64)
-                    val ret = logA.divide(logB, 0, RoundingMode.HALF_UP)
-                    IntValue.valueOf(ret.toBigInteger())
+                    when (b) {
+                        IntValue.TWO -> IntValue.valueOf((a.value.bitLength() - 1).toBigInteger())
+                        IntValue.ONE -> UnitValue
+                        else -> {
+                            // b >= 3, so the result will be an int32 < 2^31 ~ 2e10
+                            // 1 < logA < 2^31
+                            val logA = BigDecimalMath.log(a.value.toBigDecimal(), MathContext(11))
+                            // 1 < logB < 2^31
+                            val logB = BigDecimalMath.log(b.value.toBigDecimal(), MathContext(11))
+                            val floor = logA.divide(logB, 0, RoundingMode.FLOOR).toInt()
+                            val ceiling = floor + 1
+                            if (b.value.pow(ceiling) <= a.value) {
+                                IntValue.valueOf(ceiling.toBigInteger())
+                            } else {
+                                IntValue.valueOf(floor.toBigInteger())
+                            }
+                        }
+                    }
                 } catch (t: Throwable) {
                     UnitValue
                 }
@@ -119,7 +164,7 @@ object Ints : IInts {
             if (b == IntValue.ZERO) {
                 UnitValue
             } else {
-                IntValue.valueOf(a.value.mod(b.value))
+                IntValue.valueOf(a.value.abs().mod(b.value.abs()))
             }
         } else {
             UnitValue

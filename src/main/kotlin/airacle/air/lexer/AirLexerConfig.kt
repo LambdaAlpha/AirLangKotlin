@@ -1,5 +1,6 @@
 package airacle.air.lexer
 
+import java.math.BigInteger
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -263,15 +264,24 @@ object NumberLexer : IAirRegexLexer {
             i += 1
         }
 
-        s = "${if (negative) "-" else "+"}${s.substring(i)}"
-
+        s = s.substring(i)
         val isReal = s.contains(".")
         if (isReal) {
+            s = (if (negative) "-" else "+") + s
             val value = s.toBigDecimal()
             return DecimalToken.valueOf(value)
         }
 
         val value = s.toBigInteger(radix)
-        return IntToken.valueOf(value)
+        return if (negative) {
+            when (radix) {
+                // fill with leading ones
+                16 -> IntToken.valueOf(value - BigInteger.ONE.shl(s.length * 4))
+                2 -> IntToken.valueOf(value - BigInteger.ONE.shl(s.length))
+                else -> IntToken.valueOf(value.negate())
+            }
+        } else {
+            IntToken.valueOf(value)
+        }
     }
 }
