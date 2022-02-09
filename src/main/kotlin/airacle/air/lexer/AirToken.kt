@@ -99,7 +99,16 @@ class DecimalToken private constructor(val value: BigDecimal) : AirToken {
         }
 
         fun toString(value: BigDecimal): String {
-            return value.toString()
+            val s = value.toString()
+            if (s.contains(".")) {
+                return s
+            }
+            val i = s.indexOf('E')
+            return if (i >= 0) {
+                s.substring(0, i) + "." + s.substring(i)
+            } else {
+                "$s."
+            }
         }
     }
 

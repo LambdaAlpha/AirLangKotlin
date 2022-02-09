@@ -1,3 +1,26 @@
 `[
 
+~ ;toString |
+~ ;toString \
+~ ;toString /
+~ ;toString 1
+~ ;toString 1.
+~ ;toString 1.e2
+~ ;toString a
+~ ;toString '<>
+~ ;toString []
+~ ;toString {}
+
+~ ;fromString "|"
+~ ;fromString "\\"
+~ ;fromString "/"
+~ ;fromString "1"
+~ ;fromString "1."
+~ ;fromString "1.e2"
+~ ;fromString "a"
+~ ;fromString "\"a\""
+~ ;fromString "<>"
+~ ;fromString "[]"
+~ ;fromString "{}"
+
 ]
