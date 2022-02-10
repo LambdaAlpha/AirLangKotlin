@@ -1,0 +1,189 @@
+[
+
+value1
+/
+;not /
+<';not />
+<`;not />
+<~;not />
+[';not /]
+[`;not /]
+[~;not /]
+{';not / : ;not /}
+{`;not / : ;not /}
+{~;not / : ;not /}
+
+value2
+';not /
+`;not /
+~;not /
+
+value3
+'';not /
+'`;not /
+'~;not /
+`';not /
+``;not /
+`~;not /
+~';not /
+~`;not /
+~~;not /
+
+value41
+''';not /
+''`;not /
+''~;not /
+'`';not /
+'``;not /
+'`~;not /
+'~';not /
+'~`;not /
+'~~;not /
+
+value42
+`'';not /
+`'`;not /
+`'~;not /
+``';not /
+```;not /
+``~;not /
+`~';not /
+`~`;not /
+`~~;not /
+
+value43
+~'';not /
+~'`;not /
+~'~;not /
+~`';not /
+~``;not /
+~`~;not /
+~~';not /
+~~`;not /
+~~~;not /
+
+quote1
+/
+;not /
+<;not />
+<;not />
+<\>
+[;not /]
+[;not /]
+[\]
+{;not / : ;not /}
+{;not / : ;not /}
+{\ : ;not /}
+
+quote2
+;not /
+;not /
+\
+
+quote3
+';not /
+`;not /
+~;not /
+;not /
+;not /
+\
+;not /
+;not /
+\
+
+quote41
+'';not /
+'`;not /
+'~;not /
+`';not /
+``;not /
+`~;not /
+~';not /
+~`;not /
+~~;not /
+
+quote42
+;not /
+;not /
+\
+;not /
+;not /
+\
+;not /
+;not /
+\
+
+quote43
+';not /
+`;not /
+~;not /
+;not /
+;not /
+\
+\
+\
+\
+
+eval1
+/
+\
+|
+|
+|
+[';not /]
+[`;not /]
+[~;not /]
+{';not / : ;not /}
+{`;not / : ;not /}
+{~;not / : ;not /}
+
+eval2
+\
+\
+\
+
+eval3
+;not /
+;not /
+\
+\
+\
+\
+\
+\
+\
+
+eval41
+';not /
+`;not /
+~;not /
+;not /
+;not /
+\
+\
+\
+\
+
+eval42
+;not /
+;not /
+\
+\
+\
+\
+\
+\
+\
+
+eval43
+\
+\
+\
+\
+\
+\
+\
+\
+\
+
+]

@@ -289,7 +289,7 @@ class AirInterpreter(
 
         if (v is MapValue) {
             val map = HashMap<AirValue, AirValue>(v.value.size)
-            for (entry in map) {
+            for (entry in v.value) {
                 map[quote(entry.key)] = quote(entry.value)
             }
             return MapValue.valueOf(map)

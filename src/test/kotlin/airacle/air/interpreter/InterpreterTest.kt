@@ -108,4 +108,9 @@ internal class InterpreterTest {
     fun typesTest() {
         submoduleTest("Types")
     }
+
+    @Test
+    fun modeTest() {
+        submoduleTest("Interpreter")
+    }
 }
