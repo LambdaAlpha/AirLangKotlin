@@ -54,6 +54,10 @@ object AirParserConfig : IAirParserConfig {
     const val LOWEST_SET_BIT = "lowestSetBit"
     const val SHIFT_LEFT = "shl"
     const val SHIFT_RIGHT = "shr"
+    const val BINARY_LOWER = "bin"
+    const val BINARY_UPPER = "Bin"
+    const val HEX_LOWER = "hex"
+    const val HEX_UPPER = "Hex"
 
     // decimal
     const val PRECISION = "precision"
@@ -220,6 +224,7 @@ object AirParserConfig : IAirParserConfig {
             BIT_AND, BIT_OR, BIT_XOR, BIT_AND_NOT, SHIFT_LEFT, SHIFT_RIGHT,
             TEST_BIT, SET_BIT, CLEAR_BIT, FLIP_BIT -> 2
             BIT_COUNT, BIT_LENGTH, LOWEST_SET_BIT -> 1
+            BINARY_LOWER, BINARY_UPPER, HEX_LOWER, HEX_UPPER -> 1
 
             // decimal
             PRECISION -> 1

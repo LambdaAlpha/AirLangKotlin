@@ -26,4 +26,9 @@ interface IInts {
     fun lowestSetBit(a: AirValue): AirValue
     fun shiftLeft(a: AirValue, n: AirValue): AirValue
     fun shiftRight(a: AirValue, n: AirValue): AirValue
+
+    fun toLowerBinaryString(a: AirValue): AirValue
+    fun toUpperBinaryString(a: AirValue): AirValue
+    fun toLowerHexString(a: AirValue): AirValue
+    fun toUpperHexString(a: AirValue): AirValue
 }

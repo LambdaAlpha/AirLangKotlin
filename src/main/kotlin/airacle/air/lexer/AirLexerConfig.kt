@@ -247,17 +247,28 @@ object NumberLexer : IAirRegexLexer {
         }
 
         val hasRadix = s.length > i + 1 && "xXbB".contains(s[i + 1])
-        val radix = if (hasRadix) {
+        var bitMode = false
+        var radix = 10
+        if (hasRadix) {
             i += 1
-            if (s[i] == 'x' || s[i] == 'X') {
-                16
-            } else if (s[i] == 'b' || s[i] == 'B') {
-                2
-            } else {
-                10
+            when (s[i]) {
+                'x' -> {
+                    radix = 16
+                    bitMode = false
+                }
+                'X' -> {
+                    radix = 16
+                    bitMode = true
+                }
+                'b' -> {
+                    radix = 2
+                    bitMode = false
+                }
+                'B' -> {
+                    radix = 2
+                    bitMode = true
+                }
             }
-        } else {
-            10
         }
 
         if (hasRadix) {
@@ -274,11 +285,14 @@ object NumberLexer : IAirRegexLexer {
 
         val value = s.toBigInteger(radix)
         return if (negative) {
-            when (radix) {
-                // fill with leading ones
-                16 -> IntToken.valueOf(value - BigInteger.ONE.shl(s.length * 4))
-                2 -> IntToken.valueOf(value - BigInteger.ONE.shl(s.length))
-                else -> IntToken.valueOf(value.negate())
+            if (bitMode) {
+                when (radix) {
+                    16 -> IntToken.valueOf(value - BigInteger.ONE.shl(s.length * 4))
+                    2 -> IntToken.valueOf(value - BigInteger.ONE.shl(s.length))
+                    else -> IntToken.valueOf(value.negate())
+                }
+            } else {
+                IntToken.valueOf(value.negate())
             }
         } else {
             IntToken.valueOf(value)

@@ -305,4 +305,62 @@ object Ints : IInts {
             UnitValue
         }
     }
+
+    override fun toLowerBinaryString(a: AirValue): AirValue {
+        return if (a is IntValue) {
+            if (a.value.signum() >= 0) {
+                StringValue.valueOf("0b" + a.value.toString(2))
+            } else {
+                StringValue.valueOf("-0b" + a.value.negate().toString(2))
+            }
+        } else {
+            UnitValue
+        }
+    }
+
+    override fun toUpperBinaryString(a: AirValue): AirValue {
+        return if (a is IntValue) {
+            if (a.value.signum() >= 0) {
+                StringValue.valueOf("0B" + a.value.toString(2))
+            } else {
+                val bitLength = a.value.bitLength()
+                val normalized = a.value + (BigInteger.TWO shl bitLength)
+                StringValue.valueOf("-0B" + normalized.toString(2).substring(1))
+            }
+        } else {
+            UnitValue
+        }
+    }
+
+    override fun toLowerHexString(a: AirValue): AirValue {
+        return if (a is IntValue) {
+            if (a.value.signum() >= 0) {
+                StringValue.valueOf("0x" + a.value.toString(16))
+            } else {
+                StringValue.valueOf("-0x" + a.value.negate().toString(16))
+            }
+        } else {
+            UnitValue
+        }
+    }
+
+    override fun toUpperHexString(a: AirValue): AirValue {
+        return if (a is IntValue) {
+            if (a.value.signum() >= 0) {
+                StringValue.valueOf("0X" + a.value.toString(16))
+            } else {
+                val bitLength = a.value.bitLength()
+                val prefix = 0b1 + when (bitLength % 4) {
+                    1 -> 0b1111
+                    2 -> 0b111
+                    3 -> 0b11
+                    else -> 0b1
+                }
+                val normalized = a.value + (prefix.toBigInteger() shl bitLength)
+                StringValue.valueOf("-0X" + normalized.toString(16).substring(1))
+            }
+        } else {
+            UnitValue
+        }
+    }
 }

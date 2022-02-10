@@ -147,6 +147,10 @@ class AirInterpreter(
             C.LOWEST_SET_BIT -> ints.lowestSetBit(t[1])
             C.SHIFT_LEFT -> ints.shiftLeft(t[1], t[2])
             C.SHIFT_RIGHT -> ints.shiftRight(t[1], t[2])
+            C.BINARY_LOWER -> ints.toLowerBinaryString(t[1])
+            C.BINARY_UPPER -> ints.toUpperBinaryString(t[1])
+            C.HEX_LOWER -> ints.toLowerHexString(t[1])
+            C.HEX_UPPER -> ints.toUpperHexString(t[1])
 
             // decimal
             C.PRECISION -> decimals.precision(t[1])
