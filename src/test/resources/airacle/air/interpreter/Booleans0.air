@@ -1,21 +1,25 @@
 `[
 
+not
 ~ ;not \
 ~ ;not /
 ~ ;not 1
 
+and
 ~ ;and \ \
 ~ ;and \ /
 ~ ;and / \
 ~ ;and / /
 ~ ;and | a
 
+or
 ~ ;or \ \
 ~ ;or \ /
 ~ ;or / \
 ~ ;or / /
 ~ ;or 1 2.
 
+xor
 ~ ;xor \ \
 ~ ;xor \ /
 ~ ;xor / \

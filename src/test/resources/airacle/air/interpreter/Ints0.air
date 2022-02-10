@@ -1,22 +1,35 @@
 `[
 
+add
 ~ ;add 1 1
+
+sub
 ~ ;sub 2 1
+
+mul
 ~ ;mul 2 3
+
+dii
 ~ ;dii 5 3
 ~ ;dii -5 3
 ~ ;dii 5 -3
 ~ ;dii -5 -3
 ~ ;dii 1 0
+
+rem
 ~ ;rem 5 3
 ~ ;rem -5 3
 ~ ;rem 5 -3
 ~ ;rem -5 -3
 ~ ;rem 1 0
+
+dir
 ~ ;dir 5 3
 ~ ;dir -5 3
 ~ ;dir 5 -3
 ~ ;dir -5 -3
+
+pow
 ~ ;pow 3 3
 ~ ;pow 0 100
 ~ ;pow 1 100
@@ -28,6 +41,8 @@
 ~ ;pow -2 4
 ~ ;pow -2 3
 ~ ;pow 100 -1
+
+root
 ~ ;root 8 3
 ~ ;root 9 3
 ~ ;root 7 3
@@ -36,6 +51,8 @@
 ~ ;root 100 1
 ~ ;root 100 0
 ~ ;root 1 -1
+
+log
 ~ ;log 27 3
 ~ ;log 26 3
 ~ ;log 28 3
@@ -46,44 +63,69 @@
 ~ ;log 2 1
 ~ ;log -1 2
 ~ ;log 1 -2
+
+mod
 ~ ;mod 5 3
 ~ ;mod -5 3
 ~ ;mod 5 -3
 ~ ;mod -5 -3
 ~ ;mod 5 0
 
+bitNot
 ~ ;bitNot 0B101
 ~ ;bitNot -0B101
+
+bitAnd
 ~ ;bitAnd 0B101 0B110
 ~ ;bitAnd -0B101 0B110
 ~ ;bitAnd -0B101 -0B110
+
+bitOr
 ~ ;bitOr 0B101 0B110
 ~ ;bitOr -0B101 0B110
 ~ ;bitOr -0B101 -0B110
+
+bitAndNot
 ~ ;bitAndNot 0B101 0B110
 ~ ;bitAndNot -0B101 0B110
 ~ ;bitAndNot 0B101 -0B110
 ~ ;bitAndNot -0B101 -0B110
+
+testBit
 ~ ;testBit 0B101 0
 ~ ;testBit -0B101 0
 ~ ;testBit 0B101 1
 ~ ;testBit -0B101 1
+
+setBit
 ~ ;setBit 0B101 1
 ~ ;setBit -0B101 1
+
+clearBit
 ~ ;clearBit 0B101 2
 ~ ;clearBit -0B101 2
+
+flipBit
 ~ ;flipBit 0B101 0
 ~ ;flipBit -0B101 0
 ~ ;flipBit 0B101 1
 ~ ;flipBit -0B101 1
+
+bitCount
 ~ ;bitCount 0B101
 ~ ;bitCount -0B101
+
+bitLength
 ~ ;bitLength 0B101
 ~ ;bitLength -0B101
+
+lowestSetBit
 ~ ;lowestSetBit 0B101
 ~ ;lowestSetBit -0B101
 ~ ;lowestSetBit 0B110
 ~ ;lowestSetBit -0B110
+
+shl
 ~ ;shl 0b011 1
 ~ ;shl 0B011 1
 ~ ;shl 0b100 1
@@ -96,6 +138,8 @@
 ~ ;shl -0B100 1
 ~ ;shl -0b101 1
 ~ ;shl -0B101 1
+
+shr
 ~ ;shr 0b011 1
 ~ ;shr 0B011 1
 ~ ;shr 0b100 1
@@ -109,21 +153,28 @@
 ~ ;shr -0b101 1
 ~ ;shr -0B101 1
 
+bin
 ~ ;bin 0
 ~ ;bin 0b000111
 ~ ;bin -0b000111
 ~ ;bin 0b111000
 ~ ;bin -0b111000
+
+Bin
 ~ ;Bin 0
 ~ ;Bin 0B000111
 ~ ;Bin -0B000111
 ~ ;Bin 0B111000
 ~ ;Bin -0B111000
+
+hex
 ~ ;hex 0
 ~ ;hex 0x71
 ~ ;hex -0x71
 ~ ;hex 0x81
 ~ ;hex -0x81
+
+Hex
 ~ ;Hex 0
 ~ ;Hex 0X71
 ~ ;Hex -0X71

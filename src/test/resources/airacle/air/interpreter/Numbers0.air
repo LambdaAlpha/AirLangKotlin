@@ -1,5 +1,6 @@
 `[
 
+plus
 ~ ;plus 0
 ~ ;plus 0.
 ~ ;plus 1
@@ -7,6 +8,8 @@
 ~ ;plus -1
 ~ ;plus -1.
 ~ ;plus a
+
+minus
 ~ ;minus 0
 ~ ;minus 0.
 ~ ;minus 1
@@ -14,6 +17,8 @@
 ~ ;minus -1
 ~ ;minus -1.
 ~ ;minus a
+
+abs
 ~ ;abs 0
 ~ ;abs 0.
 ~ ;abs 1
@@ -21,6 +26,8 @@
 ~ ;abs -1
 ~ ;abs -1.
 ~ ;abs a
+
+sign
 ~ ;sign 0
 ~ ;sign 0.
 ~ ;sign 1
@@ -28,11 +35,17 @@
 ~ ;sign -1
 ~ ;sign -1.
 ~ ;sign a
+
+min
 ~ ;min 0 0
 ~ ;min 0. 0.
 ~ ;min 0 1
 ~ ;min 0. 1.
 ~ ;min 0 a
+
+max
+~ ;max 0 0
+~ ;max 0. 0.
 ~ ;max 0 1
 ~ ;max 0. 1.
 ~ ;max 0 a

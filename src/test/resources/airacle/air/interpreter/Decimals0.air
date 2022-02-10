@@ -1,5 +1,6 @@
 `[
 
+precision
 ~ ;precision 0.
 ~ ;precision 0.0
 ~ ;precision 0.00
@@ -13,6 +14,7 @@
 ~ ;precision 1000.0
 ~ ;precision 1.0e3
 
+round
 ~ ;round0 1. '<2,up>
 ~ ;round0 1.1 '<2,up>
 ~ ;round0 1.15 '<2,up>
@@ -33,6 +35,7 @@
 ~ ;round64 1.2345678901234567
 ~ ;round128 1.2345678901234567890123456789012345
 
+basic
 ~ ;add32 1. 1.
 ~ ;sub32 2. 1.
 ~ ;mul32 2. 3.
@@ -46,6 +49,8 @@
 ~ ;ln32 2.718282
 ~ ;shl32 1. 2
 ~ ;shr32 1. 2
+
+trigonometric
 ~ ;sin32 1.
 ~ ;cos32 1.
 ~ ;tan32 1.

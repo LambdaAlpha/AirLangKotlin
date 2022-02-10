@@ -1,5 +1,6 @@
 `[
 
+typeOf
 ~ ;typeOf |
 ~ ;typeOf \
 ~ ;typeOf 1
@@ -9,10 +10,13 @@
 ~ ;typeOf []
 ~ ;typeOf {}
 
+toTypeUnit
 ~ ;toType | unit
 ~ ;toType | bool
 ~ ;toType | int
 ~ ;toType | decimal
+
+toTypeBool
 ~ ;toType \ unit
 ~ ;toType \ bool
 ~ ;toType \ int
@@ -21,6 +25,8 @@
 ~ ;toType / bool
 ~ ;toType / int
 ~ ;toType / decimal
+
+toTypeInt
 ~ ;toType 0 unit
 ~ ;toType 0 bool
 ~ ;toType 0 int
@@ -33,6 +39,8 @@
 ~ ;toType 2 bool
 ~ ;toType 2 int
 ~ ;toType 2 decimal
+
+toTypeDecimal
 ~ ;toType 0. unit
 ~ ;toType 0. bool
 ~ ;toType 0. int
@@ -45,22 +53,31 @@
 ~ ;toType 2.1 bool
 ~ ;toType 2.1 int
 ~ ;toType 2.1 decimal
+
+toTypeIllegal
 ~ ;toType a decimal
 ~ ;toType 2 string
 ~ ;toType 2 list
 ~ ;toType 2 test
 
+toTypeTuple
 ~ ;toType '<a b c> tuple
 ~ ;toType '<a b c> list
 ~ ;toType '<a b c> map
 ~ ;toType '<[a b c] [d e f]> map
+
+toTypeList
 ~ ;toType [a b c] tuple
 ~ ;toType [a b c] list
 ~ ;toType [a b c] map
 ~ ;toType [<a b> <c d> <e f>] map
+
+toTypeMap
 ~ ;toType {a:b, c:d, e:f} tuple
 ~ ;toType {a:b, c:d, e:f} list
 ~ ;toType {a:b, c:d, e:f} map
+
+toTypeIllegal
 ~ ;toType [a b c] string
 ~ ;toType [a b c] int
 ~ ;toType [a b c] test

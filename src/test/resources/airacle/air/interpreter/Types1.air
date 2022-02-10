@@ -1,5 +1,6 @@
 [
 
+typeOf
 unit
 bool
 int
@@ -9,10 +10,13 @@ tuple
 list
 map
 
+toTypeUnit
 |
 \
 0
 0.
+
+toTypeBool
 |
 \
 0
@@ -21,6 +25,8 @@ map
 /
 1
 1.
+
+toTypeInt
 |
 \
 0
@@ -33,6 +39,8 @@ map
 /
 2
 2.
+
+toTypeDecimal
 |
 \
 0
@@ -45,22 +53,31 @@ map
 /
 2
 2.1
+
+toTypeIllegal
 |
 |
 |
 |
 
+toTypeTuple
 <a b c>
 [a b c]
 |
 {a:d, b:e, c:f}
+
+toTypeList
 <a b c>
 [a b c]
 |
 {a:b, c:d, e:f}
+
+toTypeMap
 <[a c e] [b d f]>
 [<a b> <c d> <e f>]
 {a:b, c:d, e:f}
+
+toTypeIllegal
 |
 |
 |

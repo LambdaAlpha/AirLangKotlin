@@ -1,5 +1,6 @@
 `[
 
+toString
 ~ ;toString |
 ~ ;toString \
 ~ ;toString /
@@ -11,6 +12,7 @@
 ~ ;toString []
 ~ ;toString {}
 
+fromString
 ~ ;fromString "|"
 ~ ;fromString "\\"
 ~ ;fromString "/"
