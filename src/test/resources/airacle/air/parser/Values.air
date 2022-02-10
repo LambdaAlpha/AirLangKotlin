@@ -123,13 +123,9 @@
 ;lowestSetBit a
 ;shl a b
 ;shr a b
-;rand a
-;seed a b
 
 ;precision a
 
-;rand0 a
-;seed0 a b
 ;round0 a b
 ;add0 a b c
 ;sub0 a b c
@@ -158,8 +154,6 @@
 ;acosh0 a b
 ;atanh0 a b
 
-;rand32
-;seed32 a
 ;round32 a
 ;add32 a b
 ;sub32 a b
@@ -188,8 +182,6 @@
 ;acosh32 a
 ;atanh32 a
 
-;rand64
-;seed64 a
 ;round64 a
 ;add64 a b
 ;sub64 a b
@@ -218,8 +210,6 @@
 ;acosh64 a
 ;atanh64 a
 
-;rand128
-;seed128 a
 ;round128 a
 ;add128 a b
 ;sub128 a b

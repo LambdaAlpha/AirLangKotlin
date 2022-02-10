@@ -54,14 +54,10 @@ object AirParserConfig : IAirParserConfig {
     const val LOWEST_SET_BIT = "lowestSetBit"
     const val SHIFT_LEFT = "shl"
     const val SHIFT_RIGHT = "shr"
-    const val RANDOM = "rand"
-    const val SEED = "seed"
 
     // decimal
     const val PRECISION = "precision"
 
-    const val RAND0 = "rand0"
-    const val SEED0 = "seed0"
     const val ROUND0 = "round0"
     const val ADD0 = "add0"
     const val SUBTRACT0 = "sub0"
@@ -90,8 +86,6 @@ object AirParserConfig : IAirParserConfig {
     const val ACOSH0 = "acosh0"
     const val ATANH0 = "atanh0"
 
-    const val RAND32 = "rand32"
-    const val SEED32 = "seed32"
     const val ROUND32 = "round32"
     const val ADD32 = "add32"
     const val SUBTRACT32 = "sub32"
@@ -120,8 +114,6 @@ object AirParserConfig : IAirParserConfig {
     const val ACOSH32 = "acosh32"
     const val ATANH32 = "atanh32"
 
-    const val RAND64 = "rand64"
-    const val SEED64 = "seed64"
     const val ROUND64 = "round64"
     const val ADD64 = "add64"
     const val SUBTRACT64 = "sub64"
@@ -150,8 +142,6 @@ object AirParserConfig : IAirParserConfig {
     const val ACOSH64 = "acosh64"
     const val ATANH64 = "atanh64"
 
-    const val RAND128 = "rand128"
-    const val SEED128 = "seed128"
     const val ROUND128 = "round128"
     const val ADD128 = "add128"
     const val SUBTRACT128 = "sub128"
@@ -205,96 +195,86 @@ object AirParserConfig : IAirParserConfig {
     const val WRITE = "write"
 
     override fun paramLength(value: AirValue): Int {
-        if (value is StringValue) {
-            return when (value.value) {
-                EXIT, QUIT -> 0
-
-                // bool
-                NOT -> 1
-                AND, OR, XOR -> 2
-
-                // comparator
-                LE, LT, GE, GT, EQ, NE, VEQ, VNE -> 2
-
-                // number
-                UNARY_PLUS, UNARY_MINUS, ABS, SIGN -> 1
-                MIN, MAX -> 2
-
-                // int
-                ADD, SUBTRACT, MULTIPLY, DIV_INT, REMAINDER, DIV_REM,
-                POWER, ROOT, LOG, MODULO -> 2
-
-                BIT_NOT -> 1
-                BIT_AND, BIT_OR, BIT_XOR, BIT_AND_NOT, SHIFT_LEFT, SHIFT_RIGHT,
-                TEST_BIT, SET_BIT, CLEAR_BIT, FLIP_BIT -> 2
-                BIT_COUNT, BIT_LENGTH, LOWEST_SET_BIT -> 1
-                RANDOM -> 1
-                SEED -> 2
-
-                // decimal
-                PRECISION -> 1
-
-                RAND0 -> 1
-                SEED0 -> 2
-                ROUND0 -> 2
-                ADD0, SUBTRACT0, MULTIPLY0, DIVIDE0, DIVIDE_TO_INT0, REMAINDER0, DIVIDE_AND_REMAINDER0,
-                POWER0, LOG0, SHIFT_LEFT0, SHIFT_RIGHT0 -> 3
-                EXP0, LN0 -> 2
-                SIN0, COS0, TAN0, ASIN0, ACOS0, ATAN0, SINH0, COSH0, TANH0, ASINH0, ACOSH0, ATANH0 -> 2
-                ATAN20 -> 3
-
-                RAND32 -> 0
-                SEED32 -> 1
-                ROUND32 -> 1
-                ADD32, SUBTRACT32, MULTIPLY32, DIVIDE32, DIVIDE_TO_INT32, REMAINDER32, DIVIDE_AND_REMAINDER32,
-                POWER32, LOG32, SHIFT_LEFT32, SHIFT_RIGHT32 -> 2
-                EXP32, LN32 -> 1
-                SIN32, COS32, TAN32, ASIN32, ACOS32, ATAN32, SINH32, COSH32, TANH32, ASINH32, ACOSH32, ATANH32 -> 1
-                ATAN232 -> 2
-
-                RAND64 -> 0
-                SEED64 -> 1
-                ROUND64 -> 1
-                ADD64, SUBTRACT64, MULTIPLY64, DIVIDE64, DIVIDE_TO_INT64, REMAINDER64, DIVIDE_AND_REMAINDER64,
-                POWER64, LOG64, SHIFT_LEFT64, SHIFT_RIGHT64 -> 2
-                EXP64, LN64 -> 1
-                SIN64, COS64, TAN64, ASIN64, ACOS64, ATAN64, SINH64, COSH64, TANH64, ASINH64, ACOSH64, ATANH64 -> 1
-                ATAN264 -> 2
-
-                RAND128 -> 0
-                SEED128 -> 1
-                ROUND128 -> 1
-                ADD128, SUBTRACT128, MULTIPLY128, DIVIDE128, DIVIDE_TO_INT128, REMAINDER128, DIVIDE_AND_REMAINDER128,
-                POWER128, LOG128, SHIFT_LEFT128, SHIFT_RIGHT128 -> 2
-                EXP128, LN128 -> 1
-                SIN128, COS128, TAN128, ASIN128, ACOS128, ATAN128, SINH128, COSH128, TANH128, ASINH128, ACOSH128, ATANH128 -> 1
-                ATAN2128 -> 2
-
-                // type
-                TYPE_OF -> 1
-                TYPE_CAST -> 2
-
-                // parse
-                ENCODE_TO_STRING, DECODE_FROM_STRING -> 1
-
-                // eval
-                VALUE, VALUE_SYMBOL, QUOTE, QUOTE_SYMBOL, EVAL, EVAL_SYMBOL -> 1
-
-                // control
-                NOP -> 0
-                IF -> 3
-                FOR -> 4
-                WHILE -> 2
-                FUNCTION -> 2
-                RETURN -> 1
-                CALL -> 2
-
-                // context
-                READ -> 1
-                WRITE -> 2
-                else -> -1
-            }
+        if (value !is StringValue) {
+            return -1
         }
-        return -1
+        return when (value.value) {
+            EXIT, QUIT -> 0
+
+            // bool
+            NOT -> 1
+            AND, OR, XOR -> 2
+
+            // comparator
+            LE, LT, GE, GT, EQ, NE, VEQ, VNE -> 2
+
+            // number
+            UNARY_PLUS, UNARY_MINUS, ABS, SIGN -> 1
+            MIN, MAX -> 2
+
+            // int
+            ADD, SUBTRACT, MULTIPLY, DIV_INT, REMAINDER, DIV_REM,
+            POWER, ROOT, LOG, MODULO -> 2
+
+            BIT_NOT -> 1
+            BIT_AND, BIT_OR, BIT_XOR, BIT_AND_NOT, SHIFT_LEFT, SHIFT_RIGHT,
+            TEST_BIT, SET_BIT, CLEAR_BIT, FLIP_BIT -> 2
+            BIT_COUNT, BIT_LENGTH, LOWEST_SET_BIT -> 1
+
+            // decimal
+            PRECISION -> 1
+
+            ROUND0 -> 2
+            ADD0, SUBTRACT0, MULTIPLY0, DIVIDE0, DIVIDE_TO_INT0, REMAINDER0, DIVIDE_AND_REMAINDER0,
+            POWER0, LOG0, SHIFT_LEFT0, SHIFT_RIGHT0 -> 3
+            EXP0, LN0 -> 2
+            SIN0, COS0, TAN0, ASIN0, ACOS0, ATAN0, SINH0, COSH0, TANH0, ASINH0, ACOSH0, ATANH0 -> 2
+            ATAN20 -> 3
+
+            ROUND32 -> 1
+            ADD32, SUBTRACT32, MULTIPLY32, DIVIDE32, DIVIDE_TO_INT32, REMAINDER32, DIVIDE_AND_REMAINDER32,
+            POWER32, LOG32, SHIFT_LEFT32, SHIFT_RIGHT32 -> 2
+            EXP32, LN32 -> 1
+            SIN32, COS32, TAN32, ASIN32, ACOS32, ATAN32, SINH32, COSH32, TANH32, ASINH32, ACOSH32, ATANH32 -> 1
+            ATAN232 -> 2
+
+            ROUND64 -> 1
+            ADD64, SUBTRACT64, MULTIPLY64, DIVIDE64, DIVIDE_TO_INT64, REMAINDER64, DIVIDE_AND_REMAINDER64,
+            POWER64, LOG64, SHIFT_LEFT64, SHIFT_RIGHT64 -> 2
+            EXP64, LN64 -> 1
+            SIN64, COS64, TAN64, ASIN64, ACOS64, ATAN64, SINH64, COSH64, TANH64, ASINH64, ACOSH64, ATANH64 -> 1
+            ATAN264 -> 2
+
+            ROUND128 -> 1
+            ADD128, SUBTRACT128, MULTIPLY128, DIVIDE128, DIVIDE_TO_INT128, REMAINDER128, DIVIDE_AND_REMAINDER128,
+            POWER128, LOG128, SHIFT_LEFT128, SHIFT_RIGHT128 -> 2
+            EXP128, LN128 -> 1
+            SIN128, COS128, TAN128, ASIN128, ACOS128, ATAN128, SINH128, COSH128, TANH128, ASINH128, ACOSH128, ATANH128 -> 1
+            ATAN2128 -> 2
+
+            // type
+            TYPE_OF -> 1
+            TYPE_CAST -> 2
+
+            // parse
+            ENCODE_TO_STRING, DECODE_FROM_STRING -> 1
+
+            // eval
+            VALUE, VALUE_SYMBOL, QUOTE, QUOTE_SYMBOL, EVAL, EVAL_SYMBOL -> 1
+
+            // control
+            NOP -> 0
+            IF -> 3
+            FOR -> 4
+            WHILE -> 2
+            FUNCTION -> 2
+            RETURN -> 1
+            CALL -> 2
+
+            // context
+            READ -> 1
+            WRITE -> 2
+            else -> -1
+        }
     }
 }

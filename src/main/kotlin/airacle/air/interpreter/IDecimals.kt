@@ -3,8 +3,6 @@ package airacle.air.interpreter
 interface IDecimals {
     fun precision(a: AirValue): AirValue
 
-    fun random(c: AirValue): AirValue
-    fun seed(seed: AirValue, c: AirValue): AirValue
     fun round(a: AirValue, c: AirValue): AirValue
     fun add(a: AirValue, b: AirValue, c: AirValue): AirValue
     fun subtract(a: AirValue, b: AirValue, c: AirValue): AirValue
@@ -33,8 +31,6 @@ interface IDecimals {
     fun acosh(a: AirValue, c: AirValue): AirValue
     fun atanh(a: AirValue, c: AirValue): AirValue
 
-    fun random32(): AirValue
-    fun seed32(seed: AirValue): AirValue
     fun round32(a: AirValue): AirValue
     fun add32(a: AirValue, b: AirValue): AirValue
     fun subtract32(a: AirValue, b: AirValue): AirValue
@@ -63,8 +59,6 @@ interface IDecimals {
     fun acosh32(a: AirValue): AirValue
     fun atanh32(a: AirValue): AirValue
 
-    fun random64(): AirValue
-    fun seed64(seed: AirValue): AirValue
     fun round64(a: AirValue): AirValue
     fun add64(a: AirValue, b: AirValue): AirValue
     fun subtract64(a: AirValue, b: AirValue): AirValue
@@ -93,8 +87,6 @@ interface IDecimals {
     fun acosh64(a: AirValue): AirValue
     fun atanh64(a: AirValue): AirValue
 
-    fun random128(): AirValue
-    fun seed128(seed: AirValue): AirValue
     fun round128(a: AirValue): AirValue
     fun add128(a: AirValue, b: AirValue): AirValue
     fun subtract128(a: AirValue, b: AirValue): AirValue

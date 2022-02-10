@@ -390,15 +390,6 @@ internal val VALUES = ListValue.valueOf(
         StringValue.valueOf("a"),
         StringValue.valueOf("b"),
     ),
-    TupleValue.valueOf(
-        StringValue.valueOf("rand"),
-        StringValue.valueOf("a"),
-    ),
-    TupleValue.valueOf(
-        StringValue.valueOf("seed"),
-        StringValue.valueOf("a"),
-        StringValue.valueOf("b"),
-    ),
 
     // decimal
     TupleValue.valueOf(
@@ -407,15 +398,6 @@ internal val VALUES = ListValue.valueOf(
     ),
 
     // 0
-    TupleValue.valueOf(
-        StringValue.valueOf("rand0"),
-        StringValue.valueOf("a"),
-    ),
-    TupleValue.valueOf(
-        StringValue.valueOf("seed0"),
-        StringValue.valueOf("a"),
-        StringValue.valueOf("b"),
-    ),
     TupleValue.valueOf(
         StringValue.valueOf("round0"),
         StringValue.valueOf("a"),
@@ -566,13 +548,6 @@ internal val VALUES = ListValue.valueOf(
 
     // 32
     TupleValue.valueOf(
-        StringValue.valueOf("rand32"),
-    ),
-    TupleValue.valueOf(
-        StringValue.valueOf("seed32"),
-        StringValue.valueOf("a"),
-    ),
-    TupleValue.valueOf(
         StringValue.valueOf("round32"),
         StringValue.valueOf("a"),
     ),
@@ -695,13 +670,6 @@ internal val VALUES = ListValue.valueOf(
 
     // 64
     TupleValue.valueOf(
-        StringValue.valueOf("rand64"),
-    ),
-    TupleValue.valueOf(
-        StringValue.valueOf("seed64"),
-        StringValue.valueOf("a"),
-    ),
-    TupleValue.valueOf(
         StringValue.valueOf("round64"),
         StringValue.valueOf("a"),
     ),
@@ -823,13 +791,6 @@ internal val VALUES = ListValue.valueOf(
     ),
 
     // 128
-    TupleValue.valueOf(
-        StringValue.valueOf("rand128"),
-    ),
-    TupleValue.valueOf(
-        StringValue.valueOf("seed128"),
-        StringValue.valueOf("a"),
-    ),
     TupleValue.valueOf(
         StringValue.valueOf("round128"),
         StringValue.valueOf("a"),

@@ -4,7 +4,6 @@ import ch.obermuhlner.math.big.BigDecimalMath
 import java.math.BigInteger
 import java.math.MathContext
 import java.math.RoundingMode
-import java.util.*
 
 object Ints : IInts {
     override fun add(a: AirValue, b: AirValue): AirValue {
@@ -299,30 +298,6 @@ object Ints : IInts {
         return if (a is IntValue && n is IntValue) {
             try {
                 IntValue.valueOf(a.value shr n.value.intValueExact())
-            } catch (t: Throwable) {
-                UnitValue
-            }
-        } else {
-            UnitValue
-        }
-    }
-
-    override fun random(n: AirValue): AirValue {
-        return if (n is IntValue) {
-            try {
-                IntValue.valueOf(BigInteger(n.value.intValueExact(), Random()))
-            } catch (t: Throwable) {
-                UnitValue
-            }
-        } else {
-            UnitValue
-        }
-    }
-
-    override fun randomWithSeed(n: AirValue, seed: AirValue): AirValue {
-        return if (n is IntValue && seed is IntValue) {
-            try {
-                IntValue.valueOf(BigInteger(n.value.intValueExact(), Random(seed.value.longValueExact())))
             } catch (t: Throwable) {
                 UnitValue
             }

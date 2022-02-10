@@ -26,7 +26,4 @@ interface IInts {
     fun lowestSetBit(a: AirValue): AirValue
     fun shiftLeft(a: AirValue, n: AirValue): AirValue
     fun shiftRight(a: AirValue, n: AirValue): AirValue
-
-    fun random(n: AirValue): AirValue
-    fun randomWithSeed(n: AirValue, seed: AirValue): AirValue
 }

@@ -147,14 +147,10 @@ class AirInterpreter(
             C.LOWEST_SET_BIT -> ints.lowestSetBit(t[1])
             C.SHIFT_LEFT -> ints.shiftLeft(t[1], t[2])
             C.SHIFT_RIGHT -> ints.shiftRight(t[1], t[2])
-            C.RANDOM -> ints.random(t[1])
-            C.SEED -> ints.randomWithSeed(t[1], t[2])
 
             // decimal
             C.PRECISION -> decimals.precision(t[1])
 
-            C.RAND0 -> decimals.random(t[1])
-            C.SEED0 -> decimals.seed(t[1], t[2])
             C.ROUND0 -> decimals.round(t[1], t[2])
             C.ADD0 -> decimals.add(t[1], t[2], t[3])
             C.SUBTRACT0 -> decimals.subtract(t[1], t[2], t[3])
@@ -183,8 +179,6 @@ class AirInterpreter(
             C.ACOSH0 -> decimals.acosh(t[1], t[2])
             C.ATANH0 -> decimals.atanh(t[1], t[2])
 
-            C.RAND32 -> decimals.random32()
-            C.SEED32 -> decimals.seed32(t[1])
             C.ROUND32 -> decimals.round32(t[1])
             C.ADD32 -> decimals.add32(t[1], t[2])
             C.SUBTRACT32 -> decimals.subtract32(t[1], t[2])
@@ -213,8 +207,6 @@ class AirInterpreter(
             C.ACOSH32 -> decimals.acosh32(t[1])
             C.ATANH32 -> decimals.atanh32(t[1])
 
-            C.RAND64 -> decimals.random64()
-            C.SEED64 -> decimals.seed64(t[1])
             C.ROUND64 -> decimals.round64(t[1])
             C.ADD64 -> decimals.add64(t[1], t[2])
             C.SUBTRACT64 -> decimals.subtract64(t[1], t[2])
@@ -243,8 +235,6 @@ class AirInterpreter(
             C.ACOSH64 -> decimals.acosh64(t[1])
             C.ATANH64 -> decimals.atanh64(t[1])
 
-            C.RAND128 -> decimals.random128()
-            C.SEED128 -> decimals.seed128(t[1])
             C.ROUND128 -> decimals.round128(t[1])
             C.ADD128 -> decimals.add128(t[1], t[2])
             C.SUBTRACT128 -> decimals.subtract128(t[1], t[2])

@@ -1,15 +1,10 @@
 package airacle.air.interpreter
 
 import ch.obermuhlner.math.big.BigDecimalMath
-import java.math.BigDecimal
-import java.math.BigInteger
 import java.math.MathContext
 import java.math.RoundingMode
-import java.util.*
-import kotlin.math.ceil
 
 object Decimals : IDecimals {
-    private const val LOG_2_10 = 3.3219280948873626
     const val UP = "up"
     const val DOWN = "down"
     const val CEILING = "ceiling"
@@ -54,46 +49,6 @@ object Decimals : IDecimals {
             }
         }
         return null
-    }
-
-    private fun randomDecimal(mc: MathContext?, random: Random): AirValue {
-        return if (mc != null) {
-            try {
-                val bitLength = ceil(mc.precision * LOG_2_10).toInt()
-                val i = BigDecimal(BigInteger(bitLength, random))
-                val total = BigDecimal(BigInteger.ONE.shiftLeft(bitLength))
-                val percent = i.divide(total, mc)
-                DecimalValue.valueOf(percent)
-            } catch (t: Throwable) {
-                UnitValue
-            }
-        } else {
-            UnitValue
-        }
-    }
-
-    private fun random(mc: MathContext?): AirValue {
-        return randomDecimal(mc, Random())
-    }
-
-    override fun random(c: AirValue): AirValue {
-        return random(getMathContext(c))
-    }
-
-    private fun seed(seed: AirValue, mc: MathContext?): AirValue {
-        return if (seed is IntValue) {
-            try {
-                randomDecimal(mc, Random(seed.value.longValueExact()))
-            } catch (t: Throwable) {
-                UnitValue
-            }
-        } else {
-            UnitValue
-        }
-    }
-
-    override fun seed(seed: AirValue, c: AirValue): AirValue {
-        return seed(seed, getMathContext(c))
     }
 
     private fun round(a: AirValue, mc: MathContext?): AirValue {
@@ -537,14 +492,6 @@ object Decimals : IDecimals {
         return atanh(a, getMathContext(c))
     }
 
-    override fun random32(): AirValue {
-        return random(MathContext.DECIMAL32)
-    }
-
-    override fun seed32(seed: AirValue): AirValue {
-        return seed(seed, MathContext.DECIMAL32)
-    }
-
     override fun round32(a: AirValue): AirValue {
         return round(a, MathContext.DECIMAL32)
     }
@@ -653,14 +600,6 @@ object Decimals : IDecimals {
         return atanh(a, MathContext.DECIMAL32)
     }
 
-    override fun random64(): AirValue {
-        return random(MathContext.DECIMAL64)
-    }
-
-    override fun seed64(seed: AirValue): AirValue {
-        return seed(seed, MathContext.DECIMAL64)
-    }
-
     override fun round64(a: AirValue): AirValue {
         return round(a, MathContext.DECIMAL64)
     }
@@ -767,14 +706,6 @@ object Decimals : IDecimals {
 
     override fun atanh64(a: AirValue): AirValue {
         return atanh(a, MathContext.DECIMAL64)
-    }
-
-    override fun random128(): AirValue {
-        return random(MathContext.DECIMAL128)
-    }
-
-    override fun seed128(seed: AirValue): AirValue {
-        return seed(seed, MathContext.DECIMAL128)
     }
 
     override fun round128(a: AirValue): AirValue {
