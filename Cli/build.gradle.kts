@@ -1,10 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.4.32"
-    kotlin("kapt") version "1.5.31"
-    application
+    kotlin("jvm")
+    kotlin("kapt")
 }
+
+group = "airacle.air.cli"
+version = "0.0.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -20,12 +22,8 @@ tasks.test {
 }
 
 dependencies {
-    implementation("org.junit.jupiter:junit-jupiter:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
 
     implementation(project(":Util"))
-    implementation(project(":Cli"))
-}
-
-application {
-    mainClass.set("MainKt")
+    api(project(":More"))
 }

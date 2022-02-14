@@ -1,9 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.4.32"
-    kotlin("kapt") version "1.5.31"
-    application
+    kotlin("jvm")
+    kotlin("kapt")
 }
 
 repositories {
@@ -20,12 +19,5 @@ tasks.test {
 }
 
 dependencies {
-    implementation("org.junit.jupiter:junit-jupiter:5.8.1")
-
-    implementation(project(":Util"))
-    implementation(project(":Cli"))
-}
-
-application {
-    mainClass.set("MainKt")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
 }
