@@ -16,13 +16,14 @@ interface IAirParserConfig {
 }
 
 class AirParser(
-    val version: AirParserVersion
+    val version: AirParserVersion,
+    val config: IAirParserConfig
 ) : IAirParser<AirToken, AirValue> {
-    private val config: IAirParserConfig
-
     init {
         when (version) {
-            AirParserVersion.V0 -> config = AirParserConfig
+            AirParserVersion.V0 -> {
+
+            }
         }
     }
 

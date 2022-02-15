@@ -1,20 +1,23 @@
 package airacle.air.app.repl
 
-import airacle.air.core.api.Air
-import airacle.air.core.api.AirVersion
 import airacle.air.core.interpreter.StringValue
 import airacle.air.core.interpreter.TupleValue
 import airacle.air.core.lexer.AirLexerError
 import airacle.air.core.parser.AirParserError
+import airacle.air.more.repl.AirRepl
+import airacle.air.more.repl.AirReplInterpreterConfig
+import airacle.air.more.repl.AirReplVersion
 import airacle.air.util.log.Logger
 
-class AirRepl {
-    private val air: Air = Air(AirVersion.V0)
+private typealias C = AirReplInterpreterConfig
+
+class AirReplApp {
+    private val air: AirRepl = AirRepl(AirReplVersion.V0)
 
     fun start(): Int {
         println("Air ${air.version.versionName}(${air.version.versionCode})")
 
-        while (true) {
+        loop@ while (true) {
             print("> ")
             val s = readLine() ?: break
 
@@ -40,18 +43,6 @@ class AirRepl {
                 continue
             }
 
-            if (value is TupleValue && value.value.isNotEmpty()) {
-                val first = value.value[0]
-                if (first is StringValue) {
-                    when (first.value) {
-                        "exit", "quit" -> {
-                            Logger.i("exit repl")
-                            break
-                        }
-                    }
-                }
-            }
-
             val ret = try {
                 air.interpreter.interpret(value)
             } catch (t: Throwable) {
@@ -59,7 +50,22 @@ class AirRepl {
                 Logger.i("throw ${t.javaClass} in repl when interpreting", throwable = t)
                 continue
             }
-            println(ret)
+
+            if (ret !is TupleValue || ret.value.isEmpty()) {
+                println(ret)
+                continue
+            }
+            val t = ret.value
+            val keyword = t[0]
+            if (keyword !is StringValue) {
+                println(ret)
+                continue
+            }
+            when (keyword) {
+                C.EXIT, C.QUIT -> break@loop
+                C.OUTPUT -> println(t[1])
+                else -> println(ret)
+            }
         }
         return 0
     }

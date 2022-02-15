@@ -7,7 +7,7 @@ import airacle.air.core.interpreter.TupleValue
 
 internal val VALUES = ListValue.valueOf(
     TupleValue.valueOf(
-        StringValue.valueOf("quit")
+        StringValue.valueOf("nop")
     ),
     TupleValue.valueOf(
         StringValue.valueOf("b"),
@@ -188,14 +188,6 @@ internal val VALUES = ListValue.valueOf(
     ),
 
     // full command list
-
-    // repl
-    TupleValue.valueOf(
-        StringValue.valueOf("exit"),
-    ),
-    TupleValue.valueOf(
-        StringValue.valueOf("quit"),
-    ),
 
     // bool
     TupleValue.valueOf(

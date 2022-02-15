@@ -11,9 +11,9 @@
 # <this is a comment>
 # [this is a comment]
 # {this: is, a: comment}
-# ;exit
+# ;nop
 ############a
-; #a quit #b
+; #a nop #b
 <#a b #c #d, e #f>
 <#<#<#a>>>
 (#a b c #d #e f #g)
@@ -77,9 +77,6 @@
 }
 
 # "full command list"
-
-;exit
-;quit
 
 ;not a
 ;and a b

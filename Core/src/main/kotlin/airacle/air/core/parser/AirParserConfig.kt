@@ -4,9 +4,6 @@ import airacle.air.core.interpreter.AirValue
 import airacle.air.core.interpreter.StringValue
 
 object AirParserConfig : IAirParserConfig {
-    const val EXIT = "exit"
-    const val QUIT = "quit"
-
     const val NOT = "not"
     const val AND = "and"
     const val OR = "or"
@@ -203,8 +200,6 @@ object AirParserConfig : IAirParserConfig {
             return -1
         }
         return when (value.value) {
-            EXIT, QUIT -> 0
-
             // bool
             NOT -> 1
             AND, OR, XOR -> 2
