@@ -23,7 +23,7 @@ dependencies {
     implementation("org.junit.jupiter:junit-jupiter:5.8.1")
 
     implementation(project(":Util"))
-    implementation(project(":Cli"))
+    implementation(project(":App"))
 }
 
 application {

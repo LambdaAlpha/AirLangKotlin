@@ -1,4 +1,4 @@
-package airacle.air.cli
+package airacle.air.app.repl
 
 import airacle.air.core.api.Air
 import airacle.air.core.api.AirVersion
