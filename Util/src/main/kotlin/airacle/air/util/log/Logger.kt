@@ -1,7 +1,8 @@
 package airacle.air.util.log
 
 import java.io.File
-import java.util.logging.ConsoleHandler
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.logging.FileHandler
 import java.util.logging.Level
 import java.util.logging.Logger
@@ -9,14 +10,16 @@ import java.util.logging.Logger
 object Logger {
     val logger: Logger = Logger.getLogger("air")
 
-    fun init(filePath: String) {
+    init {
+        setLevel(Level.ALL)
+        val timeFormatter = SimpleDateFormat("yyyy-MM-dd")
+        init("./Logs/${timeFormatter.format(Date())}.log")
+    }
+
+    private fun init(filePath: String) {
         logger.useParentHandlers = false
 
         val formatter = LogFormatter()
-
-        val consoleHandler = ConsoleHandler()
-        consoleHandler.formatter = formatter
-        logger.addHandler(consoleHandler)
 
         val file = File(filePath)
         file.parentFile?.mkdirs()
@@ -25,7 +28,7 @@ object Logger {
         logger.addHandler(fileHandler)
     }
 
-    fun setLevel(level: Level) {
+    private fun setLevel(level: Level) {
         logger.level = level
     }
 

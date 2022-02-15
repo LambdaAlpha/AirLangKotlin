@@ -1,4 +1,5 @@
+import airacle.air.cli.AirRepl
 
 fun main(args: Array<String>) {
-    MainCmd.main(args)
+    AirRepl().start()
 }
