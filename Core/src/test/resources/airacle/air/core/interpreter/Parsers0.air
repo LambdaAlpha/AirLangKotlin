@@ -25,4 +25,26 @@ fromString
 ~ ;fromString "[]"
 ~ ;fromString "{}"
 
+prettyPrint
+~ ;pretty |
+~ ;pretty \
+~ ;pretty /
+~ ;pretty 1
+~ ;pretty 1.
+~ ;pretty a
+~ ;pretty "a b"
+~ ;pretty "."
+~ ;pretty '<>
+~ ;pretty ';not a
+~ ;pretty ';le a b
+~ ;pretty '<a b>
+~ ;pretty []
+~ ;pretty [a b]
+~ ;pretty [;le a b ;not a]
+~ ;pretty {}
+~ ;pretty {a:b c:d}
+~ ;pretty ';le <a b c> <<a b>>
+~ ;pretty ';le [a b] [[a b]]
+~ ;pretty ';le {a:b c:d} {a:{b:c}}
+
 ]

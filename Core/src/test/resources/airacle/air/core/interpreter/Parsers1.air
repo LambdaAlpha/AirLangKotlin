@@ -25,4 +25,26 @@ a
 []
 {}
 
+prettyPrint
+"|"
+"\\"
+"/"
+"1"
+"1."
+a
+"\"a b\""
+"\".\""
+"<>"
+";not a"
+";le a b"
+"<a b>"
+"[]"
+"[\n  a\n  b\n]"
+"[\n  ;le a b\n  ;not a\n]"
+"{}"
+"{\n  a: b,\n  c: d,\n}"
+";le <a b c> <<a b>>"
+";le [\n  a\n  b\n] [\n  [\n    a\n    b\n  ]\n]"
+";le {\n  a: b,\n  c: d,\n} {\n  a: {\n    b: c,\n  },\n}"
+
 ]

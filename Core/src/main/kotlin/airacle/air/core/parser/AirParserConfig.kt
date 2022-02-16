@@ -171,12 +171,16 @@ object AirParserConfig : IAirParserConfig {
     const val ACOSH128 = "acosh128"
     const val ATANH128 = "atanh128"
 
+    // parser
     const val ENCODE_TO_STRING = "toString"
     const val DECODE_FROM_STRING = "fromString"
+    const val PRETTY_PRINT = "pretty"
 
+    // type
     const val TYPE_OF = "typeOf"
     const val TYPE_CAST = "toType"
 
+    // interpret
     const val VALUE = "value"
     const val VALUE_SYMBOL = "'"
     const val QUOTE = "quote"
@@ -184,6 +188,7 @@ object AirParserConfig : IAirParserConfig {
     const val EVAL = "eval"
     const val EVAL_SYMBOL = "~"
 
+    // control
     const val NOP = "nop"
     const val IF = "if"
     const val FOR = "for"
@@ -192,6 +197,7 @@ object AirParserConfig : IAirParserConfig {
     const val RETURN = "return"
     const val CALL = "call"
 
+    // context
     const val READ = "read"
     const val WRITE = "write"
 
@@ -257,7 +263,7 @@ object AirParserConfig : IAirParserConfig {
             TYPE_CAST -> 2
 
             // parse
-            ENCODE_TO_STRING, DECODE_FROM_STRING -> 1
+            ENCODE_TO_STRING, PRETTY_PRINT, DECODE_FROM_STRING -> 1
 
             // eval
             VALUE, VALUE_SYMBOL, QUOTE, QUOTE_SYMBOL, EVAL, EVAL_SYMBOL -> 1

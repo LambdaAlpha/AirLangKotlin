@@ -255,6 +255,7 @@ class AirInterpreterConfig(
 
             // parse
             C.ENCODE_TO_STRING -> parsers.encodeToString(t[1])
+            C.PRETTY_PRINT -> parsers.prettyPrint(t[1])
             C.DECODE_FROM_STRING -> parsers.decodeFromString(t[1])
             else -> value
         }

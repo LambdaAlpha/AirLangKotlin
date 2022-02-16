@@ -1,8 +1,10 @@
 package airacle.air.app.repl
 
+import airacle.air.core.interpreter.AirValue
 import airacle.air.core.interpreter.StringValue
 import airacle.air.core.interpreter.TupleValue
 import airacle.air.core.lexer.AirLexerError
+import airacle.air.core.parser.AirParserConfig
 import airacle.air.core.parser.AirParserError
 import airacle.air.more.repl.AirRepl
 import airacle.air.more.repl.AirReplInterpreterConfig
@@ -52,21 +54,37 @@ class AirReplApp {
             }
 
             if (ret !is TupleValue || ret.value.isEmpty()) {
-                println(ret)
+                prettyPrint(ret)
                 continue
             }
             val t = ret.value
             val keyword = t[0]
             if (keyword !is StringValue) {
-                println(ret)
+                prettyPrint(ret)
                 continue
             }
             when (keyword) {
                 C.EXIT, C.QUIT -> break@loop
-                C.OUTPUT -> println(t[1])
-                else -> println(ret)
+                else -> prettyPrint(ret)
             }
         }
         return 0
+    }
+
+    private fun prettyPrint(value: AirValue) {
+        val prettyString = air.interpreter.interpret(
+            TupleValue.valueOf(
+                StringValue.valueOf(AirParserConfig.PRETTY_PRINT),
+                TupleValue.valueOf(
+                    StringValue.valueOf(AirParserConfig.VALUE_SYMBOL),
+                    value
+                )
+            )
+        )
+        if (prettyString is StringValue) {
+            println(prettyString.value)
+        } else {
+            println(value)
+        }
     }
 }

@@ -45,12 +45,11 @@ class AirReplInterpreterConfig(
         return when (keyword) {
             C.EXIT -> TupleValue.valueOf(EXIT)
             C.QUIT -> TupleValue.valueOf(QUIT)
-            else -> TupleValue.valueOf(OUTPUT, config.primitiveInterpret(value))
+            else -> config.primitiveInterpret(value)
         }
     }
 
     companion object {
-        val OUTPUT = StringValue.valueOf("output")
         val EXIT = StringValue.valueOf(C.EXIT)
         val QUIT = StringValue.valueOf(C.QUIT)
     }
