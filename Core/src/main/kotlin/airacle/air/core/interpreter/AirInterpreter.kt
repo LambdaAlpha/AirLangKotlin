@@ -1,17 +1,17 @@
 package airacle.air.core.interpreter
 
 import airacle.air.core.api.IAirInterpreter
-import airacle.air.core.parser.AirParserConfig
-import airacle.air.core.parser.IAirParserConfig
 
 interface IAirInterpreterConfig {
+    fun isValue(v: AirValue): Boolean
+    fun isQuote(v: AirValue): Boolean
+    fun isEval(v: AirValue): Boolean
     fun primitiveInterpret(value: AirValue): AirValue
 }
 
 class AirInterpreter(
     val version: AirInterpreterVersion,
-    private val parserConfig: IAirParserConfig,
-    private val interpreterConfig: IAirInterpreterConfig
+    val config: IAirInterpreterConfig
 ) : IAirInterpreter<AirValue> {
 
     init {
@@ -34,18 +34,27 @@ class AirInterpreter(
 
         val keyword = interpret(tuple[0])
 
-        if (parserConfig.paramLength(keyword) + 1 != tuple.size) {
-            return UnitValue
+        if (config.isValue(keyword)) {
+            return if (tuple.size == 2) {
+                tuple[1]
+            } else {
+                UnitValue
+            }
         }
 
-        if (keyword is StringValue) {
-            when (keyword.value) {
-                // eval
-                AirParserConfig.VALUE, AirParserConfig.VALUE_SYMBOL -> return tuple[1]
-                AirParserConfig.QUOTE, AirParserConfig.QUOTE_SYMBOL -> return quote(tuple[1])
-                AirParserConfig.EVAL, AirParserConfig.EVAL_SYMBOL -> return interpret(
-                    interpret(tuple[1])
-                )
+        if (config.isQuote(keyword)) {
+            return if (tuple.size == 2) {
+                quote(tuple[1])
+            } else {
+                UnitValue
+            }
+        }
+
+        if (config.isEval(keyword)) {
+            return if (tuple.size == 2) {
+                interpret(interpret(tuple[1]))
+            } else {
+                UnitValue
             }
         }
 
@@ -57,7 +66,7 @@ class AirInterpreter(
             }
         })
 
-        return interpreterConfig.primitiveInterpret(evalTuple)
+        return config.primitiveInterpret(evalTuple)
     }
 
     private fun quote(v: AirValue): AirValue {
@@ -89,17 +98,31 @@ class AirInterpreter(
         }
 
         val keyword = t[0]
-        if (keyword is StringValue) {
-            when (keyword.value) {
-                AirParserConfig.VALUE, AirParserConfig.VALUE_SYMBOL -> return t[1]
-                AirParserConfig.QUOTE, AirParserConfig.QUOTE_SYMBOL -> return quote(
-                    quote(
-                        t[1]
-                    )
-                )
-                AirParserConfig.EVAL, AirParserConfig.EVAL_SYMBOL -> return interpret(t[1])
+
+        if (config.isValue(keyword)) {
+            return if (t.size == 2) {
+                t[1]
+            } else {
+                UnitValue
             }
         }
+
+        if (config.isQuote(keyword)) {
+            return if (t.size == 2) {
+                quote(quote(t[1]))
+            } else {
+                UnitValue
+            }
+        }
+
+        if (config.isEval(keyword)) {
+            return if (t.size == 2) {
+                interpret(t[1])
+            } else {
+                UnitValue
+            }
+        }
+
         return TupleValue.fromArray(Array(t.size) {
             quote(t[it])
         })

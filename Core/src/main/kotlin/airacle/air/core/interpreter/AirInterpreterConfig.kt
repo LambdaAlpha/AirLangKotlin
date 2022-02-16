@@ -1,15 +1,14 @@
 package airacle.air.core.interpreter
 
-import airacle.air.core.api.IAirLexer
-import airacle.air.core.api.IAirParser
-import airacle.air.core.lexer.AirToken
+import airacle.air.core.lexer.AirLexer
+import airacle.air.core.parser.AirParser
 import airacle.air.core.parser.AirParserConfig
 
 private typealias C = AirParserConfig
 
 class AirInterpreterConfig(
-    lexer: IAirLexer<AirToken>,
-    parser: IAirParser<AirToken, AirValue>
+    val lexer: AirLexer,
+    val parser: AirParser
 ) : IAirInterpreterConfig {
     private val units: IUnits
     private val booleans: IBooleans
@@ -49,11 +48,26 @@ class AirInterpreterConfig(
         parsers = Parsers(lexer, parser)
     }
 
+    override fun isValue(v: AirValue): Boolean {
+        return v is StringValue && (v.value == C.VALUE || v.value == C.VALUE_SYMBOL)
+    }
+
+    override fun isQuote(v: AirValue): Boolean {
+        return v is StringValue && (v.value == C.QUOTE || v.value == C.QUOTE_SYMBOL)
+    }
+
+    override fun isEval(v: AirValue): Boolean {
+        return v is StringValue && (v.value == C.EVAL || v.value == C.EVAL_SYMBOL)
+    }
+
     override fun primitiveInterpret(value: AirValue): AirValue {
         if (value !is TupleValue || value.value.isEmpty()) {
             return value
         }
         val keyword = value.value[0]
+        if (parser.config.paramLength(keyword) + 1 != value.value.size) {
+            return UnitValue
+        }
         if (keyword is StringValue) {
             return interpretString(keyword.value, value)
         }

@@ -27,13 +27,15 @@ class AirLexerError(
 )
 
 class AirLexer(
-    val version: AirLexerVersion
+    val version: AirLexerVersion,
+    val config: IAirLexerConfig
 ) : IAirLexer<AirToken> {
-    private val config: IAirLexerConfig
 
     init {
         when (version) {
-            AirLexerVersion.V0 -> config = AirLexerConfig
+            AirLexerVersion.V0 -> {
+
+            }
         }
     }
 

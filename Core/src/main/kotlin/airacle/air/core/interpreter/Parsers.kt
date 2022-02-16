@@ -1,12 +1,11 @@
 package airacle.air.core.interpreter
 
-import airacle.air.core.api.IAirLexer
-import airacle.air.core.api.IAirParser
-import airacle.air.core.lexer.AirToken
+import airacle.air.core.lexer.AirLexer
+import airacle.air.core.parser.AirParser
 
 class Parsers(
-    private val lexer: IAirLexer<AirToken>,
-    private val parser: IAirParser<AirToken, AirValue>
+    private val lexer: AirLexer,
+    private val parser: AirParser
 ) : IParsers {
     override fun decodeFromString(v: AirValue): AirValue {
         return if (v is StringValue) {
