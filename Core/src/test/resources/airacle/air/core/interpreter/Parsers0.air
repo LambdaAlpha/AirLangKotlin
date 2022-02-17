@@ -6,7 +6,7 @@ toString
 ~ ;toString /
 ~ ;toString 1
 ~ ;toString 1.
-~ ;toString 1.e2
+~ ;toString 1e2
 ~ ;toString a
 ~ ;toString '<>
 ~ ;toString []

@@ -220,6 +220,8 @@ object NumberLexer : IAirRegexLexer {
         "[-+]?(?:" +
                 "\\d+[\\d_]*\\.[\\d_]*(?:[eE][-+]?\\d+)?" +
                 "|" +
+                "\\d+[\\d_]*(?:\\.[\\d_]*)?[eE][-+]?\\d+" +
+                "|" +
                 "0[xX][a-fA-F0-9]+[a-fA-F0-9_]*" +
                 "|" +
                 "0[bB][01]+[01_]*" +
@@ -227,6 +229,8 @@ object NumberLexer : IAirRegexLexer {
                 "[0-9]+[0-9_]*" +
                 ")"
     )
+
+    private val realPattern = Pattern.compile("[.eE]")
 
 
     override fun pattern(): Pattern {
@@ -276,7 +280,7 @@ object NumberLexer : IAirRegexLexer {
         }
 
         s = s.substring(i)
-        val isReal = s.contains(".")
+        val isReal = radix == 10 && realPattern.matcher(s).find()
         if (isReal) {
             s = (if (negative) "-" else "+") + s
             val value = s.toBigDecimal()
