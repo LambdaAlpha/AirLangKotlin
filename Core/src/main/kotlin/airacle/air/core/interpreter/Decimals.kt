@@ -14,6 +14,18 @@ object Decimals : IDecimals {
     const val HALF_EVEN = "halfEven"
     const val UNNECESSARY = "unnecessary"
 
+    override fun toInt(a: AirValue): AirValue {
+        return if (a is DecimalValue) {
+            try {
+                IntValue.valueOf(a.value.toBigInteger())
+            } catch (t: Throwable) {
+                UnitValue
+            }
+        } else {
+            UnitValue
+        }
+    }
+
     override fun precision(a: AirValue): AirValue {
         return if (a is DecimalValue) {
             IntValue.valueOf(a.value.precision().toBigInteger())

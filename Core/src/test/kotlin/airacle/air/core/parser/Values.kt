@@ -191,6 +191,14 @@ internal val VALUES = ListValue.valueOf(
 
     // bool
     TupleValue.valueOf(
+        StringValue.valueOf("a2b"),
+        StringValue.valueOf("a"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("b2i"),
+        StringValue.valueOf("a"),
+    ),
+    TupleValue.valueOf(
         StringValue.valueOf("not"),
         StringValue.valueOf("a"),
     ),
@@ -241,6 +249,16 @@ internal val VALUES = ListValue.valueOf(
         StringValue.valueOf("a"),
         StringValue.valueOf("b"),
     ),
+    TupleValue.valueOf(
+        StringValue.valueOf("veq"),
+        StringValue.valueOf("a"),
+        StringValue.valueOf("b"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("vne"),
+        StringValue.valueOf("a"),
+        StringValue.valueOf("b"),
+    ),
 
     // number
     TupleValue.valueOf(
@@ -271,6 +289,10 @@ internal val VALUES = ListValue.valueOf(
     ),
 
     // int
+    TupleValue.valueOf(
+        StringValue.valueOf("i2d"),
+        StringValue.valueOf("a"),
+    ),
     TupleValue.valueOf(
         StringValue.valueOf("add"),
         StringValue.valueOf("a"),
@@ -303,6 +325,11 @@ internal val VALUES = ListValue.valueOf(
     ),
     TupleValue.valueOf(
         StringValue.valueOf("pow"),
+        StringValue.valueOf("a"),
+        StringValue.valueOf("b"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("root"),
         StringValue.valueOf("a"),
         StringValue.valueOf("b"),
     ),
@@ -382,8 +409,28 @@ internal val VALUES = ListValue.valueOf(
         StringValue.valueOf("a"),
         StringValue.valueOf("b"),
     ),
+    TupleValue.valueOf(
+        StringValue.valueOf("bin"),
+        StringValue.valueOf("a"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("Bin"),
+        StringValue.valueOf("a"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("hex"),
+        StringValue.valueOf("a"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("Hex"),
+        StringValue.valueOf("a"),
+    ),
 
     // decimal
+    TupleValue.valueOf(
+        StringValue.valueOf("d2i"),
+        StringValue.valueOf("a"),
+    ),
     TupleValue.valueOf(
         StringValue.valueOf("precision"),
         StringValue.valueOf("a"),
@@ -904,6 +951,36 @@ internal val VALUES = ListValue.valueOf(
         StringValue.valueOf("a"),
     ),
 
+    // tuple
+    TupleValue.valueOf(
+        StringValue.valueOf("t2l"),
+        StringValue.valueOf("a"),
+    ),
+
+    // list
+    TupleValue.valueOf(
+        StringValue.valueOf("l2t"),
+        StringValue.valueOf("a"),
+    ),
+
+    // map
+    TupleValue.valueOf(
+        StringValue.valueOf("tl2m"),
+        StringValue.valueOf("a"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("m2tl"),
+        StringValue.valueOf("a"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("lt2m"),
+        StringValue.valueOf("a"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("m2lt"),
+        StringValue.valueOf("a"),
+    ),
+
     // parser
     TupleValue.valueOf(
         StringValue.valueOf("toString"),
@@ -913,6 +990,10 @@ internal val VALUES = ListValue.valueOf(
         StringValue.valueOf("fromString"),
         StringValue.valueOf("a"),
     ),
+    TupleValue.valueOf(
+        StringValue.valueOf("pretty"),
+        StringValue.valueOf("a"),
+    ),
 
     // type
     TupleValue.valueOf(
@@ -920,7 +1001,7 @@ internal val VALUES = ListValue.valueOf(
         StringValue.valueOf("a"),
     ),
     TupleValue.valueOf(
-        StringValue.valueOf("toType"),
+        StringValue.valueOf("is"),
         StringValue.valueOf("a"),
         StringValue.valueOf("b"),
     ),

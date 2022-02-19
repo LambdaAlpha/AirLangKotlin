@@ -10,76 +10,30 @@ typeOf
 ~ ;typeOf []
 ~ ;typeOf {}
 
-toTypeUnit
-~ ;toType | unit
-~ ;toType | bool
-~ ;toType | int
-~ ;toType | decimal
-
-toTypeBool
-~ ;toType \ unit
-~ ;toType \ bool
-~ ;toType \ int
-~ ;toType \ decimal
-~ ;toType / unit
-~ ;toType / bool
-~ ;toType / int
-~ ;toType / decimal
-
-toTypeInt
-~ ;toType 0 unit
-~ ;toType 0 bool
-~ ;toType 0 int
-~ ;toType 0 decimal
-~ ;toType 1 unit
-~ ;toType 1 bool
-~ ;toType 1 int
-~ ;toType 1 decimal
-~ ;toType 2 unit
-~ ;toType 2 bool
-~ ;toType 2 int
-~ ;toType 2 decimal
-
-toTypeDecimal
-~ ;toType 0. unit
-~ ;toType 0. bool
-~ ;toType 0. int
-~ ;toType 0. decimal
-~ ;toType 1. unit
-~ ;toType 1. bool
-~ ;toType 1. int
-~ ;toType 1. decimal
-~ ;toType 2.1 unit
-~ ;toType 2.1 bool
-~ ;toType 2.1 int
-~ ;toType 2.1 decimal
-
-toTypeIllegal
-~ ;toType a decimal
-~ ;toType 2 string
-~ ;toType 2 list
-~ ;toType 2 test
-
-toTypeTuple
-~ ;toType '<a b c> tuple
-~ ;toType '<a b c> list
-~ ;toType '<a b c> map
-~ ;toType '<[a b c] [d e f]> map
-
-toTypeList
-~ ;toType [a b c] tuple
-~ ;toType [a b c] list
-~ ;toType [a b c] map
-~ ;toType [<a b> <c d> <e f>] map
-
-toTypeMap
-~ ;toType {a:b, c:d, e:f} tuple
-~ ;toType {a:b, c:d, e:f} list
-~ ;toType {a:b, c:d, e:f} map
-
-toTypeIllegal
-~ ;toType [a b c] string
-~ ;toType [a b c] int
-~ ;toType [a b c] test
+is
+~ ;is | unit
+~ ;is | bool
+~ ;is \ bool
+~ ;is / bool
+~ ;is 0 bool
+~ ;is 0 int
+~ ;is 1 int
+~ ;is 0. int
+~ ;is 0. decimal
+~ ;is 1. decimal
+~ ;is a decimal
+~ ;is a string
+~ ;is "~" string
+~ ;is '<> string
+~ ;is '<> tuple
+~ ;is '<a> tuple
+~ ;is [] tuple
+~ ;is [] list
+~ ;is [a] list
+~ ;is {} list
+~ ;is {} map
+~ ;is {a:b} map
+~ ;is | map
+~ ;is | any
 
 ]

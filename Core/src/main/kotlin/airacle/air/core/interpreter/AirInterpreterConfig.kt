@@ -81,6 +81,8 @@ class AirInterpreterConfig(
         val t = value.value
         return when (keyword) {
             // bool
+            C.ANY2BOOL -> booleans.toBool(t[1])
+            C.BOOL2INT -> booleans.toInt(t[1])
             C.NOT -> booleans.not(t[1])
             C.AND -> booleans.and(t[1], t[2])
             C.OR -> booleans.or(t[1], t[2])
@@ -105,6 +107,7 @@ class AirInterpreterConfig(
             C.MAX -> numbers.max(t[1], t[2])
 
             // int
+            C.INT2DECIMAL -> ints.toDecimal(t[1])
             C.ADD -> ints.add(t[1], t[2])
             C.SUBTRACT -> ints.subtract(t[1], t[2])
             C.MULTIPLY -> ints.multiply(t[1], t[2])
@@ -135,6 +138,7 @@ class AirInterpreterConfig(
             C.HEX_UPPER -> ints.toUpperHexString(t[1])
 
             // decimal
+            C.DECIMAL2INT -> decimals.toInt(t[1])
             C.PRECISION -> decimals.precision(t[1])
 
             C.ROUND0 -> decimals.round(t[1], t[2])
@@ -249,9 +253,21 @@ class AirInterpreterConfig(
             C.ACOSH128 -> decimals.acosh128(t[1])
             C.ATANH128 -> decimals.atanh128(t[1])
 
+            // tuple
+            C.TUPLE2LIST -> tuples.toList(t[1])
+
+            // list
+            C.LIST2TUPLE -> lists.toTuple(t[1])
+
+            // map
+            C.MAP2TUPLE_LIST -> maps.toTupleList(t[1])
+            C.TUPLE_LIST2MAP -> maps.fromTupleList(t[1])
+            C.MAP2LIST_TUPLE -> maps.toListTuple(t[1])
+            C.LIST_TUPLE2MAP -> maps.fromListTuple(t[1])
+
             // type
             C.TYPE_OF -> types.typeOf(t[1])
-            C.TYPE_CAST -> types.toType(t[1], t[2])
+            C.IS_TYPE -> types.isType(t[1], t[2])
 
             // parse
             C.ENCODE_TO_STRING -> parsers.encodeToString(t[1])

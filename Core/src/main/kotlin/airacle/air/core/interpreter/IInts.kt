@@ -1,6 +1,8 @@
 package airacle.air.core.interpreter
 
 interface IInts {
+    fun toDecimal(a: AirValue): AirValue
+
     fun add(a: AirValue, b: AirValue): AirValue
     fun subtract(a: AirValue, b: AirValue): AirValue
     fun multiply(a: AirValue, b: AirValue): AirValue

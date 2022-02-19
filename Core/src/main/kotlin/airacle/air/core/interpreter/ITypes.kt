@@ -14,5 +14,5 @@ interface ITypes {
 
     fun typeOf(value: AirValue): AirValue
 
-    fun toType(value: AirValue, type: AirValue): AirValue
+    fun isType(a: AirValue, type: AirValue): AirValue
 }

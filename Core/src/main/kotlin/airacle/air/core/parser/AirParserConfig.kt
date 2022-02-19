@@ -4,11 +4,15 @@ import airacle.air.core.interpreter.AirValue
 import airacle.air.core.interpreter.StringValue
 
 object AirParserConfig : IAirParserConfig {
+    // bool
+    const val ANY2BOOL = "a2b"
+    const val BOOL2INT = "b2i"
     const val NOT = "not"
     const val AND = "and"
     const val OR = "or"
     const val XOR = "xor"
 
+    // comparator
     const val LE = "le"
     const val LT = "lt"
     const val GE = "ge"
@@ -27,6 +31,7 @@ object AirParserConfig : IAirParserConfig {
     const val MAX = "max"
 
     // int
+    const val INT2DECIMAL = "i2d"
     const val ADD = "add"
     const val SUBTRACT = "sub"
     const val MULTIPLY = "mul"
@@ -57,6 +62,7 @@ object AirParserConfig : IAirParserConfig {
     const val HEX_UPPER = "Hex"
 
     // decimal
+    const val DECIMAL2INT = "d2i"
     const val PRECISION = "precision"
 
     const val ROUND0 = "round0"
@@ -171,6 +177,18 @@ object AirParserConfig : IAirParserConfig {
     const val ACOSH128 = "acosh128"
     const val ATANH128 = "atanh128"
 
+    // tuple
+    const val TUPLE2LIST = "t2l"
+
+    // list
+    const val LIST2TUPLE = "l2t"
+
+    // map
+    const val TUPLE_LIST2MAP = "tl2m"
+    const val LIST_TUPLE2MAP = "lt2m"
+    const val MAP2TUPLE_LIST = "m2tl"
+    const val MAP2LIST_TUPLE = "m2lt"
+
     // parser
     const val ENCODE_TO_STRING = "toString"
     const val DECODE_FROM_STRING = "fromString"
@@ -178,7 +196,7 @@ object AirParserConfig : IAirParserConfig {
 
     // type
     const val TYPE_OF = "typeOf"
-    const val TYPE_CAST = "toType"
+    const val IS_TYPE = "is"
 
     // interpret
     const val VALUE = "value"
@@ -207,6 +225,7 @@ object AirParserConfig : IAirParserConfig {
         }
         return when (value.value) {
             // bool
+            ANY2BOOL, BOOL2INT -> 1
             NOT -> 1
             AND, OR, XOR -> 2
 
@@ -218,6 +237,7 @@ object AirParserConfig : IAirParserConfig {
             MIN, MAX -> 2
 
             // int
+            INT2DECIMAL -> 1
             ADD, SUBTRACT, MULTIPLY, DIV_INT, REMAINDER, DIV_REM,
             POWER, ROOT, LOG, MODULO -> 2
 
@@ -228,6 +248,7 @@ object AirParserConfig : IAirParserConfig {
             BINARY_LOWER, BINARY_UPPER, HEX_LOWER, HEX_UPPER -> 1
 
             // decimal
+            DECIMAL2INT -> 1
             PRECISION -> 1
 
             ROUND0 -> 2
@@ -258,9 +279,21 @@ object AirParserConfig : IAirParserConfig {
             SIN128, COS128, TAN128, ASIN128, ACOS128, ATAN128, SINH128, COSH128, TANH128, ASINH128, ACOSH128, ATANH128 -> 1
             ATAN2128 -> 2
 
+            // tuple
+            TUPLE2LIST -> 1
+
+            // list
+            LIST2TUPLE -> 1
+
+            // map
+            TUPLE_LIST2MAP,
+            LIST_TUPLE2MAP,
+            MAP2TUPLE_LIST,
+            MAP2LIST_TUPLE -> 1
+
             // type
             TYPE_OF -> 1
-            TYPE_CAST -> 2
+            IS_TYPE -> 2
 
             // parse
             ENCODE_TO_STRING, PRETTY_PRINT, DECODE_FROM_STRING -> 1

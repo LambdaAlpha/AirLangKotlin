@@ -1,5 +1,14 @@
 `[
 
+d2i
+~ ;d2i 0.
+~ ;d2i -0.
+~ ;d2i 1.1
+~ ;d2i -1.1
+~ ;d2i 1.9
+~ ;d2i -1.9
+~ ;d2i 1
+
 precision
 ~ ;precision 0.
 ~ ;precision 0.0

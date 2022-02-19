@@ -78,6 +78,8 @@
 
 # "full command list"
 
+;a2b a
+;b2i a
 ;not a
 ;and a b
 ;or a b
@@ -89,6 +91,8 @@
 ;gt a b
 ;eq a b
 ;ne a b
+;veq a b
+;vne a b
 
 ;plus a
 ;minus a
@@ -97,6 +101,7 @@
 ;min a b
 ;max a b
 
+;i2d a
 ;add a b
 ;sub a b
 ;mul a b
@@ -104,6 +109,7 @@
 ;rem a b
 ;dir a b
 ;pow a b
+;root a b
 ;log a b
 ;mod a b
 ;bitNot a
@@ -120,7 +126,12 @@
 ;lowestSetBit a
 ;shl a b
 ;shr a b
+;bin a
+;Bin a
+;hex a
+;Hex a
 
+;d2i a
 ;precision a
 
 ;round0 a b
@@ -235,11 +246,22 @@
 ;acosh128 a
 ;atanh128 a
 
+;t2l a
+
+;l2t a
+
+;tl2m a
+;m2tl a
+
+;lt2m a
+;m2lt a
+
 ;toString a
 ;fromString a
+;pretty a
 
 ;typeOf a
-;toType a b
+;is a b
 
 ;value a
 'a

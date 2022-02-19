@@ -1,3 +1,33 @@
 `[
 
+tl2m
+~ ;tl2m '<>
+~ ;tl2m '<[] []>
+~ ;tl2m '<[a b c] [d e f]>
+~ ;tl2m '<[a b c] [d e f] [g h i]>
+~ ;tl2m '<[a] [b c]>
+~ ;tl2m {}
+
+m2tl
+~ ;m2tl {}
+~ ;m2tl {a:b}
+~ ;m2tl {a:b c:d}
+~ ;m2tl {a:b c:d e:f}
+~ ;m2tl []
+
+lt2m
+~ ;lt2m []
+~ ;lt2m [<a b>]
+~ ;lt2m [<a b> <c d> <e f>]
+~ ;lt2m [<a> <b c>]
+~ ;lt2m [{} []]
+~ ;lt2m {}
+
+m2lt
+~ ;m2lt {}
+~ ;m2lt {a:b}
+~ ;m2lt {a:b c:d}
+~ ;m2lt {a:b c:d e:f}
+~ ;m2lt []
+
 ]

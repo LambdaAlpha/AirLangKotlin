@@ -1,6 +1,7 @@
 package airacle.air.core.interpreter
 
 interface IDecimals {
+    fun toInt(a: AirValue): AirValue
     fun precision(a: AirValue): AirValue
 
     fun round(a: AirValue, c: AirValue): AirValue

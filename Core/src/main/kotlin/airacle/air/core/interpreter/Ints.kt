@@ -6,6 +6,14 @@ import java.math.MathContext
 import java.math.RoundingMode
 
 object Ints : IInts {
+    override fun toDecimal(a: AirValue): AirValue {
+        return if (a is IntValue) {
+            DecimalValue.valueOf(a.value.toBigDecimal())
+        } else {
+            UnitValue
+        }
+    }
+
     override fun add(a: AirValue, b: AirValue): AirValue {
         return if (a is IntValue && b is IntValue) {
             IntValue.valueOf(a.value + b.value)
