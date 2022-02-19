@@ -66,7 +66,11 @@ class AirInterpreter(
             }
         })
 
-        return config.primitiveInterpret(evalTuple)
+        return try {
+            config.primitiveInterpret(evalTuple)
+        } catch (t: Throwable) {
+            UnitValue
+        }
     }
 
     private fun quote(v: AirValue): AirValue {
