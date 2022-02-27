@@ -278,8 +278,17 @@
 ;return a
 ;call a b
 
+;normPath a
+;focus a
+;focused
+;has a
 ;read a
+.a
 ;write a b
+=a b
+;mov a b
+;ins a b
+;del a
 
 ]
 # "comment at the end"

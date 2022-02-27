@@ -1071,12 +1071,50 @@ internal val VALUES = ListValue.valueOf(
 
     // context
     TupleValue.valueOf(
+        StringValue.valueOf("normPath"),
+        StringValue.valueOf("a"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("focus"),
+        StringValue.valueOf("a"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("focused"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("has"),
+        StringValue.valueOf("a"),
+    ),
+    TupleValue.valueOf(
         StringValue.valueOf("read"),
+        StringValue.valueOf("a"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("."),
         StringValue.valueOf("a"),
     ),
     TupleValue.valueOf(
         StringValue.valueOf("write"),
         StringValue.valueOf("a"),
         StringValue.valueOf("b"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("="),
+        StringValue.valueOf("a"),
+        StringValue.valueOf("b"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("mov"),
+        StringValue.valueOf("a"),
+        StringValue.valueOf("b"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("ins"),
+        StringValue.valueOf("a"),
+        StringValue.valueOf("b"),
+    ),
+    TupleValue.valueOf(
+        StringValue.valueOf("del"),
+        StringValue.valueOf("a"),
     ),
 )

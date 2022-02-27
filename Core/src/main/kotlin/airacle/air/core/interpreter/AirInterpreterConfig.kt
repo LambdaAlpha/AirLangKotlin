@@ -42,7 +42,7 @@ class AirInterpreterConfig(
         comparators = Comparators
         complexity = Complexity
         computability = Computability
-        contexts = Contexts
+        contexts = Contexts()
         controls = Controls
         types = Types
         parsers = Parsers(lexer, parser)
@@ -273,6 +273,18 @@ class AirInterpreterConfig(
             C.ENCODE_TO_STRING -> parsers.encodeToString(t[1])
             C.PRETTY_PRINT -> parsers.prettyPrint(t[1])
             C.DECODE_FROM_STRING -> parsers.decodeFromString(t[1])
+
+            // context
+            C.NORM_PATH -> contexts.normalizePath(t[1])
+            C.FOCUS -> contexts.focus(t[1])
+            C.FOCUSED -> contexts.focused()
+            C.EXIST -> contexts.exist(t[1])
+            C.READ, C.READ_SYMBOL -> contexts.read(t[1])
+            C.WRITE, C.WRITE_SYMBOL -> contexts.write(t[1], t[2])
+            C.MOVE -> contexts.move(t[1], t[2])
+            C.INSERT -> contexts.insert(t[1], t[2])
+            C.DELETE -> contexts.delete(t[1])
+
             else -> value
         }
     }

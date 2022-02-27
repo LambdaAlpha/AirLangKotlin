@@ -1,3 +1,172 @@
 `[
 
+focusRoot
+~ ;focus /
+~ ;focused
+~ ;normPath /
+~ ;normPath []
+~ ;normPath [/]
+~ ;normPath a
+~ ;normPath [a b]
+~ ;normPath [a \]
+~ ;normPath [a \ b]
+~ ;normPath [/ a]
+~ ;normPath [a / b]
+~ ;normPath [[a b] c [d e]]
+~ ;normPath [[[a b]]]
+~ ;normPath [a b \ \ c]
+~ ;normPath [a \ b \ c]
+~ ;normPath [a / b c \ d]
+
+focusNonRoot
+~ ;focus a
+~ ;focused
+~ ;normPath /
+~ ;normPath []
+~ ;normPath [/]
+~ ;normPath a
+~ ;normPath [a b]
+~ ;normPath [a \]
+~ ;normPath [a \ b]
+~ ;normPath [/ a]
+~ ;normPath [a / b]
+~ ;normPath [[a b] c [d e]]
+~ ;normPath [[[a b]]]
+~ ;normPath [a b \ \ c]
+~ ;normPath [a \ b \ c]
+~ ;normPath [a / b c \ d]
+
+focusChange
+~ ;focus /
+~ ;focused
+~ ;focus [a b]
+~ ;focused
+~ ;focus c
+~ ;focused
+~ ;focus \
+~ ;focused
+~ ;focus [\ \ \]
+~ ;focused
+
+has
+~ =/ {a:b c:{d:e} f:<1 <2>> g:[1 [2]]}
+~ ;has /
+~ ;has a
+~ ;has b
+~ ;has c
+~ ;has [c d]
+~ ;has [c d e]
+~ ;has f
+~ ;has [f 0]
+~ ;has [f 1 0]
+~ ;has [f 2]
+~ ;has g
+~ ;has [g 0]
+~ ;has [g 1 0]
+~ ;has [g 2]
+
+read
+~ =/ {a:b c:{d:e} f:<1 <2>> g:[1 [2]] h:[c]}
+~ ./
+~ .a
+~ .a
+~ .b
+~ .c
+~ .[c d]
+~ .[c d e]
+~ .f
+~ .[f 0]
+~ .[f 1 0]
+~ .[f 2]
+~ .g
+~ .[g 0]
+~ .[g 1 0]
+~ .[g 2]
+~ .`[~.h d]
+
+write
+~ =/ {}
+~ ./
+~ =a ./
+~ .a
+~ =a a
+~ .a
+~ =a b
+~ .a
+~ =c {}
+~ .c
+~ =[c d] e
+~ .c
+~ =f '<1 2>
+~ .f
+~ =[f 1] '<2>
+~ .f
+~ =g [1 2]
+~ .g
+~ =[g 1] [2]
+~ .g
+
+move
+~ =/ {a1:{b1:c1} a2:b2 a3:b3 a4:{b4:c4} a5:{b5:c5} a6:b6 a7:b7}
+~ ;mov a1 a100
+~ ;has a1
+~ .a1
+~ ;has a100
+~ .a100
+~ ;mov a2 a3
+~ ;has a2
+~ .a3
+~ ;mov a4 [a4 b4]
+~ ;has a4
+~ ;mov [a5 b5] a5
+~ .a5
+~ ;mov b a6
+~ ;has a6
+~ .a6
+~ ;mov / a101
+~ ;mov a7 /
+~ ./
+
+insert
+~ ;ins / {a:[] b:<> c:{} d:1}
+~ ;ins [a 0] 1
+~ .a
+~ ;ins [a 1] []
+~ .a
+~ ;ins [a 1 0] 2
+~ .a
+~ ;ins [a -1] 3
+~ .a
+~ ;ins [a -2] 4
+~ .a
+~ ;ins [b 0] b
+~ .b
+~ ;ins [c a] c
+~ .c
+~ ;ins [c b] {}
+~ .c
+~ ;ins [c b c] d
+~ .c
+~ ;ins [d a] d
+~ .d
+
+delete
+~ =/ {a:b c:{d:e} f:<1 <2>> g:[1 [2]]}
+~ ;del [a b]
+~ ;has a
+~ ;del a
+~ ;has a
+~ ;del [c d]
+~ ;has [c d]
+~ ;has c
+~ ;del c
+~ ;has c
+~ ;del [f 0]
+~ ;has [f 0]
+~ ;del [g 0]
+~ .g
+~ ;del [g 0 0]
+~ .g
+~ ;del /
+
 ]

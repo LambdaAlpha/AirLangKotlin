@@ -216,8 +216,17 @@ object AirParserConfig : IAirParserConfig {
     const val CALL = "call"
 
     // context
+    const val NORM_PATH = "normPath"
+    const val FOCUS = "focus"
+    const val FOCUSED = "focused"
+    const val EXIST = "has"
     const val READ = "read"
+    const val READ_SYMBOL = "."
     const val WRITE = "write"
+    const val WRITE_SYMBOL = "="
+    const val MOVE = "mov"
+    const val INSERT = "ins"
+    const val DELETE = "del"
 
     override fun paramLength(value: AirValue): Int {
         if (value !is StringValue) {
@@ -311,8 +320,16 @@ object AirParserConfig : IAirParserConfig {
             CALL -> 2
 
             // context
-            READ -> 1
-            WRITE -> 2
+            FOCUS -> 1
+            FOCUSED -> 0
+            NORM_PATH -> 1
+            EXIST -> 1
+            READ, READ_SYMBOL -> 1
+            WRITE, WRITE_SYMBOL -> 2
+            MOVE -> 2
+            INSERT -> 2
+            DELETE -> 1
+
             else -> -1
         }
     }
