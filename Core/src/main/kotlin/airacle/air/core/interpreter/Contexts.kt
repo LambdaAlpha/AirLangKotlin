@@ -349,14 +349,14 @@ class Contexts : IContexts {
     override fun delete(path: AirValue): AirValue {
         val normalized = normalizePath(path)
         if (normalized !is ListValue) {
-            return BoolValue.FALSE
+            return UnitValue
         }
         if (normalized.value.isEmpty()) {
-            return BoolValue.FALSE
+            return UnitValue
         }
         val parent = readParent(normalized)
-        val suc = valueDelete(parent, normalized.value.last())
-        return BoolValue.valueOf(suc != null)
+        val v = valueDelete(parent, normalized.value.last())
+        return v ?: UnitValue
     }
 
     override fun move(oldPath: AirValue, newPath: AirValue): AirValue {
