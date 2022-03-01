@@ -52,7 +52,7 @@ class Contexts : IContexts {
     }
 
     private fun focused0(): AirValue {
-        return valueRead(root, FOCUS)
+        return valueRead(root, FOCUS) ?: UnitValue
     }
 
     override fun focused(): AirValue {
@@ -161,79 +161,79 @@ class Contexts : IContexts {
         if (normalized.value.isEmpty()) {
             return BoolValue.TRUE
         }
-        val parent = readParent(normalized)
+        val parent = readParent(normalized) ?: return BoolValue.FALSE
         return valueExist(parent, normalized.value.last())
     }
 
-    private fun readParent(path: AirValue): AirValue {
-        return if (path is ListValue && path.value.isNotEmpty()) {
+    private fun readParent(path: AirValue): AirValue? {
+        if (path is ListValue && path.value.isNotEmpty()) {
             var ret: AirValue = root
             for (i in 0 until path.value.size - 1) {
-                ret = valueRead(ret, path.value[i])
+                ret = valueRead(ret, path.value[i]) ?: return null
             }
-            ret
+            return ret
         } else {
-            UnitValue
+            return null
         }
     }
 
-    private fun read0(path: AirValue): AirValue {
-        return if (path is ListValue) {
+    private fun read0(path: AirValue): AirValue? {
+        if (path is ListValue) {
             var ret: AirValue = root
             for (i in path.value) {
-                ret = valueRead(ret, i)
+                ret = valueRead(ret, i) ?: return null
             }
-            ret
+            return ret
         } else {
-            UnitValue
+            return null
         }
     }
 
-    private fun valueRead(v: AirValue, key: AirValue): AirValue {
+    private fun valueRead(v: AirValue, key: AirValue): AirValue? {
         return when (v) {
             is TupleValue -> tupleRead(v, key)
             is ListValue -> listRead(v, key)
             is MapValue -> mapRead(v, key)
-            else -> UnitValue
+            else -> null
         }
     }
 
-    private fun tupleRead(tuple: TupleValue, key: AirValue): AirValue {
+    private fun tupleRead(tuple: TupleValue, key: AirValue): AirValue? {
         return if (key is IntValue) {
             try {
                 val i = key.value.intValueExact()
                 if (i in tuple.value.indices) {
                     tuple.value[i]
                 } else {
-                    UnitValue
+                    null
                 }
             } catch (t: Throwable) {
-                UnitValue
+                null
             }
         } else {
-            UnitValue
+            null
         }
     }
 
-    private fun listRead(list: ListValue, key: AirValue): AirValue {
+    private fun listRead(list: ListValue, key: AirValue): AirValue? {
         return if (key is IntValue) {
             try {
                 val i = key.value.intValueExact()
                 if (i in list.value.indices) {
                     list.value[i]
                 } else {
-                    UnitValue
+                    null
                 }
             } catch (t: Throwable) {
-                UnitValue
+                null
             }
         } else {
-            UnitValue
+            null
         }
     }
 
-    private fun mapRead(map: MapValue, key: AirValue): AirValue {
-        return map.value[key] ?: UnitValue
+    private fun mapRead(map: MapValue, key: AirValue): AirValue? {
+        return map.value[key]
     }
 
     override fun read(path: AirValue): AirValue {
@@ -245,7 +245,7 @@ class Contexts : IContexts {
         if (normalized.value.isEmpty()) {
             return deepCopy(root)
         }
-        val v = read0(normalized)
+        val v = read0(normalized) ?: UnitValue
         return deepCopy(v)
     }
 
@@ -310,7 +310,7 @@ class Contexts : IContexts {
             return BoolValue.TRUE
         }
 
-        val parent = readParent(normalized)
+        val parent = readParent(normalized) ?: return BoolValue.FALSE
         val k = deepCopy(normalized.value.last())
         val v = deepCopy(value)
         val suc = valueWrite(parent, k, v)
@@ -354,7 +354,7 @@ class Contexts : IContexts {
         if (normalized.value.isEmpty()) {
             return UnitValue
         }
-        val parent = readParent(normalized)
+        val parent = readParent(normalized) ?: return BoolValue.FALSE
         val v = valueDelete(parent, normalized.value.last())
         return v ?: UnitValue
     }
@@ -371,15 +371,40 @@ class Contexts : IContexts {
             return BoolValue.FALSE
         }
         if (normNew.value.isEmpty()) {
-            root = read0(normOld)
+            root = read0(normOld) ?: return BoolValue.FALSE
             return BoolValue.TRUE
         }
 
         // delete old value before reading new parent to avoid cyclic reference
-        val parentOld = readParent(normOld)
+        val parentOld = readParent(normOld) ?: return BoolValue.FALSE
         val v = valueDelete(parentOld, normOld.value.last()) ?: return BoolValue.FALSE
-        val parentNew = readParent(normNew)
+        val parentNew = readParent(normNew) ?: return BoolValue.FALSE
         val suc = valueWrite(parentNew, normNew.value.last(), v)
+        return BoolValue.valueOf(suc)
+    }
+
+    override fun copy(oldPath: AirValue, newPath: AirValue): AirValue {
+        val normOld = normalizePath(oldPath)
+        val normNew = normalizePath(newPath)
+
+        if (normOld !is ListValue || normNew !is ListValue) {
+            return BoolValue.FALSE
+        }
+
+        if (normNew.value.isEmpty()) {
+            root = read0(normOld) ?: return BoolValue.FALSE
+            return BoolValue.TRUE
+        }
+
+        val v = if (normOld.value.isEmpty()) {
+            root
+        } else {
+            val parentOld = readParent(normOld) ?: return BoolValue.FALSE
+            valueRead(parentOld, normOld.value.last()) ?: return BoolValue.FALSE
+        }
+
+        val parentNew = readParent(normNew) ?: return BoolValue.FALSE
+        val suc = valueWrite(parentNew, normNew.value.last(), deepCopy(v))
         return BoolValue.valueOf(suc)
     }
 
@@ -426,7 +451,7 @@ class Contexts : IContexts {
             return BoolValue.TRUE
         }
 
-        val parent = readParent(normalized)
+        val parent = readParent(normalized) ?: return BoolValue.FALSE
         val k = deepCopy(normalized.value.last())
         val v = deepCopy(value)
         val suc = valueInsert(parent, k, v)

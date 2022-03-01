@@ -225,6 +225,7 @@ object AirParserConfig : IAirParserConfig {
     const val WRITE = "write"
     const val WRITE_SYMBOL = "="
     const val MOVE = "mov"
+    const val COPY = "copy"
     const val INSERT = "ins"
     const val DELETE = "del"
 
@@ -327,6 +328,7 @@ object AirParserConfig : IAirParserConfig {
             READ, READ_SYMBOL -> 1
             WRITE, WRITE_SYMBOL -> 2
             MOVE -> 2
+            COPY -> 2
             INSERT -> 2
             DELETE -> 1
 

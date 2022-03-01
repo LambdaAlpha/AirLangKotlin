@@ -287,6 +287,7 @@
 ;write a b
 =a b
 ;mov a b
+;copy a b
 ;ins a b
 ;del a
 

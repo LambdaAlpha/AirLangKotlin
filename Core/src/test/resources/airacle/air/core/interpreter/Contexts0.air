@@ -127,6 +127,28 @@ move
 ~ ;mov a7 /
 ~ ./
 
+copy
+~ =/ {a1:{b1:c1} a2:b2 a3:b3 a4:{b4:c4} a5:{b5:c5} a6:b6 a7:{}}
+~ ;copy a1 a100
+~ ;has a1
+~ .a1
+~ ;has a100
+~ .a100
+~ ;copy a2 a3
+~ ;has a2
+~ .a3
+~ ;copy a4 [a4 b4]
+~ .a4
+~ ;copy [a5 b5] a5
+~ .a5
+~ ;copy b a6
+~ ;has a6
+~ .a6
+~ ;copy a7 /
+~ ./
+~ ;copy / a101
+~ ./
+
 insert
 ~ ;ins / {a:[] b:<> c:{} d:1}
 ~ ;ins [a 0] 1

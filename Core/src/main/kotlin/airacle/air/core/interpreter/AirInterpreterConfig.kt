@@ -282,6 +282,7 @@ class AirInterpreterConfig(
             C.READ, C.READ_SYMBOL -> contexts.read(t[1])
             C.WRITE, C.WRITE_SYMBOL -> contexts.write(t[1], t[2])
             C.MOVE -> contexts.move(t[1], t[2])
+            C.COPY -> contexts.copy(t[1], t[2])
             C.INSERT -> contexts.insert(t[1], t[2])
             C.DELETE -> contexts.delete(t[1])
 

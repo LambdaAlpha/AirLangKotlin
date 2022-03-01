@@ -1109,6 +1109,11 @@ internal val VALUES = ListValue.valueOf(
         StringValue.valueOf("b"),
     ),
     TupleValue.valueOf(
+        StringValue.valueOf("copy"),
+        StringValue.valueOf("a"),
+        StringValue.valueOf("b"),
+    ),
+    TupleValue.valueOf(
         StringValue.valueOf("ins"),
         StringValue.valueOf("a"),
         StringValue.valueOf("b"),

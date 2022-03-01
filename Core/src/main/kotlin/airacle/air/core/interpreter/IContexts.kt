@@ -10,6 +10,7 @@ interface IContexts {
 
     fun write(path: AirValue, value: AirValue): AirValue
     fun move(oldPath: AirValue, newPath: AirValue): AirValue
+    fun copy(oldPath: AirValue, newPath: AirValue): AirValue
     fun insert(path: AirValue, value: AirValue): AirValue
     fun delete(path: AirValue): AirValue
 }
